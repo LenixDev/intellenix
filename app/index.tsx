@@ -10,7 +10,7 @@ const groq = new Groq({ apiKey: process.env.EXPO_PUBLIC_GROQ_API_KEY, dangerousl
 const composeId = () => Date.now().toString()
 
 // eslint-disable-next-line max-lines-per-function
-export const Home = () => {
+export default function Page() {
 	const [conversations, setConversations] = useState<{
 		id: string
 		role: 'user' | 'assistant'
@@ -38,7 +38,6 @@ export const Home = () => {
 				role: 'assistant',
 				content: response
 			}])
-			toast.success('Something went wrong')
 		} catch(err) {
 			toast.error('Something went wrong')
 			raise(err)
