@@ -1,26 +1,13 @@
-import { Button, Text, TextArea, useToastState, View } from 'tamagui'
-import { ArrowRight, Command, Send } from '@tamagui/lucide-icons-2'
+import { Button, Text, TextArea, View } from 'tamagui'
+import { Command, Send } from '@tamagui/lucide-icons-2'
 import { useState } from 'react'
 import Groq from 'groq-sdk'
 import { raise } from 'lenix'
 import { useToastController } from 'tamagui'
+import { Kbd } from '@/components/kdb'
 
 const groq = new Groq({ apiKey: process.env.EXPO_PUBLIC_GROQ_API_KEY, dangerouslyAllowBrowser: true })
 const composeId = () => Date.now().toString()
-
-const Kbd = ({ children }) => (
-  <View
-    bg="$color4"
-    p="$2"
-    rounded="$3"
-    borderWidth={1}
-		height='$2.5'
-    borderColor="$borderColor"
-		justify='center'
-  >
-    <Text color='$color06' lineHeight={0}>{children}</Text>
-  </View>
-)
 
 // eslint-disable-next-line max-lines-per-function
 export const Home = () => {
