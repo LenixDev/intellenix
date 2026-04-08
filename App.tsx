@@ -5,9 +5,9 @@ import { Signin } from '~routes/signin'
 
 export default function App() {
 	const theme = useColorScheme()
-  return (
+	return (
 		<TamaguiProvider config={config} defaultTheme={theme ?? 'light'}>
 			<Signin />
 		</TamaguiProvider>
-  );
+	)
 }
