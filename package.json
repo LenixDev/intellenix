@@ -12,12 +12,14 @@
 	},
 	"dependencies": {
 		"@tamagui/config": "2.0.0-rc.36",
+		"@tamagui/lucide-icons-2": "2.0.0-rc.36",
 		"expo": "~54.0.33",
 		"expo-status-bar": "~3.0.9",
 		"lenix": "^1.6.3",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
 		"react-native": "0.81.5",
+		"react-native-svg": "^15.15.4",
 		"react-native-web": "^0.21.2",
 		"tamagui": "2.0.0-rc.36"
 	},

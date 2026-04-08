@@ -79,7 +79,7 @@ export default defineConfig([
 			'@stylistic/exp-list-style': 'warn',
 			'@stylistic/max-len': 'warn',
 			'@stylistic/max-statements-per-line': 'warn',
-			'@stylistic/member-delimiter-style': 'warn',
+			'@stylistic/member-delimiter-style': ['warn', { delimiter: 'none'} ],
 			'@stylistic/multiline-comment-style': 'warn',
 			'@stylistic/multiline-ternary': 'warn',
 			'@stylistic/new-parens': 'warn',
