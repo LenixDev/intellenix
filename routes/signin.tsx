@@ -1,8 +1,8 @@
 import { Button, Paragraph, Separator, Text, View, XStack } from "tamagui";
 
 export const Signin = () => (
-  <View width="100%" justify="center" items="center">
-    <View width="20%" height={"50%"} justify="space-evenly" items="stretch">
+  <View width="100%" height="100%" bg={"$background"} justify="center" items="center">
+    <View width="$20" height={"50%"} justify="space-evenly" items="stretch">
       <Paragraph width={"100%"} text={"center"} marginBlock="$2" size={"$13"}>Sign in</Paragraph>
       <View>
 				<Button theme={"accent"} width={"100%"}>Continue with Google</Button>
