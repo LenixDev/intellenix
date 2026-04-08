@@ -29,7 +29,7 @@ export default defineConfig([
 			}
 		},
 		rules: {
-			// ...(lint.strict as any),
+			...(lint.strict as any),
 			'@stylistic/array-bracket-newline': 'warn',
 			'@stylistic/array-bracket-spacing': 'warn',
 			'@stylistic/array-element-newline': ['warn', 'consistent'],
@@ -123,8 +123,8 @@ export default defineConfig([
 			'@stylistic/type-named-tuple-spacing': 'warn',
 			'@stylistic/wrap-iife': 'warn',
 			'@stylistic/wrap-regex': 'warn',
-			'@stylistic/yield-star-spacing': 'warn',
-		},
+			'@stylistic/yield-star-spacing': 'warn'
+		}
 	},
 	tseslint.configs.recommended,
 	pluginReact.configs.flat['jsx-runtime'],
@@ -132,30 +132,30 @@ export default defineConfig([
 		files: ['**/*.json'],
 		plugins: { json },
 		language: 'json/json',
-		extends: ['json/recommended'],
+		extends: ['json/recommended']
 	},
 	{
 		files: ['**/*.jsonc'],
 		plugins: { json },
 		language: 'json/jsonc',
-		extends: ['json/recommended'],
+		extends: ['json/recommended']
 	},
 	{
 		files: ['**/*.json5'],
 		plugins: { json },
 		language: 'json/json5',
-		extends: ['json/recommended'],
+		extends: ['json/recommended']
 	},
 	{
 		files: ['**/*.md'],
 		plugins: { markdown },
 		language: 'markdown/gfm',
-		extends: ['markdown/recommended'],
+		extends: ['markdown/recommended']
 	},
 	{
 		files: ['**/*.css'],
 		plugins: { css },
 		language: 'css/css',
-		extends: ['css/recommended'],
-	},
+		extends: ['css/recommended']
+	}
 ])
