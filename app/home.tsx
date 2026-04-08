@@ -3,7 +3,7 @@ import { Command, Send } from '@tamagui/lucide-icons-2'
 import { useState } from 'react'
 import Groq from 'groq-sdk'
 import { raise } from 'lenix'
-import { useToastController } from 'tamagui'
+import { toast } from '@tamagui/toast/v2'
 import { Kbd } from '@/components/kdb'
 
 const groq = new Groq({ apiKey: process.env.EXPO_PUBLIC_GROQ_API_KEY, dangerouslyAllowBrowser: true })
@@ -18,7 +18,6 @@ export const Home = () => {
 	}[]>([])
 	const [content, setContent] = useState('')
 	const [aiThinking, setAiThinking] = useState(false)
-	const toast = useToastController()
 
 	const chat = async (request: string) => {
 		try {
@@ -39,9 +38,8 @@ export const Home = () => {
 				role: 'assistant',
 				content: response
 			}])
-			toast.show('Something went wrong')
 		} catch(err) {
-			toast.show('Something went wrong')
+			toast.error('Something went wrong')
 			raise(err)
 		} finally {
 			setAiThinking(false)
@@ -82,11 +80,9 @@ export const Home = () => {
 							return (
 								<View key={id}>
 									<Text
-										p='$2'
 										maxW='90%'
 										self='flex-start'
 										color='$color'
-										text='center'
 									>
 										{content}
 									</Text>

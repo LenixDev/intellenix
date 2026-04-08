@@ -13,6 +13,7 @@
 	"dependencies": {
 		"@tamagui/config": "2.0.0-rc.36",
 		"@tamagui/lucide-icons-2": "2.0.0-rc.36",
+		"@tamagui/toast": "2.0.0-rc.36",
 		"expo": "~54.0.33",
 		"expo-status-bar": "~3.0.9",
 		"groq-sdk": "^1.1.2",
