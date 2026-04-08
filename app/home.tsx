@@ -1,15 +1,65 @@
-import { Button, Text, TextArea, View } from 'tamagui'
-import { ArrowRight } from '@tamagui/lucide-icons-2'
+import { Button, Text, TextArea, useToastState, View } from 'tamagui'
+import { ArrowRight, Command, Send } from '@tamagui/lucide-icons-2'
 import { useState } from 'react'
+import Groq from 'groq-sdk'
+import { raise } from 'lenix'
+import { useToastController } from 'tamagui'
+
+const groq = new Groq({ apiKey: process.env.EXPO_PUBLIC_GROQ_API_KEY, dangerouslyAllowBrowser: true })
+const composeId = () => Date.now().toString()
+
+const Kbd = ({ children }) => (
+  <View
+    bg="$color4"
+    p="$2"
+    rounded="$3"
+    borderWidth={1}
+		height='$2.5'
+    borderColor="$borderColor"
+		justify='center'
+  >
+    <Text color='$color06' lineHeight={0}>{children}</Text>
+  </View>
+)
 
 // eslint-disable-next-line max-lines-per-function
 export const Home = () => {
-	const [conversation, setConversation] = useState<{
+	const [conversations, setConversations] = useState<{
 		id: string
 		role: 'user' | 'assistant'
 		content: string
 	}[]>([])
-	const [input, setInput] = useState('')
+	const [content, setContent] = useState('')
+	const [aiThinking, setAiThinking] = useState(false)
+	const toast = useToastController()
+
+	const chat = async (request: string) => {
+		try {
+			const completion = await groq.chat.completions.create({
+				messages: [
+					{
+						role: 'user',
+						content: request,
+					},
+				],
+				model: "llama-3.3-70b-versatile",
+			})
+			const response = completion.choices[0].message.content
+			if (!response) return raise('No response')
+
+			setConversations(prev =>  [...prev, {
+				id: composeId(),
+				role: 'assistant',
+				content: response
+			}])
+			toast.show('Something went wrong')
+		} catch(err) {
+			toast.show('Something went wrong')
+			raise(err)
+		} finally {
+			setAiThinking(false)
+		}
+	}
 
 	return (
 		<View
@@ -26,7 +76,7 @@ export const Home = () => {
 				gap='$7'
 			>
 				<View width='100%' gap='$5'>
-					{conversation.map(({ id, role, content }) => {
+					{conversations.map(({ id, role, content }) => {
 						if (role === 'user') {
 							return (
 								<View key={id} items='flex-end'>
@@ -35,7 +85,6 @@ export const Home = () => {
 										maxW='90%'
 										color='$background'
 										bg='$colorFocus'
-										text='center'
 										rounded='$3'
 									>
 										{content}
@@ -44,21 +93,20 @@ export const Home = () => {
 							)
 						} else if (role === 'assistant') {
 							return (
-								<View>
+								<View key={id}>
 									<Text
 										p='$2'
 										maxW='90%'
 										self='flex-start'
-										bg='$color002'
 										color='$color'
 										text='center'
-										rounded='$3'
 									>
 										{content}
 									</Text>
 								</View>
 							)
 						}
+						else return null
 					})}
 				</View>
 				<View
@@ -74,24 +122,30 @@ export const Home = () => {
 						paddingBlock='$2.5'
 						style={{ scrollbarWidth: 'none' }}
 						placeholder='Ask Intellenix...'
-						value={input}
-						onChangeText={setInput}
+						value={content}
+						onChangeText={setContent}
 					/>
 					<Button
 						circular
 						chromeless
-						icon={ArrowRight}
+						icon={Send}
 						iconSize='$8'
+						disabled={aiThinking || !content.trim()}
 						onPress={() => {
-							if (!input.trim()) return
-							setConversation(prev => [...prev, {
-								id: Date.now().toString(),
-								content: input,
+							if (!content.trim()) return 
+							setConversations(prev => [...prev, {
+								id: composeId(),
+								content,
 								role: 'user'
 							}])
-							setInput('')
+							chat(content)
+							setContent('')
 						}}
 					/>
+					<Text>Or</Text>
+					<Kbd><Command color='$color06' size='$1' /></Kbd>
+					<Text>+</Text>
+					<Kbd>Enter</Kbd>
 				</View>
 			</View>
 		</View>
