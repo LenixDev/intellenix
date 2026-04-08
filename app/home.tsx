@@ -38,6 +38,7 @@ export const Home = () => {
 				role: 'assistant',
 				content: response
 			}])
+			toast.success('Something went wrong')
 		} catch(err) {
 			toast.error('Something went wrong')
 			raise(err)
