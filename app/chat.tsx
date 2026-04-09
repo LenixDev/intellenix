@@ -5,7 +5,7 @@ import {
 	TextArea,
 	Dialog,
 	Input,
-	View,
+	View
 } from 'tamagui'
 import { Command, Send } from '@tamagui/lucide-icons-2'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -36,7 +36,7 @@ export default function Page() {
 
 	const groq = useMemo(
 		() => new Groq({ apiKey, dangerouslyAllowBrowser: true }),
-		[apiKey],
+		[apiKey]
 	)
 
 	useEffect(() => {
@@ -47,85 +47,87 @@ export default function Page() {
 		}
 
 		window.addEventListener('beforeunload', handler)
-		return () => window.removeEventListener('beforeunload', handler)
+		return () => {
+			window.removeEventListener('beforeunload', handler)
+		}
 	}, [conversations])
 
 	useEffect(() => {
 		const key = prefs.getKey()
-		if (key) {
-			if (key instanceof Promise) {
-				key.then(key => {
-					if (key === null) return
-					setApiKey(key)
-				})
-			} else setApiKey(key)
-		} else setApiKeyDialog(true)
+		if (key === null) {
+			setApiKeyDialog(true)
+			return
+		}
+		if (key instanceof Promise) key.then(key => {
+			if (key === null) return
+			setApiKey(key)
+		}).catch(raise)
+		else setApiKey(key)
 	}, [])
 
-	if (!apiKey.trim() || apiKeyDialog)
-		return (
-			<Dialog open={apiKeyDialog} onOpenChange={setApiKeyDialog}>
-				<Dialog.Portal>
-					<Dialog.Overlay />
-					<Dialog.Content gap='$6'>
-						<View>
-							<Dialog.Title>Enter your AI API Key</Dialog.Title>
-							<Dialog.Description>
-								Please fill in your AI API Key.
-							</Dialog.Description>
-						</View>
-						<Input
-							type='password'
-							secureTextEntry
-							value={apiKey}
-							onChangeText={setApiKey}
-						/>
-						<Button
-							disabled={apiKey.length === 0}
-							onPress={() => {
-								if (typeof apiKey === 'string' && apiKey.length === 0) return
-								const set = prefs.setKey(apiKey)
-								if (set instanceof Promise) {
-									set.then(() => {
-										setApiKeyDialog(false)
-									})
-								}
+	if (!apiKey.trim() || apiKeyDialog) return (
+		<Dialog open={apiKeyDialog} onOpenChange={setApiKeyDialog}>
+			<Dialog.Portal>
+				<Dialog.Overlay />
+				<Dialog.Content gap='$6'>
+					<View>
+						<Dialog.Title>Enter your AI API Key</Dialog.Title>
+						<Dialog.Description>
+							Please fill in your AI API Key.
+						</Dialog.Description>
+					</View>
+					<Input
+						type='password'
+						secureTextEntry
+						value={apiKey}
+						onChangeText={setApiKey}
+					/>
+					<Button
+						disabled={apiKey.length === 0}
+						onPress={() => {
+							if (typeof apiKey === 'string' && apiKey.length === 0) return
+							const set = prefs.setKey(apiKey)
+							if (set instanceof Promise) set.then(() => {
 								setApiKeyDialog(false)
-							}}
-						>
-							Submit
-						</Button>
-					</Dialog.Content>
-				</Dialog.Portal>
-			</Dialog>
-		)
+							}).catch(raise)
+							setApiKeyDialog(false)
+						}}
+					>
+						Submit
+					</Button>
+				</Dialog.Content>
+			</Dialog.Portal>
+		</Dialog>
+	)
 
 	const placeholderRows =
-		content.split('\n').length !== 1 ? content.split('\n').length + 1 : 2
-	const chat = async (request: string) => {
+		content.split('\n').length !== 1
+			? content.split('\n').length + 1
+			: 2
+	const chat = async(request: string) => {
 		setAiThinking(true)
 		try {
 			const completion = await groq.chat.completions.create({
 				messages: [
 					{
 						role: 'user',
-						content: request,
-					},
+						content: request
+					}
 				],
-				model: 'llama-3.3-70b-versatile',
+				model: 'llama-3.3-70b-versatile'
 			})
 			const response = completion.choices[0]?.message.content
-			if (!response) return raise('No response')
+			if (typeof response !== 'string') return raise('No response')
 
 			setConversations(prev => [
 				...prev,
 				{
 					id: composeId(),
 					role: 'assistant',
-					content: response,
-				},
+					content: response
+				}
 			])
-		} catch (err) {
+		} catch(err) {
 			toast.error('Something went wrong')
 			raise(err)
 		} finally {
@@ -139,10 +141,10 @@ export default function Page() {
 			{
 				id: composeId(),
 				content,
-				role: 'user',
-			},
+				role: 'user'
+			}
 		])
-		chat(content)
+		chat(content).catch(raise)
 		setContent('')
 	}
 
@@ -163,34 +165,34 @@ export default function Page() {
 					scrollbarWidth='none'
 					flex={1}
 					justify='flex-end'
-					onContentSizeChange={() =>
-						scrollRef.current?.scrollToEnd({ animated: true })
-					}
+					onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
 				>
 					{conversations.map(({ id, role, content }) => {
-						if (role === 'user') {
-							return (
-								<View key={id} items='flex-end'>
-									<Text
-										p='$2'
-										maxW='90%'
-										color='$colorFocus'
-										bg='$backgroundFocus'
-										rounded='$3'
-									>
-										{content}
-									</Text>
-								</View>
-							)
-						} else if (role === 'assistant') {
-							return (
-								<View key={id}>
-									<Text maxW='90%' self='flex-start' color='$color' mb='$10'>
-										{content}
-									</Text>
-								</View>
-							)
-						} else return null
+						if (role === 'user') return (
+							<View key={id} items='flex-end'>
+								<Text
+									p='$2'
+									maxW='90%'
+									color='$colorFocus'
+									bg='$backgroundFocus'
+									rounded='$3'
+								>
+									{content}
+								</Text>
+							</View>
+						)
+						return (
+							<View key={id}>
+								<Text
+									maxW='90%'
+									self='flex-start'
+									color='$color'
+									mb='$10'
+								>
+									{content}
+								</Text>
+							</View>
+						)
 					})}
 				</ScrollView>
 				<View width='100%' gap='$2'>
@@ -208,7 +210,7 @@ export default function Page() {
 								scrollbarWidth: 'none',
 								resize: 'none',
 								maxHeight: '50vh',
-								scrollPaddingBottom: 10,
+								scrollPaddingBottom: 10
 							}}
 							rows={placeholderRows}
 							autoComplete='on'
@@ -219,7 +221,9 @@ export default function Page() {
 							readOnly={!apiKey}
 							onKeyDown={e => {
 								if (e.key !== 'Enter') return
-								if (isMac ? !e.metaKey : !e.ctrlKey) return
+								if (isMac
+									? !e.metaKey
+									: !e.ctrlKey) return
 								if (aiThinking) return
 								send()
 							}}
@@ -239,9 +243,9 @@ export default function Page() {
 						</Text>
 						<View flexDirection='row' items='center'>
 							<Kbd size={10}>
-								{isMac ?
-									<Command color='$color06' size={10} />
-								:	'Ctrl'}
+								{isMac
+									? <Command color='$color06' size={10} />
+									:	'Ctrl'}
 							</Kbd>
 							<Text>+</Text>
 							<Kbd size={10}>Enter</Kbd>
