@@ -1,6 +1,6 @@
-import { Button, Text, TextArea, View } from 'tamagui'
+import { Button, ScrollView, Text, TextArea, View } from 'tamagui'
 import { Command, Send } from '@tamagui/lucide-icons-2'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Groq from 'groq-sdk'
 import { raise } from 'lenix'
 import { toast } from '@tamagui/toast/v2'
@@ -19,6 +19,10 @@ export default function Page() {
 	}[]>([])
 	const [content, setContent] = useState('')
 	const [aiThinking, setAiThinking] = useState(false)
+
+	const scrollRef = useRef<ScrollView>(null)
+
+	const placeholderRows = content.split('\n').length !== 1 ? content.split('\n').length + 1 : 2
 
 	const chat = async (request: string) => {
 		try {
@@ -58,8 +62,6 @@ export default function Page() {
 		setContent('')
 	}
 
-	const placeholderRows = content.split('\n').length !== 1 ? content.split('\n').length + 1 : 2
-
 	return (
 		<View
 			items='center'
@@ -74,7 +76,13 @@ export default function Page() {
 				pb='$10'
 				gap='$7'
 			>
-				<View width='100%' gap='$5'>
+				<ScrollView
+				  ref={scrollRef}
+					width='100%'
+					gap='$5'
+					scrollbarWidth='none'
+					onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
+				>
 					{conversations.map(({ id, role, content }) => {
 						if (role === 'user') {
 							return (
@@ -105,7 +113,7 @@ export default function Page() {
 						}
 						else return null
 					})}
-				</View>
+				</ScrollView>
 				<View width='100%' gap='$2'>
 					<View
 						width='100%'
