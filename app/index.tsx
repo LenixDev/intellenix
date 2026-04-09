@@ -8,6 +8,7 @@ import { Kbd } from '@/components/kdb'
 
 const groq = new Groq({ apiKey: process.env.EXPO_PUBLIC_GROQ_API_KEY, dangerouslyAllowBrowser: true })
 const composeId = () => Date.now().toString()
+const isMac = navigator.platform.toUpperCase().includes('MAC')
 
 // eslint-disable-next-line max-lines-per-function
 export default function Page() {
@@ -45,6 +46,19 @@ export default function Page() {
 			setAiThinking(false)
 		}
 	}
+
+	const send = () => {
+		if (!content.trim()) return
+		setConversations(prev => [...prev, {
+			id: composeId(),
+			content,
+			role: 'user'
+		}])
+		chat(content)
+		setContent('')
+	}
+
+	const placeholderRows = content.split('\n').length !== 1 ? content.split('\n').length + 1 : 2
 
 	return (
 		<View
@@ -92,43 +106,51 @@ export default function Page() {
 						else return null
 					})}
 				</View>
-				<View
-					width='100%'
-					flexDirection='row'
-					justify='center'
-					items='center'
-					gap='$2'
-				>
-					<TextArea
-						flex={1}
-						height='$true'
-						paddingBlock='$2.5'
-						style={{ scrollbarWidth: 'none' }}
-						placeholder='Ask Intellenix...'
-						value={content}
-						onChangeText={setContent}
-					/>
-					<Button
-						circular
-						chromeless
-						icon={Send}
-						iconSize='$8'
-						disabled={aiThinking || !content.trim()}
-						onPress={() => {
-							if (!content.trim()) return 
-							setConversations(prev => [...prev, {
-								id: composeId(),
-								content,
-								role: 'user'
-							}])
-							chat(content)
-							setContent('')
-						}}
-					/>
-					<Text>Or</Text>
-					<Kbd><Command color='$color06' size='$1' /></Kbd>
-					<Text>+</Text>
-					<Kbd>Enter</Kbd>
+				<View width='100%' gap='$2'>
+					<View
+						width='100%'
+						flexDirection='row'
+						justify='center'
+						items='center'
+						gap='$2'
+					>
+						<TextArea
+							flex={1}
+							paddingBlock='$2.5'
+							style={{ scrollbarWidth: 'none', resize: 'none', maxHeight: '50vh', scrollPaddingBottom: 10 }}
+							rows={placeholderRows}
+							autoComplete='on'
+							autoCorrect
+							placeholder='Ask Intellenix...'
+							value={content}
+							onChangeText={setContent}
+							onKeyDown={(e) => {
+								if (e.key !== 'Enter') return
+  							if (isMac ? !e.metaKey : !e.ctrlKey) return
+								if (aiThinking) return
+								send()
+							}}
+						/>
+						<Button
+							circular
+							chromeless
+							icon={Send}
+							iconSize='$8'
+							disabled={aiThinking || !content.trim()}
+							onPress={send}
+						/>
+					</View>
+					<View flexDirection='row' gap='$1'>
+						<Text color='$color06' fontSize='$1'>Press</Text>
+						<View flexDirection='row' items='center'>
+							<Kbd size={10}>
+							{isMac ? <Command color='$color06' size={10} /> : 'Ctrl'}
+							</Kbd>
+							<Text>+</Text>
+							<Kbd size={10}>Enter</Kbd>
+						</View>
+						<Text color='$color06' fontSize='$1'>to send</Text>
+					</View>
 				</View>
 			</View>
 		</View>
