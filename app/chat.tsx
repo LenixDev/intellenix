@@ -18,7 +18,7 @@ import { prefs } from '@/storage'
 const isMac = navigator.platform.toUpperCase().includes('MAC')
 const composeId = () => Date.now().toString()
 
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, max-statements
 export default function Page() {
 	const [conversations, setConversations] = useState<
 		{
@@ -42,8 +42,8 @@ export default function Page() {
 	useEffect(() => {
 		if (conversations.length === 0) return
 
-		const handler = (e: BeforeUnloadEvent) => {
-			e.preventDefault()
+		const handler = (event: BeforeUnloadEvent) => {
+			event.preventDefault()
 		}
 
 		window.addEventListener('beforeunload', handler)
