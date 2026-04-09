@@ -1,6 +1,6 @@
 import { Button, ScrollView, Text, TextArea, View } from 'tamagui'
 import { Command, Send } from '@tamagui/lucide-icons-2'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Groq from 'groq-sdk'
 import { raise } from 'lenix'
 import { toast } from '@tamagui/toast/v2'
@@ -63,6 +63,17 @@ export default function Page() {
 		setContent('')
 	}
 
+	useEffect(() => {
+		if (conversations.length === 0) return
+	
+		const handler = (e: BeforeUnloadEvent) => {
+			e.preventDefault()
+		}
+	
+		window.addEventListener('beforeunload', handler)
+		return () => window.removeEventListener('beforeunload', handler)
+	}, [conversations])
+
 	return (
 		<View
 			items='center'
@@ -82,6 +93,8 @@ export default function Page() {
 					width='100%'
 					gap='$5'
 					scrollbarWidth='none'
+					flex={1}
+					justify='flex-end'
 					onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
 				>
 					{conversations.map(({ id, role, content }) => {
@@ -91,8 +104,8 @@ export default function Page() {
 									<Text
 										p='$2'
 										maxW='90%'
-										color='$background'
-										bg='$colorFocus'
+										color='$colorFocus'
+										bg='$backgroundFocus'
 										rounded='$3'
 									>
 										{content}
@@ -106,6 +119,7 @@ export default function Page() {
 										maxW='90%'
 										self='flex-start'
 										color='$color'
+										mb='$10'
 									>
 										{content}
 									</Text>
