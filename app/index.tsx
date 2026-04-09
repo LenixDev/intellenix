@@ -23,8 +23,9 @@ export default function Page() {
 	const scrollRef = useRef<ScrollView>(null)
 
 	const placeholderRows = content.split('\n').length !== 1 ? content.split('\n').length + 1 : 2
-
+	
 	const chat = async (request: string) => {
+		setAiThinking(true)
 		try {
 			const completion = await groq.chat.completions.create({
 				messages: [
