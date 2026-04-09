@@ -11,18 +11,8 @@ export default function Page() {
 			justify='center'
 			items='center'
 		>
-			<View
-				width='$20'
-				height='50%'
-				justify='space-evenly'
-				items='stretch'
-			>
-				<Paragraph
-					width='100%'
-					text='center'
-					marginBlock='$2'
-					size='$13'
-				>
+			<View width='$20' height='50%' justify='space-evenly' items='stretch'>
+				<Paragraph width='100%' text='center' marginBlock='$2' size='$13'>
 					Sign in
 				</Paragraph>
 				<View>
@@ -45,7 +35,9 @@ export default function Page() {
 						onPress={() => {
 							router.replace('/chat')
 						}}
-					>Continue as Guest</Button>
+					>
+						Continue as Guest
+					</Button>
 				</View>
 			</View>
 		</View>
