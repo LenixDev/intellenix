@@ -8,7 +8,8 @@
 		"ios": "expo start --ios",
 		"web": "expo start --web",
 		"format": "pnpm exec prettier . --write",
-		"lint": "pnpm exec eslint ."
+		"lint": "pnpm exec eslint .",
+		"build": "npx expo export --platform web"
 	},
 	"dependencies": {
 		"@tamagui/config": "2.0.0-rc.38",
