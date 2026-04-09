@@ -24,7 +24,7 @@
 			"predictiveBackGestureEnabled": false
 		},
 		"web": {
-			"favicon": "https://lenix.dev/favicon.svg"
+			"favicon": "./assets/favicon.svg"
 		},
 		"plugins": ["expo-router"]
 	}

@@ -79,15 +79,18 @@ export default defineConfig([
 			'@stylistic/exp-list-style': 'warn',
 			'@stylistic/max-len': 'warn',
 			'@stylistic/max-statements-per-line': 'warn',
-			'@stylistic/member-delimiter-style': ['error', {
-				multiline: {
-					delimiter: 'none'
+			'@stylistic/member-delimiter-style': [
+				'error',
+				{
+					multiline: {
+						delimiter: 'none',
+					},
+					singleline: {
+						delimiter: 'semi',
+						requireLast: false,
+					},
 				},
-				singleline: {
-					delimiter: 'semi',
-					requireLast: false
-				}
-			}],
+			],
 			'@stylistic/multiline-comment-style': 'warn',
 			'@stylistic/multiline-ternary': 'warn',
 			'@stylistic/new-parens': 'warn',
