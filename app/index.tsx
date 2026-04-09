@@ -6,7 +6,7 @@ import { raise } from 'lenix'
 import { toast } from '@tamagui/toast/v2'
 import { Kbd } from '@/components/kdb'
 
-const groq = new Groq({ apiKey: process.env.EXPO_PUBLIC_GROQ_API_KEY, dangerouslyAllowBrowser: true })
+const groq = new Groq({ apiKey: process.env['EXPO_PUBLIC_GROQ_API_KEY'], dangerouslyAllowBrowser: true })
 const composeId = () => Date.now().toString()
 const isMac = navigator.platform.toUpperCase().includes('MAC')
 
@@ -36,7 +36,7 @@ export default function Page() {
 				],
 				model: "llama-3.3-70b-versatile",
 			})
-			const response = completion.choices[0].message.content
+			const response = completion.choices[0]?.message.content
 			if (!response) return raise('No response')
 
 			setConversations(prev =>  [...prev, {
@@ -147,7 +147,7 @@ export default function Page() {
 							placeholder='Ask Intellenix...'
 							value={content}
 							onChangeText={setContent}
-							onKeyDown={(e) => {
+							onKeyDown={e => {
 								if (e.key !== 'Enter') return
   							if (isMac ? !e.metaKey : !e.ctrlKey) return
 								if (aiThinking) return
