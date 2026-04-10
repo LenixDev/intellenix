@@ -1,19 +1,20 @@
 import {
 	Button,
-	ScrollView,
-	Text,
-	TextArea,
-	Dialog,
-	Input,
+	type ScrollView,
 	View
 } from 'tamagui'
-import { Command, Send } from '@tamagui/lucide-icons-2'
+import { SlidersHorizontal } from '@tamagui/lucide-icons-2'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Groq from 'groq-sdk'
 import { raise } from 'lenix'
 import { toast } from '@tamagui/toast/v2'
-import { Kbd } from '@/components/kdb'
 import { prefs } from '@/storage'
+import { Conversation } from '@/components/chat/conversation'
+import { Api } from '@/components/chat/api'
+import { Message } from '@/components/chat/message'
+import { Send } from '@/components/chat/send'
+import { Kdb } from '@/components/chat/kdb'
+import { Preferences } from '@/components/chat/preferences'
 
 const isMac = navigator.platform.toUpperCase().includes('MAC')
 const composeId = () => Date.now().toString()
@@ -66,44 +67,16 @@ export default function Page() {
 	}, [])
 
 	if (!apiKey.trim() || apiKeyDialog) return (
-		<Dialog open={apiKeyDialog} onOpenChange={setApiKeyDialog}>
-			<Dialog.Portal>
-				<Dialog.Overlay />
-				<Dialog.Content gap='$6'>
-					<View>
-						<Dialog.Title>Enter your AI API Key</Dialog.Title>
-						<Dialog.Description>
-							Please fill in your AI API Key.
-						</Dialog.Description>
-					</View>
-					<Input
-						type='password'
-						secureTextEntry
-						value={apiKey}
-						onChangeText={setApiKey}
-					/>
-					<Button
-						disabled={apiKey.length === 0}
-						onPress={() => {
-							if (typeof apiKey === 'string' && apiKey.length === 0) return
-							const set = prefs.setKey(apiKey)
-							if (set instanceof Promise) set.then(() => {
-								setApiKeyDialog(false)
-							}).catch(raise)
-							setApiKeyDialog(false)
-						}}
-					>
-						Submit
-					</Button>
-				</Dialog.Content>
-			</Dialog.Portal>
-		</Dialog>
+		<Api
+			{...{
+				apiKey,
+				setApiKey,
+				apiKeyDialog,
+				setApiKeyDialog
+			}}
+		/>
 	)
 
-	const placeholderRows =
-		content.split('\n').length !== 1
-			? content.split('\n').length + 1
-			: 2
 	const chat = async(request: string) => {
 		setAiThinking(true)
 		try {
@@ -158,43 +131,7 @@ export default function Page() {
 				pb='$10'
 				gap='$7'
 			>
-				<ScrollView
-					ref={scrollRef}
-					width='100%'
-					gap='$5'
-					scrollbarWidth='none'
-					flex={1}
-					justify='flex-end'
-					onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
-				>
-					{conversations.map(({ id, role, content }) => {
-						if (role === 'user') return (
-							<View key={id} items='flex-end'>
-								<Text
-									p='$2'
-									maxW='90%'
-									color='$colorFocus'
-									bg='$backgroundFocus'
-									rounded='$3'
-								>
-									{content}
-								</Text>
-							</View>
-						)
-						return (
-							<View key={id}>
-								<Text
-									maxW='90%'
-									self='flex-start'
-									color='$color'
-									mb='$10'
-								>
-									{content}
-								</Text>
-							</View>
-						)
-					})}
-				</ScrollView>
+				<Conversation {...{ conversations, scrollRef }} />
 				<View width='100%' gap='$2'>
 					<View
 						width='100%'
@@ -203,56 +140,20 @@ export default function Page() {
 						items='center'
 						gap='$2'
 					>
-						<TextArea
-							flex={1}
-							paddingBlock='$2.5'
-							style={{
-								scrollbarWidth: 'none',
-								resize: 'none',
-								maxHeight: '50vh',
-								scrollPaddingBottom: 10
-							}}
-							rows={placeholderRows}
-							autoComplete='on'
-							autoCorrect
-							placeholder='Ask Intellenix...'
-							value={content}
-							onChangeText={setContent}
-							readOnly={!apiKey}
-							onKeyDown={e => {
-								if (e.key !== 'Enter') return
-								if (isMac
-									? !e.metaKey
-									: !e.ctrlKey) return
-								if (aiThinking) return
-								send()
+						<Message
+							{...{
+								content,
+								setContent,
+								send,
+								aiThinking,
+								apiKey,
+								isMac
 							}}
 						/>
-						<Button
-							circular
-							chromeless
-							icon={Send}
-							iconSize='$8'
-							disabled={aiThinking || !content.trim()}
-							onPress={send}
-						/>
+						<Send {...{ content, send, aiThinking }} />
 					</View>
-					<View flexDirection='row' gap='$1'>
-						<Text color='$color06' fontSize='$1'>
-							Press
-						</Text>
-						<View flexDirection='row' items='center'>
-							<Kbd size={10}>
-								{isMac
-									? <Command color='$color06' size={10} />
-									:	'Ctrl'}
-							</Kbd>
-							<Text>+</Text>
-							<Kbd size={10}>Enter</Kbd>
-						</View>
-						<Text color='$color06' fontSize='$1'>
-							to send
-						</Text>
+					<View flexDirection='row' justify='space-between'>
+						<Kdb {...{ isMac }} />
 					</View>
 				</View>
 			</View>

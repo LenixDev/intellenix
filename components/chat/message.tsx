@@ -1,0 +1,50 @@
+import { TextArea } from 'tamagui'
+
+export const Message = ({
+	content,
+	setContent,
+	send,
+	aiThinking,
+	apiKey,
+	isMac
+}: {
+	content: string
+	setContent: (content: string) => void
+	send: () => void
+	aiThinking: boolean
+	apiKey: string
+	isMac: boolean
+}) => {
+	const placeholderRows =
+		content.split('\n').length === 1
+			? 2
+			: content.split('\n').length + 1
+
+	return (
+		<TextArea
+			flex={1}
+			paddingBlock='$2.5'
+			style={{
+				scrollbarWidth: 'none',
+				resize: 'none',
+				maxHeight: '50vh',
+				scrollPaddingBottom: 10
+			}}
+			rows={placeholderRows}
+			autoComplete='on'
+			autoCorrect
+			placeholder='Ask Intellenix...'
+			value={content}
+			onChangeText={setContent}
+			readOnly={!apiKey}
+			onKeyDown={e => {
+				if (e.key !== 'Enter') return
+				if (isMac
+					? !e.metaKey
+					: !e.ctrlKey) return
+				if (aiThinking) return
+				send()
+			}}
+		/>
+	)
+}
