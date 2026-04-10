@@ -128,7 +128,6 @@ export default function Page() {
 				height='100%'
 				items='center'
 				justify='flex-end'
-				gap='$2'
 				pb='$5'
 			>
 				<Conversation {...{ conversations, scrollRef }} />
@@ -146,7 +145,6 @@ export default function Page() {
 						flexDirection='row'
 						justify='center'
 						items='flex-end'
-						gap='$2'
 					>
 						<Message
 							{...{

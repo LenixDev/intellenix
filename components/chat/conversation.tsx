@@ -14,7 +14,7 @@ export const Conversation = ({
 	<ScrollView
 		ref={scrollRef}
 		width='100%'
-		gap='$5'
+		px='$5'
 		scrollbarWidth='none'
 		flex={1}
 		justify='flex-end'
@@ -27,8 +27,9 @@ export const Conversation = ({
 						p='$2'
 						maxW='90%'
 						color='$colorFocus'
-						bg='$backgroundFocus'
-						rounded='$3'
+						bg='$color02'
+						rounded='$5'
+						my='$5'
 					>
 						{content}
 					</Text>
@@ -40,7 +41,7 @@ export const Conversation = ({
 						maxW='90%'
 						self='flex-start'
 						color='$color'
-						mb='$10'
+						my='$5'
 					>
 						{content}
 					</Text>
