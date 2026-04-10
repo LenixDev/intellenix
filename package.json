@@ -37,14 +37,14 @@
 		"@eslint/json": "^1.2.0",
 		"@eslint/markdown": "^8.0.1",
 		"@stylistic/eslint-plugin": "^5.10.0",
-		"@types/react": "~19.1.0",
+		"@types/react": "~19.1.17",
 		"eslint": "^10.2.0",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-plugin-react": "^7.37.5",
 		"globals": "^17.4.0",
 		"jiti": "^2.6.1",
 		"prettier": "3.8.1",
-		"typescript": "~5.9.2",
+		"typescript": "~5.9.3",
 		"typescript-eslint": "^8.58.1"
 	},
 	"private": true
