@@ -1,12 +1,12 @@
-import { prefs } from "@/storage"
-import { raise } from "lenix"
-import { Button, Dialog, Input, View } from "tamagui"
+import { prefs } from '@/storage'
+import { raise } from 'lenix'
+import { Button, Dialog, Input, View } from 'tamagui'
 
 export const Api = ({
 	apiKey,
 	setApiKey,
 	apiKeyDialog,
-	setApiKeyDialog
+	setApiKeyDialog,
 }: {
 	apiKey: string
 	setApiKey: (apiKey: string) => void
@@ -34,9 +34,12 @@ export const Api = ({
 					onPress={() => {
 						if (typeof apiKey === 'string' && apiKey.length === 0) return
 						const set = prefs.setKey(apiKey)
-						if (set instanceof Promise) set.then(() => {
-							setApiKeyDialog(false)
-						}).catch(raise)
+						if (set instanceof Promise)
+							set
+								.then(() => {
+									setApiKeyDialog(false)
+								})
+								.catch(raise)
 						setApiKeyDialog(false)
 					}}
 				>

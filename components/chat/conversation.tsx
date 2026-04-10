@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from "tamagui"
+import { ScrollView, Text, View } from 'tamagui'
 
 export const Conversation = ({
 	conversations,
@@ -18,7 +18,9 @@ export const Conversation = ({
 		scrollbarWidth='none'
 		flex={1}
 		justify='flex-end'
-		onContentSizeChange={() => { scrollRef.current?.scrollToEnd({ animated: true }) }}
+		onContentSizeChange={() => {
+			scrollRef.current?.scrollToEnd({ animated: true })
+		}}
 	>
 		{conversations.map(({ id, role, content }) => {
 			if (role === 'user') return (
@@ -29,7 +31,7 @@ export const Conversation = ({
 						color='$colorFocus'
 						bg='$color02'
 						rounded='$5'
-						my='$5'
+						my='$10'
 					>
 						{content}
 					</Text>
@@ -41,7 +43,6 @@ export const Conversation = ({
 						maxW='90%'
 						self='flex-start'
 						color='$color'
-						my='$5'
 					>
 						{content}
 					</Text>

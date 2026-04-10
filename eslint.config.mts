@@ -15,18 +15,18 @@ export default defineConfig([
 		files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
 		plugins: {
 			js,
-			'@stylistic': stylistic
+			'@stylistic': stylistic,
 		},
 		extends: ['js/recommended', prettier],
 		languageOptions: {
 			globals: {
 				...globals.browser,
-				...globals.node
+				...globals.node,
 			},
 			parserOptions: {
 				projectService: true,
-				tsconfigRootDir: import.meta.dirname
-			}
+				tsconfigRootDir: import.meta.dirname,
+			},
 		},
 		rules: {
 			...(lint.strict as any),
@@ -83,13 +83,13 @@ export default defineConfig([
 				'error',
 				{
 					multiline: {
-						delimiter: 'none'
+						delimiter: 'none',
 					},
 					singleline: {
 						delimiter: 'semi',
-						requireLast: false
-					}
-				}
+						requireLast: false,
+					},
+				},
 			],
 			'@stylistic/multiline-comment-style': 'warn',
 			'@stylistic/multiline-ternary': 'warn',
@@ -109,7 +109,10 @@ export default defineConfig([
 			'@stylistic/nonblock-statement-body-position': 'warn',
 			'@stylistic/object-curly-newline': 'warn',
 			'@stylistic/object-curly-spacing': ['warn', 'always'],
-			'@stylistic/object-property-newline': ['warn', { allowAllPropertiesOnSameLine: true }],
+			'@stylistic/object-property-newline': [
+				'warn',
+				{ allowAllPropertiesOnSameLine: true },
+			],
 			'@stylistic/one-var-declaration-per-line': 'warn',
 			'@stylistic/operator-linebreak': 'warn',
 			'@stylistic/padded-blocks': ['warn', 'never'],
@@ -134,8 +137,8 @@ export default defineConfig([
 			'@stylistic/type-named-tuple-spacing': 'warn',
 			'@stylistic/wrap-iife': 'warn',
 			'@stylistic/wrap-regex': 'warn',
-			'@stylistic/yield-star-spacing': 'warn'
-		}
+			'@stylistic/yield-star-spacing': 'warn',
+		},
 	},
 	tseslint.configs.recommended,
 	pluginReact.configs.flat['jsx-runtime'],
@@ -143,30 +146,30 @@ export default defineConfig([
 		files: ['**/*.json'],
 		plugins: { json },
 		language: 'json/json',
-		extends: ['json/recommended']
+		extends: ['json/recommended'],
 	},
 	{
 		files: ['**/*.jsonc'],
 		plugins: { json },
 		language: 'json/jsonc',
-		extends: ['json/recommended']
+		extends: ['json/recommended'],
 	},
 	{
 		files: ['**/*.json5'],
 		plugins: { json },
 		language: 'json/json5',
-		extends: ['json/recommended']
+		extends: ['json/recommended'],
 	},
 	{
 		files: ['**/*.md'],
 		plugins: { markdown },
 		language: 'markdown/gfm',
-		extends: ['markdown/recommended']
+		extends: ['markdown/recommended'],
 	},
 	{
 		files: ['**/*.css'],
 		plugins: { css },
 		language: 'css/css',
-		extends: ['css/recommended']
-	}
+		extends: ['css/recommended'],
+	},
 ])
