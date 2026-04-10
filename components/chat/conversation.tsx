@@ -1,5 +1,6 @@
 import { ScrollView, Text, View } from 'tamagui'
 
+// eslint-disable-next-line max-lines-per-function
 export const Conversation = ({
 	conversations,
 	scrollRef
@@ -26,7 +27,8 @@ export const Conversation = ({
 			if (role === 'user') return (
 				<View key={id} items='flex-end'>
 					<Text
-						p='$2'
+						py='$2'
+						px='$3'
 						maxW='90%'
 						color='$colorFocus'
 						bg='$color02'

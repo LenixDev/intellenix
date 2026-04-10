@@ -4,7 +4,7 @@ import { Send as ISend } from '@tamagui/lucide-icons-2'
 export const Send = ({
 	content,
 	send,
-	aiThinking,
+	aiThinking
 }: {
 	content: string
 	send: () => void
