@@ -128,16 +128,24 @@ export default function Page() {
 				height='100%'
 				items='center'
 				justify='flex-end'
-				pb='$10'
-				gap='$7'
+				gap='$2'
+				pb='$5'
 			>
 				<Conversation {...{ conversations, scrollRef }} />
-				<View width='100%' gap='$2'>
+				<View
+					width='100%'
+					bg='$color001'
+					rounded='$8'
+					px='$4'
+					py='$3'
+					justify='center'
+					border='1px solid $color01'
+				>
 					<View
 						width='100%'
 						flexDirection='row'
 						justify='center'
-						items='center'
+						items='flex-end'
 						gap='$2'
 					>
 						<Message
@@ -150,13 +158,19 @@ export default function Page() {
 								isMac
 							}}
 						/>
+					</View>
+					<View
+						flexDirection='row'
+						justify='flex-end'
+						gap='$2'
+					>
+						<Button chromeless icon={SlidersHorizontal} />
 						<Send {...{ content, send, aiThinking }} />
 					</View>
-					<View flexDirection='row' justify='space-between'>
-						<Kdb {...{ isMac }} />
-					</View>
 				</View>
+				<Kdb {...{ isMac }} />
 			</View>
+			<Preferences />
 		</View>
 	)
 }

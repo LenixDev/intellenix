@@ -14,7 +14,6 @@ export const Send = ({
 		circular
 		chromeless
 		icon={ISend}
-		iconSize='$8'
 		disabled={aiThinking || !content.trim()}
 		onPress={send}
 	/>

@@ -1,5 +1,6 @@
 import { TextArea } from 'tamagui'
 
+// eslint-disable-next-line max-lines-per-function
 export const Message = ({
 	content,
 	setContent,
@@ -22,14 +23,22 @@ export const Message = ({
 
 	return (
 		<TextArea
-			flex={1}
-			paddingBlock='$2.5'
 			style={{
 				scrollbarWidth: 'none',
 				resize: 'none',
 				maxHeight: '50vh',
 				scrollPaddingBottom: 10
 			}}
+			focusStyle={{
+				borderWidth: 0,
+				outlineWidth: 0,
+			}}
+			rounded={0}
+			px={0}
+			flex={1}
+			paddingBlock='$2.5'
+			bg='transparent'
+			borderWidth={0}
 			rows={placeholderRows}
 			autoComplete='on'
 			autoCorrect
