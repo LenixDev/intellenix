@@ -137,7 +137,6 @@ export default function Page() {
 					py='$3'
 					justify='center'
 					border='1px solid $color01'
-					mt='$10'
 				>
 					<View
 						width='100%'
