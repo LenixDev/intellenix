@@ -4,7 +4,7 @@ import { animations } from '@tamagui/config/v5-css'
 
 export const config = createTamagui({
 	...defaultConfig,
-	animations,
+	animations
 })
 
 type OurConfig = typeof config

@@ -1,8 +1,8 @@
 import { prefs } from '@/storage'
 import { Check, ChevronDown, ChevronUp } from '@tamagui/lucide-icons-2'
 import { toast } from '@tamagui/toast/v2'
-import Groq from 'groq-sdk'
-import { Model } from 'groq-sdk/resources'
+import type Groq from 'groq-sdk'
+import type { Model } from 'groq-sdk/resources'
 import { raise } from 'lenix'
 import { useEffect, useMemo, useState } from 'react'
 import {
@@ -13,7 +13,7 @@ import {
 	Select,
 	Sheet,
 	View,
-	YStack,
+	YStack
 } from 'tamagui'
 import { LinearGradient } from 'tamagui/linear-gradient'
 
@@ -35,13 +35,12 @@ const ApiInput = () => {
 				disabled={key.length === 0}
 				onPress={() => {
 					const pref = prefs.setKey(key)
-					if (pref instanceof Promise)
-						pref
-							.then(() => {
-								toast.success('API Key updated')
-								setKey('')
-							})
-							.catch(raise)
+					if (pref instanceof Promise) pref.
+						then(() => {
+							toast.success('API Key updated')
+							setKey('')
+						}).
+						catch(raise)
 					else {
 						toast.success('API Key updated')
 						setKey('')
@@ -58,7 +57,7 @@ const ApiInput = () => {
 export const Preferences = ({
 	open,
 	setOpen,
-	groq,
+	groq
 }: {
 	open: boolean
 	setOpen: (open: boolean) => void
@@ -71,12 +70,12 @@ export const Preferences = ({
 	const getItemLabel = (value: string) => labelMap.get(value)
 
 	useEffect(() => {
-		groq.models
-			.list()
-			.then(({ data }) => {
+		groq.models.
+			list().
+			then(({ data }) => {
 				setItems(data)
-			})
-			.catch(raise)
+			}).
+			catch(raise)
 	}, [])
 
 	return (
@@ -133,36 +132,33 @@ export const Preferences = ({
 								<Select.Group>
 									<Select.Label fontWeight='100'>Models</Select.Label>
 									{useMemo(
-										() =>
-											items.map((item, iter) => (
-												<Select.Item
-													index={iter}
-													key={item.id}
-													value={item.id.toLowerCase()}
-												>
-													<View>
-														<Select.ItemText>{item.id}</Select.ItemText>
-														<View flexDirection='row'>
-															<Select.ItemText color='$color7' fontSize='$2'>
-																{item.owned_by}&nbsp;
-															</Select.ItemText>
-															<Select.ItemText color='$color7' fontSize='$2'>
-																on{' '}
-																{new Date(
-																	item.created * 1000,
-																).toLocaleDateString(undefined, {
-																	year: 'numeric',
-																	month: 'short',
-																})}
-															</Select.ItemText>
-														</View>
+										() => items.map((item, iter) => (
+											<Select.Item
+												index={iter}
+												key={item.id}
+												value={item.id.toLowerCase()}
+											>
+												<View>
+													<Select.ItemText>{item.id}</Select.ItemText>
+													<View flexDirection='row'>
+														<Select.ItemText color='$color7' fontSize='$2'>
+															{item.owned_by}&nbsp;
+														</Select.ItemText>
+														<Select.ItemText color='$color7' fontSize='$2'>
+															on{' '}
+															{new Date(item.created * 1000).toLocaleDateString(undefined, {
+																year: 'numeric',
+																month: 'short'
+															})}
+														</Select.ItemText>
 													</View>
-													<Select.ItemIndicator marginLeft='auto'>
-														<Check size={16} />
-													</Select.ItemIndicator>
-												</Select.Item>
-											)),
-										[items],
+												</View>
+												<Select.ItemIndicator marginLeft='auto'>
+													<Check size={16} />
+												</Select.ItemIndicator>
+											</Select.Item>
+										)),
+										[items]
 									)}
 								</Select.Group>
 								<YStack

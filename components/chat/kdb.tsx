@@ -9,9 +9,9 @@ export const Kdb = ({ isMac }: { isMac: boolean }) => (
 		</Text>
 		<View flexDirection='row' items='center'>
 			<Kbd size={10}>
-				{isMac ?
-					<Command color='$color06' size={10} />
-				:	'Ctrl'}
+				{isMac
+					? <Command color='$color06' size={10} />
+					: 'Ctrl'}
 			</Kbd>
 			<Text>+</Text>
 			<Kbd size={10}>Enter</Kbd>

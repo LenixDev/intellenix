@@ -7,7 +7,7 @@ export const Message = ({
 	send,
 	aiThinking,
 	apiKey,
-	isMac,
+	isMac
 }: {
 	content: string
 	setContent: (content: string) => void
@@ -17,7 +17,9 @@ export const Message = ({
 	isMac: boolean
 }) => {
 	const placeholderRows =
-		content.split('\n').length === 1 ? 2 : content.split('\n').length + 1
+		content.split('\n').length === 1
+			? 2
+			: content.split('\n').length + 1
 
 	return (
 		<TextArea
@@ -25,11 +27,11 @@ export const Message = ({
 				scrollbarWidth: 'none',
 				resize: 'none',
 				maxHeight: '50vh',
-				scrollPaddingBottom: 10,
+				scrollPaddingBottom: 10
 			}}
 			focusStyle={{
 				borderWidth: 0,
-				outlineWidth: 0,
+				outlineWidth: 0
 			}}
 			rounded={0}
 			px={0}
@@ -46,7 +48,9 @@ export const Message = ({
 			readOnly={!apiKey}
 			onKeyDown={e => {
 				if (e.key !== 'Enter') return
-				if (isMac ? !e.metaKey : !e.ctrlKey) return
+				if (isMac
+					? !e.metaKey
+					: !e.ctrlKey) return
 				if (aiThinking) return
 				send()
 			}}
