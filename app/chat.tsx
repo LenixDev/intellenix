@@ -28,6 +28,7 @@ export default function Page() {
 	const [aiThinking, setAiThinking] = useState(false)
 	const [apiKey, setApiKey] = useState<string>('')
 	const [apiKeyDialog, setApiKeyDialog] = useState(false)
+	const [sheetOpen, setSheetOpen] = useState(false)
 
 	const scrollRef = useRef<ScrollView>(null)
 
@@ -156,13 +157,19 @@ export default function Page() {
 						/>
 					</View>
 					<View flexDirection='row' justify='flex-end' gap='$2'>
-						<Button chromeless icon={SlidersHorizontal} />
+						<Button
+							chromeless
+							icon={SlidersHorizontal}
+							onPress={() => {
+								setSheetOpen(true)
+							}}
+						/>
 						<Send {...{ content, send, aiThinking }} />
 					</View>
 				</View>
 				<Kdb {...{ isMac }} />
 			</View>
-			<Preferences />
+			<Preferences open={sheetOpen} setOpen={setSheetOpen} />
 		</View>
 	)
 }
