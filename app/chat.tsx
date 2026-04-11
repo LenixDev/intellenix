@@ -169,7 +169,7 @@ export default function Page() {
 				</View>
 				<Kdb {...{ isMac }} />
 			</View>
-			<Preferences open={sheetOpen} setOpen={setSheetOpen} />
+			<Preferences open={sheetOpen} setOpen={setSheetOpen} groq={groq} />
 		</View>
 	)
 }
