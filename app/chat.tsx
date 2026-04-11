@@ -11,6 +11,7 @@ import { Message } from '@/components/chat/message'
 import { Send } from '@/components/chat/send'
 import { Kdb } from '@/components/chat/kdb'
 import { Preferences } from '@/components/chat/preferences'
+import { defaultModel } from '@/constants'
 
 const isMac = navigator.platform.toUpperCase().includes('MAC')
 const composeId = () => Date.now().toString()
@@ -86,7 +87,7 @@ export default function Page() {
 						content: request
 					}
 				],
-				model: 'llama-3.3-70b-versatile'
+				model: defaultModel
 			})
 			const response = completion.choices[0]?.message.content
 			if (typeof response !== 'string') return raise('No response')
