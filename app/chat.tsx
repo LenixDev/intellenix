@@ -141,7 +141,7 @@ export default function Page() {
 					bg='$color4'
 					rounded='$8'
 					px='$4'
-					py='$3'
+					py='$2'
 					justify='center'
 					border='1px solid $color6'
 				>
@@ -168,6 +168,10 @@ export default function Page() {
 							icon={SlidersHorizontal}
 							onPress={() => {
 								setSheetOpen(true)
+							}}
+							hoverStyle={{
+								borderColor: '$color6',
+								bg: '$background08'
 							}}
 						/>
 						<Tasks />

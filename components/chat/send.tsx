@@ -16,5 +16,9 @@ export const Send = ({
 		icon={ISend}
 		disabled={aiThinking || !content.trim()}
 		onPress={send}
+		hoverStyle={{
+			borderColor: '$color6',
+			bg: '$background08'
+		}}
 	/>
 )
