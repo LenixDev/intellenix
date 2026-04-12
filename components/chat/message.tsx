@@ -18,7 +18,7 @@ export const Message = ({
 }) => {
 	const placeholderRows =
 		content.split('\n').length === 1
-			? 2
+			? 1
 			: content.split('\n').length + 1
 
 	return (
@@ -26,17 +26,15 @@ export const Message = ({
 			style={{
 				scrollbarWidth: 'none',
 				resize: 'none',
-				maxHeight: '50vh',
-				scrollPaddingBottom: 10
+				maxHeight: '50vh'
 			}}
 			focusStyle={{
 				borderWidth: 0,
 				outlineWidth: 0
 			}}
 			rounded={0}
-			px={0}
+			p={0}
 			flex={1}
-			paddingBlock='$2.5'
 			bg='transparent'
 			borderWidth={0}
 			rows={placeholderRows}
