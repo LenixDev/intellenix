@@ -1,4 +1,4 @@
-import { Button, type ScrollView, View } from 'tamagui'
+import { Button, type ScrollView, useWindowDimensions, View } from 'tamagui'
 import { SlidersHorizontal } from '@tamagui/lucide-icons-2'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Groq from 'groq-sdk'
@@ -32,6 +32,9 @@ export default function Page() {
 	const [sheetOpen, setSheetOpen] = useState(false)
 
 	const scrollRef = useRef<ScrollView>(null)
+
+	const { width, height } = useWindowDimensions()
+	const isPortrait = height > width
 
 	const groq = useMemo(
 		() => new Groq({ apiKey, dangerouslyAllowBrowser: true }),
@@ -124,7 +127,7 @@ export default function Page() {
 	return (
 		<View items='center' width='100%' height='100%'>
 			<View
-				width='50%'
+				width={isPortrait ? '90%' : '50%'}
 				height='100%'
 				items='center'
 				justify='flex-end'
@@ -170,7 +173,14 @@ export default function Page() {
 				</View>
 				<Kdb {...{ isMac }} />
 			</View>
-			<Preferences open={sheetOpen} setOpen={setSheetOpen} groq={groq} />
+			<Preferences
+				{...{
+					open: sheetOpen,
+					setOpen: setSheetOpen,
+					groq,
+					isPortrait
+				}}
+			/>
 		</View>
 	)
 }

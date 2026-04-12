@@ -78,7 +78,7 @@ const ModelSelect = ({
 					borderRadius='$4'
 					backgroundColor='$background'
 				>
-					<Select.Value placeholder='Something' />
+					<Select.Value />
 				</Select.Trigger>
 				<Select.Content>
 					<Select.ScrollUpButton
@@ -174,11 +174,13 @@ const ModelSelect = ({
 export const Preferences = ({
 	open,
 	setOpen,
-	groq
+	groq,
+	isPortrait
 }: {
 	open: boolean
 	setOpen: (open: boolean) => void
 	groq: Groq
+	isPortrait: boolean
 }) => {
 	const [items, setItems] = useState<Model[]>([])
 
@@ -199,7 +201,7 @@ export const Preferences = ({
 				bg='$color6'
 				items='center'
 				justify='space-evenly'
-				flexDirection='row'
+				flexDirection={isPortrait ? 'column' : 'row'}
 			>
 				<ApiInput />
 				<ModelSelect items={items} />
