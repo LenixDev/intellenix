@@ -1,20 +1,21 @@
 import { ChevronDown, ChevronUp } from '@tamagui/lucide-icons-2'
 import { useState } from 'react'
-import { type SelectProps, Select, YStack, getFontSize } from 'tamagui'
+import { type SelectProps, Select, YStack, getFontSize, type SelectTriggerProps } from 'tamagui'
 import { LinearGradient } from 'tamagui/linear-gradient'
 
 // eslint-disable-next-line max-lines-per-function
-export const ModelSelect = ({
-	render,
+export const Selection = ({
+	renderer,
 	defaultValue,
 	listLabel,
-	children
+	children,
+	...props
 }: {
-	render: SelectProps['renderValue']
+	renderer: SelectProps['renderValue']
 	defaultValue: string
 	listLabel: string
 	children: React.ReactNode
-}) => {
+} & SelectTriggerProps) => {
 	const [item, setItem] = useState<typeof defaultValue>(defaultValue)
 
 	return (
@@ -22,12 +23,13 @@ export const ModelSelect = ({
 			value={item}
 			onValueChange={setItem}
 			disablePreventBodyScroll
-			renderValue={render}
+			renderValue={renderer}
 		>
 			<Select.Trigger
 				iconAfter={ChevronDown}
 				borderRadius='$4'
-				backgroundColor='$background'
+				width='auto'
+				{...props}
 			>
 				<Select.Value />
 			</Select.Trigger>
