@@ -1,3 +1,3 @@
 import type { Model } from 'groq-sdk/resources'
 
-export const defaultModel: Model['id'] = 'llama-3.3-70b-versatile' as const
+export const defaultModel = 'llama-3.3-70b-versatile' satisfies Model['id']

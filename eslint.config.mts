@@ -92,7 +92,7 @@ export default defineConfig([
 				}
 			],
 			'@stylistic/multiline-comment-style': 'warn',
-			'@stylistic/multiline-ternary': 'warn',
+			'@stylistic/multiline-ternary': ['warn', 'never'],
 			'@stylistic/new-parens': 'warn',
 			'@stylistic/newline-per-chained-call': 'warn',
 			'@stylistic/no-confusing-arrow': 'warn',
