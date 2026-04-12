@@ -39,7 +39,7 @@ export default function Page() {
 
 	const groq = useMemo(
 		() => new Groq({ apiKey, dangerouslyAllowBrowser: true }),
-		[apiKey],
+		[apiKey]
 	)
 
 	useEffect(() => {
@@ -61,39 +61,37 @@ export default function Page() {
 			setApiKeyDialog(true)
 			return
 		}
-		if (key instanceof Promise)
-			key
-				.then(key => {
-					if (key === null) return
-					setApiKey(key)
-				})
-				.catch(raise)
+		if (key instanceof Promise) key.
+			then(key => {
+				if (key === null) return
+				setApiKey(key)
+			}).
+			catch(raise)
 		else setApiKey(key)
 	}, [])
 
-	if (!apiKey.trim() || apiKeyDialog)
-		return (
-			<Api
-				{...{
-					apiKey,
-					setApiKey,
-					apiKeyDialog,
-					setApiKeyDialog,
-				}}
-			/>
-		)
+	if (!apiKey.trim() || apiKeyDialog) return (
+		<Api
+			{...{
+				apiKey,
+				setApiKey,
+				apiKeyDialog,
+				setApiKeyDialog
+			}}
+		/>
+	)
 
-	const chat = async (request: string) => {
+	const chat = async(request: string) => {
 		setAiThinking(true)
 		try {
 			const completion = await groq.chat.completions.create({
 				messages: [
 					{
 						role: 'user',
-						content: request,
-					},
+						content: request
+					}
 				],
-				model: defaultModel,
+				model: defaultModel
 			})
 			const response = completion.choices[0]?.message.content
 			if (typeof response !== 'string') return raise('No response')
@@ -103,10 +101,10 @@ export default function Page() {
 				{
 					id: composeId(),
 					role: 'assistant',
-					content: response,
-				},
+					content: response
+				}
 			])
-		} catch (err) {
+		} catch(err) {
 			toast.error('Something went wrong')
 			raise(err)
 		} finally {
@@ -121,8 +119,8 @@ export default function Page() {
 			{
 				id: composeId(),
 				content,
-				role: 'user',
-			},
+				role: 'user'
+			}
 		])
 		chat(content).catch(raise)
 		setContent('')
@@ -161,7 +159,7 @@ export default function Page() {
 								send,
 								aiThinking,
 								apiKey,
-								isMac,
+								isMac
 							}}
 						/>
 					</View>
@@ -174,7 +172,7 @@ export default function Page() {
 							}}
 							hoverStyle={{
 								borderColor: '$color6',
-								bg: '$background08',
+								bg: '$background08'
 							}}
 						/>
 						<Tasks />
@@ -188,7 +186,7 @@ export default function Page() {
 					open: sheetOpen,
 					setOpen: setSheetOpen,
 					groq,
-					isPortrait,
+					isPortrait
 				}}
 			/>
 		</View>

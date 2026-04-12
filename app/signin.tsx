@@ -2,7 +2,7 @@ import { toast } from '@tamagui/toast/v2'
 import { router } from 'expo-router'
 import { Button, Paragraph, Separator, Text, View, XStack } from 'tamagui'
 
-// eslint-disable-next-line max-lines-per-function
+
 export default function Page() {
 	return (
 		<View
@@ -12,8 +12,18 @@ export default function Page() {
 			justify='center'
 			items='center'
 		>
-			<View width='$20' height='50%' justify='space-evenly' items='stretch'>
-				<Paragraph width='100%' text='center' marginBlock='$2' size='$13'>
+			<View
+				width='$20'
+				height='50%'
+				justify='space-evenly'
+				items='stretch'
+			>
+				<Paragraph
+					width='100%'
+					text='center'
+					marginBlock='$2'
+					size='$13'
+				>
 					Sign in
 				</Paragraph>
 				<View>

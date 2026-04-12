@@ -1,13 +1,13 @@
 import { TextArea } from 'tamagui'
 
-// eslint-disable-next-line max-lines-per-function
+
 export const Message = ({
 	content,
 	setContent,
 	send,
 	aiThinking,
 	apiKey,
-	isMac,
+	isMac
 }: {
 	content: string
 	setContent: (content: string) => void
@@ -24,11 +24,11 @@ export const Message = ({
 			style={{
 				scrollbarWidth: 'none',
 				resize: 'none',
-				maxHeight: '50vh',
+				maxHeight: '50vh'
 			}}
 			focusStyle={{
 				borderWidth: 0,
-				outlineWidth: 0,
+				outlineWidth: 0
 			}}
 			rounded={0}
 			p={0}
@@ -42,9 +42,9 @@ export const Message = ({
 			value={content}
 			onChangeText={setContent}
 			readOnly={!apiKey}
-			onKeyDown={e => {
-				if (e.key !== 'Enter') return
-				if (isMac ? !e.metaKey : !e.ctrlKey) return
+			onKeyDown={event => {
+				if (event.key !== 'Enter') return
+				if (isMac ? !event.metaKey : !event.ctrlKey) return
 				if (aiThinking) return
 				send()
 			}}

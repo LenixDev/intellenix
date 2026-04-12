@@ -5,7 +5,7 @@ import {
 	Select,
 	YStack,
 	getFontSize,
-	type SelectTriggerProps,
+	type SelectTriggerProps
 } from 'tamagui'
 import { LinearGradient } from 'tamagui/linear-gradient'
 

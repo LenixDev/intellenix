@@ -2,7 +2,7 @@ import { type GetThemeValueForKey, Text, View } from 'tamagui'
 
 export const Kbd = ({
 	size,
-	children,
+	children
 }: {
 	size: number | GetThemeValueForKey<'fontSize'>
 	children: React.ReactNode | string

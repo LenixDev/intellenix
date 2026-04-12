@@ -2,7 +2,7 @@ import { ScrollView, Text, View } from 'tamagui'
 
 export const Conversation = ({
 	conversations,
-	scrollRef,
+	scrollRef
 }: {
 	conversations: {
 		id: string
@@ -24,25 +24,29 @@ export const Conversation = ({
 		}}
 	>
 		{conversations.map(({ id, role, content }) => {
-			if (role === 'user')
-				return (
-					<View key={id} items='flex-end'>
-						<Text
-							py='$2'
-							px='$3'
-							maxW='90%'
-							color='$colorFocus'
-							bg='$color02'
-							rounded='$5'
-							my='$5'
-						>
-							{content}
-						</Text>
-					</View>
-				)
+			if (role === 'user') return (
+				<View key={id} items='flex-end'>
+					<Text
+						py='$2'
+						px='$3'
+						maxW='90%'
+						color='$colorFocus'
+						bg='$color02'
+						rounded='$5'
+						my='$5'
+					>
+						{content}
+					</Text>
+				</View>
+			)
 			return (
 				<View key={id}>
-					<Text maxW='90%' self='flex-start' color='$color' my='$5'>
+					<Text
+						maxW='90%'
+						self='flex-start'
+						color='$color'
+						my='$5'
+					>
 						{content}
 					</Text>
 				</View>

@@ -15,20 +15,19 @@ export const Tasks = () => (
 		hoverStyle={{
 			background: '$backgroundHover',
 			cursor: 'pointer',
-			borderColor: '$color6',
+			borderColor: '$color6'
 		}}
 	>
 		{useMemo(
-			() =>
-				tasks.map((item, iter) => (
-					<Select.Item index={iter} key={item} value={item}>
-						<Select.ItemText>{item}</Select.ItemText>
-						<Select.ItemIndicator marginLeft='auto'>
-							<Check size={16} />
-						</Select.ItemIndicator>
-					</Select.Item>
-				)),
-			[tasks],
+			() => tasks.map((item, iter) => (
+				<Select.Item index={iter} key={item} value={item}>
+					<Select.ItemText>{item}</Select.ItemText>
+					<Select.ItemIndicator marginLeft='auto'>
+						<Check size={16} />
+					</Select.ItemIndicator>
+				</Select.Item>
+			)),
+			[tasks]
 		)}
 	</Selection>
 )
