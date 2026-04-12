@@ -12,6 +12,7 @@ import {
 	Input,
 	Label,
 	Select,
+	type SelectProps,
 	Sheet,
 	View,
 	YStack
@@ -56,121 +57,96 @@ const ApiInput = () => {
 
 // eslint-disable-next-line max-lines-per-function
 const ModelSelect = ({
-	items
+	render,
+	defaultValue,
+	listLabel,
+	children
 }: {
-	items: Model[]
+	render: SelectProps['renderValue']
+	defaultValue: string
+	listLabel: string
+	children: React.ReactNode
 }) => {
-	const [item, setItem] = useState<Model['id']>(defaultModel)
-	const labelMap = new Map(items.map(item => [item.id.toLowerCase(), item.id]))
-	const getItemLabel = (value: string) => labelMap.get(value)
+	const [item, setItem] = useState<typeof defaultValue>(defaultValue)
 
 	return (
-		<View>
-			<Label>Model</Label>
-			<Select
-				value={item}
-				onValueChange={setItem}
-				disablePreventBodyScroll
-				renderValue={getItemLabel}
+		<Select
+			value={item}
+			onValueChange={setItem}
+			disablePreventBodyScroll
+			renderValue={render}
+		>
+			<Select.Trigger
+				iconAfter={ChevronDown}
+				borderRadius='$4'
+				backgroundColor='$background'
 			>
-				<Select.Trigger
-					iconAfter={ChevronDown}
-					borderRadius='$4'
-					backgroundColor='$background'
+				<Select.Value />
+			</Select.Trigger>
+			<Select.Content>
+				<Select.ScrollUpButton
+					items='center'
+					justify='center'
+					position='relative'
+					width='100%'
+					height='$3'
 				>
-					<Select.Value />
-				</Select.Trigger>
-				<Select.Content>
-					<Select.ScrollUpButton
+					<YStack z={10}>
+						<ChevronUp size={20} />
+					</YStack>
+					<LinearGradient
+						start={[0, 0]}
+						end={[0, 1]}
+						fullscreen
+						colors={['$background', 'transparent']}
+						rounded='$4' />
+				</Select.ScrollUpButton>
+				<Select.Viewport
+					bg='$background'
+					rounded='$4'
+					borderWidth={1}
+					borderColor='$borderColor'
+				>
+					<Select.Group>
+						<Select.Label fontWeight='100'>{listLabel}</Select.Label>
+						{children}
+					</Select.Group>
+					<YStack
+						position='absolute'
+						r={0}
+						t={16}
 						items='center'
 						justify='center'
-						position='relative'
-						width='100%'
-						height='$3'
+						width='$4'
+						pointerEvents='none'
 					>
-						<YStack z={10}>
-							<ChevronUp size={20} />
-						</YStack>
-						<LinearGradient
-							start={[0, 0]}
-							end={[0, 1]}
-							fullscreen
-							colors={['$background', 'transparent']}
-							rounded='$4' />
-					</Select.ScrollUpButton>
-					<Select.Viewport
-						bg='$background'
+						<ChevronDown size={getFontSize('$true')} />
+					</YStack>
+				</Select.Viewport>
+				<Select.ScrollDownButton
+					items='center'
+					justify='center'
+					position='relative'
+					width='100%'
+					height='$3'
+				>
+					<YStack z={10}>
+						<ChevronDown size={20} />
+					</YStack>
+					<LinearGradient
+						start={[0, 0]}
+						end={[0, 1]}
+						fullscreen
+						colors={['transparent', '$background']}
 						rounded='$4'
-						borderWidth={1}
-						borderColor='$borderColor'
-					>
-						<Select.Group>
-							<Select.Label fontWeight='100'>Models</Select.Label>
-							{useMemo(
-								() => items.map((item, iter) => (
-									<Select.Item
-										index={iter}
-										key={item.id}
-										value={item.id.toLowerCase()}
-									>
-										<View>
-											<Select.ItemText>{item.id}</Select.ItemText>
-											<View flexDirection='row'>
-												<Select.ItemText color='$color7' fontSize='$2'>
-													{item.owned_by}&nbsp;
-												</Select.ItemText>
-												<Select.ItemText color='$color7' fontSize='$2'>
-													on{' '}
-													{new Date(item.created * 1000).toLocaleDateString(undefined, {
-														year: 'numeric',
-														month: 'short'
-													})}
-												</Select.ItemText>
-											</View>
-										</View>
-										<Select.ItemIndicator marginLeft='auto'>
-											<Check size={16} />
-										</Select.ItemIndicator>
-									</Select.Item>
-								)),
-								[items]
-							)}
-						</Select.Group>
-						<YStack
-							position='absolute'
-							r={0}
-							t={16}
-							items='center'
-							justify='center'
-							width='$4'
-							pointerEvents='none'
-						>
-							<ChevronDown size={getFontSize('$true')} />
-						</YStack>
-					</Select.Viewport>
-					<Select.ScrollDownButton
-						items='center'
-						justify='center'
-						position='relative'
-						width='100%'
-						height='$3'
-					>
-						<YStack z={10}>
-							<ChevronDown size={20} />
-						</YStack>
-						<LinearGradient
-							start={[0, 0]}
-							end={[0, 1]}
-							fullscreen
-							colors={['transparent', '$background']}
-							rounded='$4' />
-					</Select.ScrollDownButton>
-				</Select.Content>
-			</Select>
-		</View>
+					/>
+				</Select.ScrollDownButton>
+			</Select.Content>
+		</Select>
 	)
 }
 
+// eslint-disable-next-line max-lines-per-function
 export const Preferences = ({
 	open,
 	setOpen,
@@ -204,7 +180,44 @@ export const Preferences = ({
 				flexDirection={isPortrait ? 'column' : 'row'}
 			>
 				<ApiInput />
-				<ModelSelect items={items} />
+				<View>
+					<Label>Model</Label>
+					<ModelSelect
+						render={value => items.find(item => item.id === value)?.id}
+						defaultValue={defaultModel}
+						listLabel='Models'
+					>
+						{useMemo(
+							() => items.map((item, iter) => (
+								<Select.Item
+									index={iter}
+									key={item.id}
+									value={item.id.toLowerCase()}
+								>
+									<View>
+										<Select.ItemText>{item.id}</Select.ItemText>
+										<View flexDirection='row'>
+											<Select.ItemText color='$color7' fontSize='$2'>
+												{item.owned_by}&nbsp;
+											</Select.ItemText>
+											<Select.ItemText color='$color7' fontSize='$2'>
+												on{' '}
+												{new Date(item.created * 1000).toLocaleDateString(undefined, {
+													year: 'numeric',
+													month: 'short'
+												})}
+											</Select.ItemText>
+										</View>
+									</View>
+									<Select.ItemIndicator marginLeft='auto'>
+										<Check size={16} />
+									</Select.ItemIndicator>
+								</Select.Item>
+							)),
+							[items]
+						)}
+					</ModelSelect>
+				</View>
 			</Sheet.Frame>
 		</Sheet>
 	)
