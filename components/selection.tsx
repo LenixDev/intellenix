@@ -1,6 +1,12 @@
 import { ChevronDown, ChevronUp } from '@tamagui/lucide-icons-2'
 import { useState } from 'react'
-import { type SelectProps, Select, YStack, getFontSize, type SelectTriggerProps } from 'tamagui'
+import {
+	type SelectProps,
+	Select,
+	YStack,
+	getFontSize,
+	type SelectTriggerProps,
+} from 'tamagui'
 import { LinearGradient } from 'tamagui/linear-gradient'
 
 // eslint-disable-next-line max-lines-per-function
@@ -49,7 +55,8 @@ export const Selection = ({
 						end={[0, 1]}
 						fullscreen
 						colors={['$background', 'transparent']}
-						rounded='$4' />
+						rounded='$4'
+					/>
 				</Select.ScrollUpButton>
 				<Select.Viewport
 					bg='$background'

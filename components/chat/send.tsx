@@ -4,7 +4,7 @@ import { Send as ISend } from '@tamagui/lucide-icons-2'
 export const Send = ({
 	content,
 	send,
-	aiThinking
+	aiThinking,
 }: {
 	content: string
 	send: () => void
@@ -18,7 +18,7 @@ export const Send = ({
 		onPress={send}
 		hoverStyle={{
 			borderColor: '$color6',
-			bg: '$background08'
+			bg: '$background08',
 		}}
 	/>
 )

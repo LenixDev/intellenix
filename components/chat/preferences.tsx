@@ -6,12 +6,7 @@ import type Groq from 'groq-sdk'
 import type { Model } from 'groq-sdk/resources'
 import { raise } from 'lenix'
 import { useEffect, useMemo, useState } from 'react'
-import {
-	Button, Input,
-	Label,
-	Select, Sheet,
-	View
-} from 'tamagui'
+import { Button, Input, Label, Select, Sheet, View } from 'tamagui'
 import { Selection } from '../selection'
 
 const ApiInput = () => {
@@ -32,12 +27,13 @@ const ApiInput = () => {
 				disabled={key.length === 0}
 				onPress={() => {
 					const pref = prefs.setKey(key)
-					if (pref instanceof Promise) pref.
-						then(() => {
-							toast.success('API Key updated')
-							setKey('')
-						}).
-						catch(raise)
+					if (pref instanceof Promise)
+						pref
+							.then(() => {
+								toast.success('API Key updated')
+								setKey('')
+							})
+							.catch(raise)
 					else {
 						toast.success('API Key updated')
 						setKey('')
@@ -55,7 +51,7 @@ export const Preferences = ({
 	open,
 	setOpen,
 	groq,
-	isPortrait
+	isPortrait,
 }: {
 	open: boolean
 	setOpen: (open: boolean) => void
@@ -65,12 +61,12 @@ export const Preferences = ({
 	const [items, setItems] = useState<Model[]>([])
 
 	useEffect(() => {
-		groq.models.
-			list().
-			then(({ data }) => {
+		groq.models
+			.list()
+			.then(({ data }) => {
 				setItems(data)
-			}).
-			catch(raise)
+			})
+			.catch(raise)
 	}, [])
 
 	return (
@@ -92,33 +88,33 @@ export const Preferences = ({
 						listLabel='Models'
 					>
 						{useMemo(
-							() => items.map((item, iter) => (
-								<Select.Item
-									index={iter}
-									key={item.id}
-									value={item.id}
-								>
-									<View>
-										<Select.ItemText>{item.id}</Select.ItemText>
-										<View flexDirection='row'>
-											<Select.ItemText color='$color7' fontSize='$2'>
-												{item.owned_by}&nbsp;
-											</Select.ItemText>
-											<Select.ItemText color='$color7' fontSize='$2'>
-												on{' '}
-												{new Date(item.created * 1000).toLocaleDateString(undefined, {
-													year: 'numeric',
-													month: 'short'
-												})}
-											</Select.ItemText>
+							() =>
+								items.map((item, iter) => (
+									<Select.Item index={iter} key={item.id} value={item.id}>
+										<View>
+											<Select.ItemText>{item.id}</Select.ItemText>
+											<View flexDirection='row'>
+												<Select.ItemText color='$color7' fontSize='$2'>
+													{item.owned_by}&nbsp;
+												</Select.ItemText>
+												<Select.ItemText color='$color7' fontSize='$2'>
+													on{' '}
+													{new Date(item.created * 1000).toLocaleDateString(
+														undefined,
+														{
+															year: 'numeric',
+															month: 'short',
+														},
+													)}
+												</Select.ItemText>
+											</View>
 										</View>
-									</View>
-									<Select.ItemIndicator marginLeft='auto'>
-										<Check size={16} />
-									</Select.ItemIndicator>
-								</Select.Item>
-							)),
-							[items]
+										<Select.ItemIndicator marginLeft='auto'>
+											<Check size={16} />
+										</Select.ItemIndicator>
+									</Select.Item>
+								)),
+							[items],
 						)}
 					</Selection>
 				</View>
