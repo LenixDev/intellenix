@@ -141,7 +141,8 @@ export default function Page() {
 					bg='$color4'
 					rounded='$8'
 					px='$4'
-					py='$2'
+					pt='$3'
+					pb='$2'
 					justify='center'
 					border='1px solid $color6'
 				>
