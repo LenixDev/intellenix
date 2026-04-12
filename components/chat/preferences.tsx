@@ -12,7 +12,7 @@ import {
 	Select, Sheet,
 	View
 } from 'tamagui'
-import { ModelSelect } from '../selection'
+import { Selection } from '../selection'
 
 const ApiInput = () => {
 	const [key, setKey] = useState('')
@@ -86,8 +86,8 @@ export const Preferences = ({
 				<ApiInput />
 				<View>
 					<Label>Model</Label>
-					<ModelSelect
-						render={value => items.find(item => item.id === value)?.id}
+					<Selection
+						renderer={value => items.find(item => item.id === value)?.id}
 						defaultValue={defaultModel}
 						listLabel='Models'
 					>
@@ -96,7 +96,7 @@ export const Preferences = ({
 								<Select.Item
 									index={iter}
 									key={item.id}
-									value={item.id.toLowerCase()}
+									value={item.id}
 								>
 									<View>
 										<Select.ItemText>{item.id}</Select.ItemText>
@@ -120,7 +120,7 @@ export const Preferences = ({
 							)),
 							[items]
 						)}
-					</ModelSelect>
+					</Selection>
 				</View>
 			</Sheet.Frame>
 		</Sheet>
