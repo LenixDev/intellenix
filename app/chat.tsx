@@ -12,6 +12,7 @@ import { Send } from '@/components/chat/send'
 import { Kdb } from '@/components/chat/kdb'
 import { Preferences } from '@/components/chat/preferences'
 import { defaultModel } from '@/constants'
+import { Tasks } from '@/components/chat/tasks'
 
 const isMac = navigator.platform.toUpperCase().includes('MAC')
 const composeId = () => Date.now().toString()
@@ -109,6 +110,7 @@ export default function Page() {
 		} finally {
 			setAiThinking(false)
 		}
+		return undefined
 	}
 	const send = () => {
 		if (!content.trim()) return
@@ -136,12 +138,12 @@ export default function Page() {
 				<Conversation {...{ conversations, scrollRef }} />
 				<View
 					width='100%'
-					bg='$color001'
+					bg='$color4'
 					rounded='$8'
 					px='$4'
 					py='$3'
 					justify='center'
-					border='1px solid $color01'
+					border='1px solid $color6'
 				>
 					<View
 						width='100%'
@@ -168,6 +170,7 @@ export default function Page() {
 								setSheetOpen(true)
 							}}
 						/>
+						<Tasks />
 						<Send {...{ content, send, aiThinking }} />
 					</View>
 				</View>
