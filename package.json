@@ -9,7 +9,8 @@
 		"web": "expo start --web",
 		"format": "pnpm exec prettier . --write",
 		"lint": "pnpm exec eslint . --fix",
-		"build": "npx expo export --platform web"
+		"build": "npx expo export --platform web",
+		"ip": "ipconfig getifaddr en0"
 	},
 	"dependencies": {
 		"@tamagui/config": "2.0.0-rc.38",
