@@ -1,4 +1,6 @@
 import { prefs } from '@/storage'
+import { supabase } from '@/supabase'
+import type { GetApiKey } from '@/types'
 import { raise } from 'lenix'
 import { Button, Dialog, Input, Separator, View, Text, XStack } from 'tamagui'
 
@@ -48,9 +50,21 @@ export const Api = ({
 					<Text color='$color06' fontSize='$1'>Or</Text>
 					<Separator />
 				</XStack>
-				<Button theme='surface1' onPress={() => {
-					
-				}}>Use a free limited API Key</Button>
+				<Button
+					theme='surface1'
+					onPress={() => {
+						// eslint-disable-next-line @stylistic/max-len
+						supabase.functions.invoke<GetApiKey>('get-api-key').then(({ data, error }) => {
+							if (error instanceof Error || !data) return null
+							const set = prefs.setKey(data.key)
+							if (set instanceof Promise) set.then(() => {
+								setApiKeyDialog(false)
+							}).catch(raise)
+							setApiKeyDialog(false)
+						})
+						.catch(raise)
+					}}
+				>Use a free limited API Key</Button>
 			</Dialog.Content>
 		</Dialog.Portal>
 	</Dialog>

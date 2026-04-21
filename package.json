@@ -11,10 +11,11 @@
 		"lint": "pnpm exec eslint . --fix",
 		"build": "npx expo export --platform web",
 		"ip": "ipconfig getifaddr en0",
-		"supa-d": "supabase functions deploy hello-world --project-ref xnneyejwiffsbglxqvks",
+		"supa-d": "supabase functions deploy --project-ref xnneyejwiffsbglxqvks",
 		"supa-fn": "supabase functions new"
 	},
 	"dependencies": {
+		"@react-native-async-storage/async-storage": "^3.0.2",
 		"@supabase/supabase-js": "^2.104.0",
 		"@tamagui/config": "2.0.0-rc.38",
 		"@tamagui/lucide-icons-2": "2.0.0-rc.38",
@@ -31,6 +32,7 @@
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
 		"react-native": "0.81.5",
+		"react-native-async-storage": "^0.0.1",
 		"react-native-svg": "^15.15.4",
 		"react-native-web": "^0.21.2",
 		"tamagui": "2.0.0-rc.38"
