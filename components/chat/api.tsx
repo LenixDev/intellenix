@@ -65,6 +65,7 @@ export const Api = ({
 								setApiKeyDialog(false)
 							}).catch(raise)
 							setApiKeyDialog(false)
+							window.location.reload()
 						})
 						.catch(raise)
 					}}
