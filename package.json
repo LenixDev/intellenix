@@ -10,9 +10,12 @@
 		"format": "pnpm exec prettier . --write",
 		"lint": "pnpm exec eslint . --fix",
 		"build": "npx expo export --platform web",
-		"ip": "ipconfig getifaddr en0"
+		"ip": "ipconfig getifaddr en0",
+		"supa-d": "supabase functions deploy hello-world --project-ref xnneyejwiffsbglxqvks",
+		"supa-fn": "supabase functions new"
 	},
 	"dependencies": {
+		"@supabase/supabase-js": "^2.104.0",
 		"@tamagui/config": "2.0.0-rc.38",
 		"@tamagui/lucide-icons-2": "2.0.0-rc.38",
 		"@tamagui/toast": "2.0.0-rc.38",
