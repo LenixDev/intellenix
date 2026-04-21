@@ -5,5 +5,7 @@
 - [x] add conversation domain selection
 - [ ] add i18n
 - [x] implement reusability of selection
-- [ ] new rows on tighten
-- [ ] sync selection color with others
+- [x] new rows on tighten
+- [x] sync selection color with others
+- [ ] fix auto new line after sending message in the placeholder
+- [ ] do something about sheets bug when navigating with the tab to it

@@ -53,5 +53,6 @@ export const Message = ({
 			if (isMac ? !event.metaKey : !event.ctrlKey) return
 			if (aiThinking) return
 			send()
-		} } />
+		}}
+	/>
 )
