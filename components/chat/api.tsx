@@ -1,6 +1,7 @@
 import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
 import type { GetApiKey } from '@/types'
+import { toast } from '@tamagui/toast/v2'
 import { raise } from 'lenix'
 import { Button, Dialog, Input, Separator, View, Text, XStack } from 'tamagui'
 
@@ -55,7 +56,10 @@ export const Api = ({
 					onPress={() => {
 						// eslint-disable-next-line @stylistic/max-len
 						supabase.functions.invoke<GetApiKey>('get-api-key').then(({ data, error }) => {
-							if (error instanceof Error || !data) return null
+							if (error instanceof Error || !data) {
+								toast.error('Could not retrieve API Key from the server')
+								return
+							}
 							const set = prefs.setKey(data.key)
 							if (set instanceof Promise) set.then(() => {
 								setApiKeyDialog(false)
