@@ -1,12 +1,13 @@
 import { prefs } from '@/storage'
 import { raise } from 'lenix'
-import { Button, Dialog, Input, View } from 'tamagui'
+import { Button, Dialog, Input, Separator, View, Text, XStack } from 'tamagui'
 
+// eslint-disable-next-line max-lines-per-function
 export const Api = ({
 	apiKey,
 	setApiKey,
 	apiKeyDialog,
-	setApiKeyDialog
+	setApiKeyDialog,
 }: {
 	apiKey: string
 	setApiKey: (apiKey: string) => void
@@ -34,16 +35,22 @@ export const Api = ({
 					onPress={() => {
 						if (typeof apiKey === 'string' && apiKey.length === 0) return
 						const set = prefs.setKey(apiKey)
-						if (set instanceof Promise) set.
-							then(() => {
-								setApiKeyDialog(false)
-							}).
-							catch(raise)
+						if (set instanceof Promise) set.then(() => {
+							setApiKeyDialog(false)
+						}).catch(raise)
 						setApiKeyDialog(false)
 					}}
 				>
 					Submit
 				</Button>
+				<XStack items='center' gap='$4'>
+					<Separator />
+					<Text color='$color06' fontSize='$1'>Or</Text>
+					<Separator />
+				</XStack>
+				<Button theme='surface1' onPress={() => {
+					
+				}}>Use a free limited API Key</Button>
 			</Dialog.Content>
 		</Dialog.Portal>
 	</Dialog>
