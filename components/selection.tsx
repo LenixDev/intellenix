@@ -35,9 +35,10 @@ export const Selection = ({
 				iconAfter={ChevronDown}
 				borderRadius='$4'
 				width='auto'
+				size='$3'
 				{...props}
 			>
-				<Select.Value />
+				<Select.Value color='$color10' />
 			</Select.Trigger>
 			<Select.Content>
 				<Select.ScrollUpButton

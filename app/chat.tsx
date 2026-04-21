@@ -105,7 +105,7 @@ export default function Page() {
 				}
 			])
 		} catch(err) {
-			toast.error('Something went wrong')
+			toast.error('Connection Issue occured')
 			raise(err)
 		} finally {
 			setAiThinking(false)
@@ -134,6 +134,7 @@ export default function Page() {
 				items='center'
 				justify='flex-end'
 				pb='$5'
+				gap='$2'
 			>
 				<Conversation {...{ conversations, scrollRef }} />
 				<View
@@ -163,9 +164,15 @@ export default function Page() {
 							}}
 						/>
 					</View>
-					<View flexDirection='row' justify='flex-end' gap='$2'>
+					<View
+						flexDirection='row'
+						justify='flex-end'
+						gap='$2'
+						items='center'
+					>
 						<Button
 							chromeless
+							size='$3'
 							icon={SlidersHorizontal}
 							onPress={() => {
 								setSheetOpen(true)
