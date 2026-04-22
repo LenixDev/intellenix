@@ -29,6 +29,7 @@ export default defineConfig([
 				tsconfigRootDir: import.meta.dirname
 			}
 		},
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		rules: {
 			...(lint.strict as any),
 			'@stylistic/array-bracket-newline': 'warn',
@@ -95,7 +96,7 @@ export default defineConfig([
 			'@stylistic/multiline-comment-style': 'warn',
 			'@stylistic/multiline-ternary': ['warn', 'never'],
 			'@stylistic/new-parens': 'warn',
-			'@stylistic/newline-per-chained-call': 'warn',
+			'@stylistic/newline-per-chained-call': ['warn', { ignoreChainWithDepth: 3 }],
 			'@stylistic/no-confusing-arrow': 'warn',
 			'@stylistic/no-extra-parens': ['warn', 'all', { ignoreJSX: 'all' }],
 			'@stylistic/no-extra-semi': 'warn',
