@@ -186,7 +186,7 @@ export default function Page() {
 						<Send {...{ content, send, aiThinking }} />
 					</View>
 				</View>
-				<Kdb {...{ isMac }} />
+				{!isPortrait && <Kdb {...{ isMac }} />}
 			</View>
 			<Preferences
 				{...{
