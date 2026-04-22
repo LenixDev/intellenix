@@ -4,6 +4,7 @@ import { useColorScheme } from 'react-native'
 import { Slot } from 'expo-router'
 import { Toaster } from '@tamagui/toast/v2'
 import { SpeedInsights } from '@vercel/speed-insights/react'
+import { Analytics } from '@vercel/analytics/react'
 
 export default function App() {
 	const theme = useColorScheme()
@@ -12,6 +13,7 @@ export default function App() {
 			<Toaster />
 			<Slot />
 			<SpeedInsights />
+			<Analytics />
 		</TamaguiProvider>
 	)
 }
