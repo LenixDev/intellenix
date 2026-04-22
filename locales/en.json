@@ -1,0 +1,18 @@
+{
+	"signin": "Sign in",
+	"continue_google": "Continue with Google",
+	"or": "Or",
+	"continue_guest": "Continue as a Guest",
+	"not_yet": "Not implemented yet",
+	"conn_err": "Connection Issue occured",
+	"no_res": "No response",
+	"chat_intell": "Chat with Intellenix...",
+	"tasks": "Tasks",
+	"programming": "Programming",
+	"health": "Health",
+	"models": "Models",
+	"on": "on",
+	"api_key": "API Key",
+	"api_success": "API Key updated",
+	"update": "Update"
+}

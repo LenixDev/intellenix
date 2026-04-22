@@ -8,13 +8,15 @@ import { raise } from 'lenix'
 import { useEffect, useMemo, useState } from 'react'
 import { Button, Input, Label, Select, Sheet, View } from 'tamagui'
 import { Selection } from '../selection'
+import { useTranslation } from 'react-i18next'
 
 const ApiInput = () => {
 	const [key, setKey] = useState('')
+	const { t } = useTranslation()
 	return (
 		<View gap='$4'>
 			<View>
-				<Label htmlFor='key'>API Key</Label>
+				<Label htmlFor='key'>{t('api_key')}</Label>
 				<Input
 					id='key'
 					value={key}
@@ -29,17 +31,17 @@ const ApiInput = () => {
 					const pref = prefs.setKey(key)
 					if (pref instanceof Promise) pref.
 						then(() => {
-							toast.success('API Key updated')
+							toast.success('api_success')
 							setKey('')
 						}).
 						catch(raise)
 					else {
-						toast.success('API Key updated')
+						toast.success('api_success')
 						setKey('')
 					}
 				}}
 			>
-				Update
+				{t('update')}
 			</Button>
 		</View>
 	)
@@ -58,6 +60,7 @@ export const Preferences = ({
 	isPortrait: boolean
 }) => {
 	const [items, setItems] = useState<Model[]>([])
+	const { t } = useTranslation()
 
 	useEffect(() => {
 		groq.models.
@@ -80,11 +83,11 @@ export const Preferences = ({
 			>
 				<ApiInput />
 				<View>
-					<Label>Model</Label>
+					<Label>{t('models')}</Label>
 					<Selection
 						renderer={value => items.find(item => item.id === value)?.id}
 						defaultValue={defaultModel}
-						listLabel='Models'
+						listLabel={t('models')}
 					>
 						{useMemo(
 							() => items.map((item, iter) => (
@@ -96,7 +99,7 @@ export const Preferences = ({
 												{item.owned_by}&nbsp;
 											</Select.ItemText>
 											<Select.ItemText color='$color7' fontSize='$2'>
-												on{' '}
+												{t('on')}{' '}
 												{new Date(item.created * 1000).toLocaleDateString(
 													undefined,
 													{

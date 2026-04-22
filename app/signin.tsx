@@ -1,9 +1,11 @@
 import { toast } from '@tamagui/toast/v2'
 import { router } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { Button, Paragraph, Separator, Text, View, XStack } from 'tamagui'
 
 // eslint-disable-next-line max-lines-per-function
 export default function Page() {
+	const { t } = useTranslation()
 	return (
 		<View
 			width='100%'
@@ -24,21 +26,21 @@ export default function Page() {
 					marginBlock='$2'
 					size='$13'
 				>
-					Sign in
+					{t('signin')}
 				</Paragraph>
 				<View>
 					<Button
 						theme='accent'
 						width='100%'
 						onPress={() => {
-							toast.error('Not implemented yet')
+							toast.error(t('not_yet'))
 						}}
 					>
-						Continue with Google
+						{t('continue_google')}
 					</Button>
 					<XStack width='100%' items='center' marginBlock='$4'>
 						<Separator flex={1} borderColor='$color' />
-						<Text marginInline='$3'>Or</Text>
+						<Text marginInline='$3'>{t('or')}</Text>
 						<Separator flex={1} borderColor='$color' />
 					</XStack>
 					<Button
@@ -47,7 +49,7 @@ export default function Page() {
 							router.replace('/chat')
 						}}
 					>
-						Continue as Guest
+						{t('continue_guest')}
 					</Button>
 				</View>
 			</View>

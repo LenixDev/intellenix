@@ -13,6 +13,7 @@ import { Kdb } from '@/components/chat/kdb'
 import { Preferences } from '@/components/chat/preferences'
 import { defaultModel } from '@/constants'
 import { Tasks } from '@/components/chat/tasks'
+import { useTranslation } from 'react-i18next'
 
 const isMac = navigator.platform.toUpperCase().includes('MAC')
 const composeId = () => Date.now().toString()
@@ -36,6 +37,7 @@ export default function Page() {
 
 	const { width, height } = useWindowDimensions()
 	const isPortrait = height > width
+	const { t } = useTranslation()
 
 	const groq = useMemo(
 		() => new Groq({ apiKey, dangerouslyAllowBrowser: true }),
@@ -62,9 +64,9 @@ export default function Page() {
 			return
 		}
 		if (key instanceof Promise) key.
-			then(key => {
-				if (key === null) return
-				setApiKey(key)
+			then($ => {
+				if ($ === null) return
+				setApiKey($)
 			}).
 			catch(raise)
 		else setApiKey(key)
@@ -94,7 +96,7 @@ export default function Page() {
 				model: defaultModel
 			})
 			const response = completion.choices[0]?.message.content
-			if (typeof response !== 'string') return raise('No response')
+			if (typeof response !== 'string') return toast.error(t('no_res'))
 
 			setConversations(prev => [
 				...prev,
@@ -105,7 +107,7 @@ export default function Page() {
 				}
 			])
 		} catch(err) {
-			toast.error('Connection Issue occured')
+			toast.error(t('conn_err'))
 			raise(err)
 		} finally {
 			setAiThinking(false)

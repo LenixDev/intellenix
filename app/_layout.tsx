@@ -1,3 +1,4 @@
+import '@/i18n'
 import { TamaguiProvider } from '@tamagui/core'
 import { config } from '@/tamagui.config'
 import { useColorScheme } from 'react-native'

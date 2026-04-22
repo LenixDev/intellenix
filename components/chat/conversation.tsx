@@ -1,5 +1,6 @@
 import { ScrollView, Text, View } from 'tamagui'
 
+// eslint-disable-next-line max-lines-per-function
 export const Conversation = ({
 	conversations,
 	scrollRef
