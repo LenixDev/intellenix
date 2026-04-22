@@ -4,7 +4,7 @@ import { Separator, Text, View, XStack } from 'tamagui'
 
 export const Kdb = ({ isMac }: { isMac: boolean }) => (
 	<XStack flexDirection='row' items='center' gap='$3'>
-		<View flexDirection='row' items='center'>
+		<View flexDirection='row' items='center' gap='$1'>
 			<Text color='$color06' fontSize='$1'>
 				Press
 			</Text>
