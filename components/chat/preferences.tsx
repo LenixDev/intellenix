@@ -63,6 +63,7 @@ export const Preferences = ({
 	const { t } = useTranslation()
 
 	useEffect(() => {
+		if (items.length > 0) return
 		groq.models.
 			list().
 			then(({ data }) => {
