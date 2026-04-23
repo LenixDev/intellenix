@@ -3,7 +3,7 @@
 ### TODO
 
 - [x] add conversation domain selection
-- [ ] add i18n
+- [x] add i18n
 - [x] implement reusability of selection
 - [x] new rows on tighten
 - [x] sync selection color with others

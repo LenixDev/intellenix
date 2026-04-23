@@ -42,8 +42,12 @@ export const Api = ({
 							const set = prefs.setKey(apiKey)
 							if (set instanceof Promise) set.then(() => {
 								setApiKeyDialog(false)
+								window.location.reload()
 							}).catch(raise)
-							setApiKeyDialog(false)
+							else {
+								setApiKeyDialog(false)
+								window.location.reload()
+							}
 						}}
 					>
 						Submit
