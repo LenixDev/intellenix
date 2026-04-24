@@ -11,7 +11,7 @@ import { Message } from '@/components/chat/message'
 import { Send } from '@/components/chat/send'
 import { Kdb } from '@/components/chat/kdb'
 import { Preferences } from '@/components/chat/preferences'
-import { defaultModel } from '@/constants'
+import { defaultModel, LIMITS } from '@/constants'
 import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
 import type { Conversation as IConversation } from '@/types'
@@ -30,6 +30,9 @@ export default function Page() {
 	const [apiKey, setApiKey] = useState<string>('')
 	const [apiKeyDialog, setApiKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
+	const [limits, setLimits] = useState({
+		rpm: 0, rpd: 0, tpm: 0, tpd: 0
+	})
 
 	const scrollRef = useRef<ScrollView>(null)
 
@@ -62,6 +65,21 @@ export default function Page() {
 		}).catch(raise)
 	}, [])
 
+	useEffect(() => {
+		const minute = setInterval(() => {
+			setLimits(prev => ({ ...prev, rpm: 0, tpm: 0 }))
+		}, 60_000)
+
+		const day = setInterval(() => {
+			setLimits(prev => ({ ...prev, rpd: 0, tpd: 0 }))
+		}, 86_400_000)
+
+		return () => {
+			clearInterval(minute)
+			clearInterval(day)
+		}
+	}, [])
+
 	if (!apiKey.trim() || apiKeyDialog) return (
 		<Api
 			{...{
@@ -72,8 +90,9 @@ export default function Page() {
 			}}
 		/>
 	)
+
 	// eslint-disable-next-line max-lines-per-function, max-statements
-	const chat = async(request: string) => {
+	const chat = async (request: string) => {
 		setAiThinking(true)
 		try {
 			const {
@@ -117,6 +136,11 @@ export default function Page() {
 				if (lastUser) lastUser.completion_tokens = usage?.prompt_tokens ?? 'failed!'
 				return updated
 			})
+			setLimits(prev => ({
+				...prev,
+				tpm: prev.tpm + (usage?.total_tokens ?? 0),
+				tpd: prev.tpd + (usage?.total_tokens ?? 0),
+			}))
 		} catch(err) {
 			toast.error(t('conn_err'))
 			raise(err)
@@ -130,6 +154,10 @@ export default function Page() {
 			toast.info(t('not_yet'))
 			return
 		}
+		if (limits.rpm >= LIMITS[defaultModel].rpm || limits.tpm >= LIMITS[defaultModel].tpm) {
+			toast.info(t('limit'))
+			return
+		}
 		setConversations(prev => [
 			...prev,
 			{
@@ -141,6 +169,11 @@ export default function Page() {
 		])
 		chat(message).catch(raise)
 		setMessage('')
+		setLimits(prev => ({
+			...prev,
+			rpm: prev.rpm + 1,
+			rpd: prev.rpd + 1,
+		}))
 	}
 
 	return (
@@ -155,7 +188,7 @@ export default function Page() {
 			>
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
 				<Progress
-					value={50}
+					value={(limits.tpd * 100) / LIMITS[defaultModel].tpd}
 					maxW='95%'
 					size='$1'
 				>
