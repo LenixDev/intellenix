@@ -24,7 +24,8 @@ export const Message = ({
 				scrollbarWidth: 'none',
 				resize: 'none',
 				maxHeight: '33vh',
-				borderRadius: '0.5rem'
+				borderRadius: '0.5rem',
+				fontSize: 16
 			}}
 			onInput={event => {
 				event.currentTarget.style.height = 'auto'
@@ -34,6 +35,10 @@ export const Message = ({
 				borderColor: 'transparent',
 				outlineWidth: 0
 			}}
+			onBlur={() => {
+				window.scrollTo({ top: 0, behavior: 'smooth' })
+			}}
+			outlineWidth={0}
 			borderWidth={1}
 			borderColor='transparent'
 			hoverStyle={{
