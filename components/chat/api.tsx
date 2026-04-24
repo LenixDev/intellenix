@@ -73,12 +73,13 @@ export const Api = ({
 								if (set instanceof Promise) set.then(() => {
 									setApiKeyDialog(false)
 									setLoading(false)
+									window.location.reload()
 								}).catch(raise)
 								else {
 									setApiKeyDialog(false)
 									setLoading(false)
+									window.location.reload()
 								}
-								window.location.reload()
 							})
 								.catch(raise)
 						}}
