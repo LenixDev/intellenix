@@ -92,7 +92,7 @@ export default function Page() {
 	)
 
 	// eslint-disable-next-line max-lines-per-function, max-statements
-	const chat = async (request: string) => {
+	const chat = async(request: string) => {
 		setAiThinking(true)
 		try {
 			const {
@@ -143,6 +143,7 @@ export default function Page() {
 			}))
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch(err: any) {
+			setConversations(prev => prev.slice(0, prev.length - 1))
 			toast.error(t('conn_err'), {
 				description: err.error.error.message,
 				duration: 40_000
@@ -175,6 +176,7 @@ export default function Page() {
 			rpd: prev.rpd + 1,
 		}))
 	}
+	console.log(limits)
 
 	return (
 		<View items='center' width='100%' height='100%'>
