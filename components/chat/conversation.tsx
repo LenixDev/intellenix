@@ -3,7 +3,8 @@ import { ScrollView, Text, View } from 'tamagui'
 // eslint-disable-next-line max-lines-per-function
 export const Conversation = ({
 	conversations,
-	scrollRef
+	scrollRef,
+	isPortrait
 }: {
 	conversations: {
 		id: string
@@ -11,15 +12,16 @@ export const Conversation = ({
 		content: string
 	}[]
 	scrollRef: React.RefObject<ScrollView | null>
+	isPortrait: boolean
 }) => (
 	<ScrollView
 		ref={scrollRef}
 		width='100%'
-		px='$5'
+		px={isPortrait ? '$2' : '$5'}
 		pb='$10'
-		scrollbarWidth='none'
 		flex={1}
 		justify='flex-end'
+		minH={0}
 		onContentSizeChange={() => {
 			scrollRef.current?.scrollToEnd({ animated: true })
 		}}
@@ -34,7 +36,7 @@ export const Conversation = ({
 						color='$colorFocus'
 						bg='$color02'
 						rounded='$5'
-						my='$5'
+						mb='$5'
 					>
 						{content}
 					</Text>
@@ -46,7 +48,7 @@ export const Conversation = ({
 						maxW='90%'
 						self='flex-start'
 						color='$color'
-						my='$5'
+						mb='$10'
 					>
 						{content}
 					</Text>
