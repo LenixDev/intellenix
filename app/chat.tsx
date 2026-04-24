@@ -17,8 +17,10 @@ import { useTranslation } from 'react-i18next'
 import type { Conversation as IConversation } from '@/types'
 
 const isMac = navigator.userAgent.includes('Mac')
-const composeId = () => new Date().toISOString().replace('T', ' ')
-	.slice(0, 19)
+const composeId = () => {
+	const d = new Date()
+	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}.${String(d.getMilliseconds()).padStart(3, '0')}`
+}
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function Page() {

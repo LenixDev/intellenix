@@ -1,5 +1,5 @@
 import type { Conversation as IConversation } from '@/types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ScrollView, Text, View } from 'tamagui'
 
 // eslint-disable-next-line max-lines-per-function
@@ -13,7 +13,18 @@ export const Conversation = ({
 	isPortrait: boolean
 }) => {
 	const [shown, setShown] = useState<Record<string, boolean>>({})
-	
+	const [promptTokens, setPromptTokens] = useState<Record<string, number | undefined>>({})
+
+	useEffect(() => {
+		const newPromptTokens: Record<string, number | undefined> = {}
+		conversations.forEach($ => {
+			console.log($?.usage)
+			if ($.role === 'assistant')
+				newPromptTokens[$.date] = $.usage?.prompt_tokens
+		})
+		setPromptTokens(newPromptTokens)
+	}, [conversations])
+
 	return (
 		<ScrollView
 			ref={scrollRef}
@@ -56,12 +67,20 @@ export const Conversation = ({
 						>
 							{$.content}
 						</Text>
-						<View opacity={shown[$.date] === true ? 1 : 0}>
+						<View opacity={shown[$.date] === true ? 1 : 0} gap={0} items='flex-end'>
+							<Text
+								color='$color04'
+								fontSize='$1'
+							>
+								{$.date}
+							</Text>
 							<Text
 								color='$color04'
 								fontStyle='italic'
 								fontSize='$1'
-							>{$.date}</Text>
+							>
+								tokens used: {promptTokens[$.date]}
+							</Text>
 						</View>
 					</View>
 				)
@@ -87,13 +106,19 @@ export const Conversation = ({
 						>
 							{$.content}
 						</Text>
-						<View opacity={shown[$.date] === true ? 1 : 0}>
+						<View opacity={shown[$.date] === true ? 1 : 0} gap={0}>
+							<Text
+								color='$color04'
+								fontSize='$1'
+							>
+								{$.date}
+							</Text>
 							<Text
 								color='$color04'
 								fontStyle='italic'
 								fontSize='$1'
 							>
-								{$.date} | service tier: {$.service_tier} | tokens used: {$.usage?.completion_tokens}
+								took: {$.usage?.queue_time?.toFixed(2)}s | tokens used: {$.usage?.completion_tokens} | service tier: {$.service_tier}
 							</Text>
 						</View>
 					</View>
