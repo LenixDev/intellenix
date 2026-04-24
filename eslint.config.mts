@@ -32,12 +32,13 @@ export default defineConfig([
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		rules: {
 			...(lint.strict as any),
-			"id-length": [
-				"warn",
+			'id-length': [
+				'warn',
 				{
-					"exceptions": ["_", "t", "$"]
+					exceptions: ['_', 't', '$']
 				}
 			],
+			'camelcase': 'off',
 			'@stylistic/array-bracket-newline': 'warn',
 			'@stylistic/array-bracket-spacing': 'warn',
 			'@stylistic/array-element-newline': ['warn', 'consistent'],
