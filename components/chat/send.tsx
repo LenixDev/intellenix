@@ -4,17 +4,19 @@ import { Send as ISend, Mic } from '@tamagui/lucide-icons-2'
 export const Send = ({
 	content,
 	send,
-	aiThinking
+	aiThinking,
+	r_tPM
 }: {
 	content: string
 	send: () => void
 	aiThinking: boolean
+	r_tPM: boolean
 }) => (
 	<Button
 		circular
 		chromeless
 		icon={content.trim() ? ISend : Mic}
-		disabled={aiThinking}
+		disabled={aiThinking || r_tPM}
 		onPress={send}
 		size='$3'
 		hoverStyle={{

@@ -158,10 +158,6 @@ export default function Page() {
 			toast.info(t('not_yet'))
 			return
 		}
-		if (limits.rpm >= LIMITS[defaultModel].rpm || limits.tpm >= LIMITS[defaultModel].tpm) {
-			toast.info(t('limit'))
-			return
-		}
 		setConversations(prev => [
 			...prev,
 			{
@@ -179,7 +175,6 @@ export default function Page() {
 			rpd: prev.rpd + 1,
 		}))
 	}
-	console.log(limits)
 
 	return (
 		<View items='center' width='100%' height='100%'>
@@ -222,7 +217,7 @@ export default function Page() {
 								send,
 								aiThinking,
 								apiKey,
-								isMac
+								isMac,
 							}}
 						/>
 					</View>
@@ -245,7 +240,12 @@ export default function Page() {
 							}}
 						/>
 						<Tasks />
-						<Send {...{ content: message, send, aiThinking }} />
+						<Send {...{
+							content: message,
+							send,
+							aiThinking,
+							r_tPM: limits.rpm >= LIMITS[defaultModel].rpm || limits.tpm >= LIMITS[defaultModel].tpm
+						}}/>
 					</View>
 				</View>
 				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
