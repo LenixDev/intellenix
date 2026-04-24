@@ -131,14 +131,14 @@ export default function Page() {
 	return (
 		<View items='center' width='100%' height='100%'>
 			<View
-				width={isPortrait ? '90%' : '50%'}
+				width={isPortrait ? '95%' : '50%'}
 				height='100%'
 				items='center'
 				justify='flex-end'
 				pb='$5'
 				gap='$2'
 			>
-				<Conversation {...{ conversations, scrollRef }} />
+				<Conversation {...{ conversations, scrollRef, isPortrait }} />
 				<View
 					width='100%'
 					bg='$color4'
