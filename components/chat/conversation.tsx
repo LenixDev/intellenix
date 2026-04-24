@@ -7,7 +7,7 @@ export const Conversation = ({
 	isPortrait
 }: {
 	conversations: {
-		id: string
+		date: string
 		role: 'user' | 'assistant'
 		content: string
 	}[]
@@ -20,13 +20,13 @@ export const Conversation = ({
 		px={isPortrait ? '$2' : '$5'}
 		pb='$10'
 		flex={1}
-		justify='flex-end'
 		minH={0}
 		onContentSizeChange={() => {
 			scrollRef.current?.scrollToEnd({ animated: true })
 		}}
+		scrollbarWidth='none'
 	>
-		{conversations.map(({ id, role, content }) => {
+		{conversations.map(({ date: id, role, content }) => {
 			if (role === 'user') return (
 				<View key={id} items='flex-end'>
 					<Text
