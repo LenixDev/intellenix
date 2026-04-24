@@ -115,7 +115,10 @@ export default function Page() {
 		return undefined
 	}
 	const send = () => {
-		if (!content.trim()) return
+		if (!content.trim()) {
+			toast.info(t('not_yet'))
+			return
+		}
 		setConversations(prev => [
 			...prev,
 			{

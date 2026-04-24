@@ -1,5 +1,5 @@
 import { Button } from 'tamagui'
-import { Send as ISend } from '@tamagui/lucide-icons-2'
+import { Send as ISend, Mic } from '@tamagui/lucide-icons-2'
 
 export const Send = ({
 	content,
@@ -13,8 +13,8 @@ export const Send = ({
 	<Button
 		circular
 		chromeless
-		icon={ISend}
-		disabled={aiThinking || !content.trim()}
+		icon={content.trim() ? ISend : Mic}
+		disabled={aiThinking}
 		onPress={send}
 		size='$3'
 		hoverStyle={{
