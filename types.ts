@@ -20,4 +20,5 @@ export type Conversation = {
 	date: string
 	role: 'user'
 	content: string
+	completion_tokens: 'calculating...' | CompletionUsage['completion_tokens']
 }

@@ -1,5 +1,5 @@
 import type { Conversation as IConversation } from '@/types'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ScrollView, Text, View } from 'tamagui'
 
 // eslint-disable-next-line max-lines-per-function
@@ -13,17 +13,6 @@ export const Conversation = ({
 	isPortrait: boolean
 }) => {
 	const [shown, setShown] = useState<Record<string, boolean>>({})
-	const [promptTokens, setPromptTokens] = useState<Record<string, number | undefined>>({})
-
-	useEffect(() => {
-		const newPromptTokens: Record<string, number | undefined> = {}
-		conversations.forEach($ => {
-			console.log($?.usage)
-			if ($.role === 'assistant')
-				newPromptTokens[$.date] = $.usage?.prompt_tokens
-		})
-		setPromptTokens(newPromptTokens)
-	}, [conversations])
 
 	return (
 		<ScrollView
@@ -79,7 +68,7 @@ export const Conversation = ({
 								fontStyle='italic'
 								fontSize='$1'
 							>
-								tokens used: {promptTokens[$.date]}
+								tokens used: {$.completion_tokens}
 							</Text>
 						</View>
 					</View>

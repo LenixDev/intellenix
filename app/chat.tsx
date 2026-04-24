@@ -18,8 +18,8 @@ import type { Conversation as IConversation } from '@/types'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
-	const d = new Date()
-	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}.${String(d.getMilliseconds()).padStart(3, '0')}`
+	const $ = new Date()
+	return `${$.getFullYear()}-${String($.getMonth() + 1).padStart(2, '0')}-${String($.getDate()).padStart(2, '0')} ${String($.getHours()).padStart(2, '0')}:${String($.getMinutes()).padStart(2, '0')}:${String($.getSeconds()).padStart(2, '0')}.${String($.getMilliseconds()).padStart(3, '0')}`
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements
@@ -128,7 +128,8 @@ export default function Page() {
 			{
 				date: composeId(),
 				content: message,
-				role: 'user'
+				role: 'user',
+				completion_tokens: 'calculating...'
 			}
 		])
 		chat(message).catch(raise)
