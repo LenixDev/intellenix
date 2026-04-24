@@ -16,18 +16,18 @@ import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
 
 const isMac = navigator.userAgent.includes('Mac')
-const composeId = () => Date.now().toString()
+const composeId = () => new Date().toISOString().replace('T', ' ').slice(0, 19)
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function Page() {
 	const [conversations, setConversations] = useState<
 		{
-			id: string
+			date: string
 			role: 'user' | 'assistant'
 			content: string
 		}[]
 	>([])
-	const [content, setContent] = useState('')
+	const [message, setMessage] = useState('')
 	const [aiThinking, setAiThinking] = useState(false)
 	const [apiKey, setApiKey] = useState<string>('')
 	const [apiKeyDialog, setApiKeyDialog] = useState(false)
@@ -58,18 +58,10 @@ export default function Page() {
 	}, [conversations])
 
 	useEffect(() => {
-		const key = prefs.getKey()
-		if (key === null) {
-			setApiKeyDialog(true)
-			return
-		}
-		if (key instanceof Promise) key.
-			then($ => {
-				if ($ === null) return
-				setApiKey($)
-			}).
-			catch(raise)
-		else setApiKey(key)
+		prefs.getKey().then(key => {
+			if (key === null) setApiKeyDialog(true)
+			else setApiKey(key)
+		}).catch(raise)
 	}, [])
 
 	if (!apiKey.trim() || apiKeyDialog) return (
@@ -83,11 +75,14 @@ export default function Page() {
 		/>
 	)
 
+	// eslint-disable-next-line max-statements
 	const chat = async(request: string) => {
 		setAiThinking(true)
 		try {
 			const completion = await groq.chat.completions.create({
 				messages: [
+					// eslint-disable-next-line @stylistic/max-len
+					...conversations.map(({ role, content }) => ({ role, content })),
 					{
 						role: 'user',
 						content: request
@@ -101,7 +96,7 @@ export default function Page() {
 			setConversations(prev => [
 				...prev,
 				{
-					id: composeId(),
+					date: composeId(),
 					role: 'assistant',
 					content: response
 				}
@@ -115,20 +110,20 @@ export default function Page() {
 		return undefined
 	}
 	const send = () => {
-		if (!content.trim()) {
+		if (!message.trim()) {
 			toast.info(t('not_yet'))
 			return
 		}
 		setConversations(prev => [
 			...prev,
 			{
-				id: composeId(),
-				content,
+				date: composeId(),
+				content: message,
 				role: 'user'
 			}
 		])
-		chat(content).catch(raise)
-		setContent('')
+		chat(message).catch(raise)
+		setMessage('')
 	}
 
 	return (
@@ -160,8 +155,8 @@ export default function Page() {
 					>
 						<Message
 							{...{
-								content,
-								setContent,
+								content: message,
+								setContent: setMessage,
 								send,
 								aiThinking,
 								apiKey,
@@ -188,7 +183,7 @@ export default function Page() {
 							}}
 						/>
 						<Tasks />
-						<Send {...{ content, send, aiThinking }} />
+						<Send {...{ content: message, send, aiThinking }} />
 					</View>
 				</View>
 				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
