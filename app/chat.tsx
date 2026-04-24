@@ -14,6 +14,7 @@ import { Preferences } from '@/components/chat/preferences'
 import { defaultModel } from '@/constants'
 import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
+import type { Conversation as IConversation } from '@/types'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => new Date().toISOString().replace('T', ' ')
@@ -21,13 +22,7 @@ const composeId = () => new Date().toISOString().replace('T', ' ')
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function Page() {
-	const [conversations, setConversations] = useState<
-		{
-			date: string
-			role: 'user' | 'assistant'
-			content: string
-		}[]
-	>([])
+	const [conversations, setConversations] = useState<IConversation[]>([])
 	const [message, setMessage] = useState('')
 	const [aiThinking, setAiThinking] = useState(false)
 	const [apiKey, setApiKey] = useState<string>('')
@@ -75,12 +70,12 @@ export default function Page() {
 			}}
 		/>
 	)
-
-	// eslint-disable-next-line max-statements
 	const chat = async(request: string) => {
 		setAiThinking(true)
 		try {
-			const completion = await groq.chat.completions.create({
+			const {
+				choices, service_tier, usage
+			} = await groq.chat.completions.create({
 				messages: [
 					// eslint-disable-next-line @stylistic/max-len
 					...conversations.map(({ role, content }) => ({ role, content })),
@@ -89,9 +84,18 @@ export default function Page() {
 						content: request
 					}
 				],
-				model: defaultModel
+				model: defaultModel,
+				// temperature: null,
+				// search_settings: null,
+				// reasoning_effort: null,
+				// max_completion_tokens: null,
+				// include_reasoning: null,
+				// documents: null,
+				// compound_custom: null,
+				// tools: null,
+				// user: null
 			})
-			const response = completion.choices[0]?.message.content
+			const response = choices[0]?.message.content
 			if (typeof response !== 'string') return toast.error(t('no_res'))
 
 			setConversations(prev => [
@@ -99,7 +103,9 @@ export default function Page() {
 				{
 					date: composeId(),
 					role: 'assistant',
-					content: response
+					content: response,
+					service_tier,
+					usage
 				}
 			])
 		} catch(err) {
