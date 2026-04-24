@@ -1,4 +1,4 @@
-import { Button, type ScrollView, useWindowDimensions, View } from 'tamagui'
+import { Button, Progress, type ScrollView, useWindowDimensions, View } from 'tamagui'
 import { SlidersHorizontal } from '@tamagui/lucide-icons-2'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Groq from 'groq-sdk'
@@ -154,12 +154,19 @@ export default function Page() {
 				gap='$2'
 			>
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
+				<Progress
+					value={50}
+					maxW='95%'
+					size='$1'
+				>
+					<Progress.Indicator transition='slowest' />
+				</Progress>
 				<View
 					width='100%'
 					bg='$color3'
 					rounded='$8'
-					px='$4'
 					pt='$3'
+					px='$4'
 					pb='$2'
 					justify='center'
 					border='1px solid $color6'
