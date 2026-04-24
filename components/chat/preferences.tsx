@@ -73,7 +73,7 @@ export const Preferences = ({
 	}, [])
 
 	return (
-		<Sheet open={open} onOpenChange={setOpen} snapPoints={[50, 10]}>
+		<Sheet modal open={open} onOpenChange={setOpen} snapPoints={[50, 10]}>
 			<Sheet.Overlay />
 			<Sheet.Handle />
 			<Sheet.Frame
