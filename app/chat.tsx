@@ -141,8 +141,12 @@ export default function Page() {
 				tpm: prev.tpm + (usage?.total_tokens ?? 0),
 				tpd: prev.tpd + (usage?.total_tokens ?? 0),
 			}))
-		} catch(err) {
-			toast.error(t('conn_err'))
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch(err: any) {
+			toast.error(t('conn_err'), {
+				description: err.error.error.message,
+				duration: 40_000
+			})
 			raise(err)
 		} finally {
 			setAiThinking(false)
@@ -175,6 +179,7 @@ export default function Page() {
 			rpd: prev.rpd + 1,
 		}))
 	}
+	console.log(limits)
 
 	return (
 		<View items='center' width='100%' height='100%'>
