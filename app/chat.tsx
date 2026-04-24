@@ -16,7 +16,8 @@ import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
 
 const isMac = navigator.userAgent.includes('Mac')
-const composeId = () => new Date().toISOString().replace('T', ' ').slice(0, 19)
+const composeId = () => new Date().toISOString().replace('T', ' ')
+	.slice(0, 19)
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function Page() {

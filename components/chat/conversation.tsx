@@ -20,6 +20,7 @@ export const Conversation = ({
 		px={isPortrait ? '$2' : '$5'}
 		pb='$10'
 		flex={1}
+		justify='flex-end'
 		minH={0}
 		onContentSizeChange={() => {
 			scrollRef.current?.scrollToEnd({ animated: true })
