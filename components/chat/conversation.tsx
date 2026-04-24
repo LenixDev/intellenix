@@ -35,7 +35,7 @@ export const Conversation = ({
 						px='$3'
 						maxW='90%'
 						color='$colorFocus'
-						bg='$color02'
+						bg='$color01'
 						rounded='$5'
 						mb='$5'
 					>

@@ -140,7 +140,7 @@ export default function Page() {
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
 				<View
 					width='100%'
-					bg='$color4'
+					bg='$color3'
 					rounded='$8'
 					px='$4'
 					pt='$3'
