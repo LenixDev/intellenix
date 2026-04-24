@@ -4,9 +4,12 @@ import { Select } from 'tamagui'
 import { Selection } from '../selection'
 import { useTranslation } from 'react-i18next'
 
+const TASK_KEYS = ['programming', 'health'] as const
+
 export const Tasks = () => {
 	const { t } = useTranslation()
-	const tasks = [t('programming'), t('health')] as const
+	const tasks = useMemo(() => TASK_KEYS.map($ => t($)), [t])
+
 	return (
 		<Selection
 			renderer={value => tasks.find(task => task === value) ?? 'ERR'}
