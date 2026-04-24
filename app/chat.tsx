@@ -72,7 +72,7 @@ export default function Page() {
 			}}
 		/>
 	)
-	// eslint-disable-next-line max-lines-per-function
+	// eslint-disable-next-line max-lines-per-function, max-statements
 	const chat = async(request: string) => {
 		setAiThinking(true)
 		try {
@@ -114,7 +114,7 @@ export default function Page() {
 			setConversations(prev => {
 				const updated = [...prev]
 				const lastUser = [...updated].reverse().find($ => $.role === 'user')
-				if (lastUser) lastUser.completion_tokens = usage?.prompt_tokens
+				if (lastUser) lastUser.completion_tokens = usage?.prompt_tokens ?? 'failed!'
 				return updated
 			})
 		} catch(err) {
