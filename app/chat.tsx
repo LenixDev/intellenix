@@ -15,7 +15,7 @@ import { defaultModel } from '@/constants'
 import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
 
-const isMac = navigator.platform.toUpperCase().includes('MAC')
+const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => Date.now().toString()
 
 // eslint-disable-next-line max-lines-per-function, max-statements
@@ -188,7 +188,7 @@ export default function Page() {
 						<Send {...{ content, send, aiThinking }} />
 					</View>
 				</View>
-				{!isPortrait && <Kdb {...{ isMac }} />}
+				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
 			</View>
 			<Preferences
 				{...{
