@@ -26,13 +26,15 @@ export type Conversation = {
 
 export type Models = keyof typeof LIMITS
 
-export interface UpdateSendQuota {
-	type: 'send'
+export interface UpdateReplyQuota<T = CompletionUsage['total_tokens']> {
+	tokens: CompletionUsage['total_tokens'] | T
 	apiKey: string
 	model: Models
 }
 
-export interface UpdateReplyQuota<T = CompletionUsage['total_tokens']> {
-	type: 'reply'
-	tokens: CompletionUsage['total_tokens'] | T
-}
+export type UpdateQuota = Record<Models, {
+	rpd: number
+	tpd: number
+}>
+
+export type ApiKeysQuota = Record<string, UpdateQuota>
