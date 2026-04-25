@@ -11,32 +11,16 @@ import { Message } from '@/components/chat/message'
 import { Send } from '@/components/chat/send'
 import { Kdb } from '@/components/chat/kdb'
 import { Preferences } from '@/components/chat/preferences'
-import { defaultModel } from '@/constants'
+import { defaultModel, LIMITS } from '@/constants'
 import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
-import type { Conversation as IConversation, UpdateReplyQuota, UpdateSendQuota } from '@/types'
+import type { Conversation as IConversation, UpdateReplyQuota, UpdateQuota, ApiKeysQuota } from '@/types'
 import { supabase } from '@/supabase'
-import type { i18n } from 'i18next'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
 	const $ = new Date()
 	return `${$.getFullYear()}-${String($.getMonth() + 1).padStart(2, '0')}-${String($.getDate()).padStart(2, '0')} ${String($.getHours()).padStart(2, '0')}:${String($.getMinutes()).padStart(2, '0')}:${String($.getSeconds()).padStart(2, '0')}.${String($.getMilliseconds()).padStart(3, '0')}`
-}
-
-const updateQuota = (body: Omit<UpdateSendQuota, 'apiKey'> | UpdateReplyQuota<undefined>, t: i18n['t']) => {
-	prefs.getKey().then(key => {
-		if (
-			key === null ||
-			(body.type === 'reply' && body.tokens === undefined)
-		) toast.error(t('quota_update_err'))
-		else supabase.functions.invoke('update-quota', {
-			body: {
-				...body,
-				apiKey: key
-			}
-		}).catch(raise)
-	}).catch(raise)
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements
@@ -47,6 +31,7 @@ export default function Page() {
 	const [apiKey, setApiKey] = useState<string>('')
 	const [apiKeyDialog, setApiKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
+	const [limits, setLimits] = useState<ApiKeysQuota>({})
 
 	const scrollRef = useRef<ScrollView>(null)
 
@@ -135,10 +120,25 @@ export default function Page() {
 				if (lastUser) lastUser.completion_tokens = usage?.prompt_tokens ?? 'failed!'
 				return updated
 			})
-			updateQuota({
-				type: 'reply',
-				tokens: usage?.total_tokens
-			}, t)
+			prefs.getKey().then(key => {
+				if (key === null || usage?.total_tokens === undefined) toast.error(t('quota_update_err'))
+				else supabase.functions.invoke<UpdateQuota>('update-quota', {
+					body: {
+						tokens: usage.total_tokens,
+						model: defaultModel,
+						apiKey: key
+					} satisfies UpdateReplyQuota
+				}).then(({ error, data }) => {
+					if (error instanceof Error || data === null) {
+						toast.error(t('quota_update_err'))
+						return
+					}
+					setLimits(prev => ({
+						...prev,
+						[apiKey]: data
+					}))
+				})
+			}).catch(raise)
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
 			setConversations(prev => prev.slice(0, prev.length - 1))
@@ -168,10 +168,6 @@ export default function Page() {
 		])
 		reply(message).catch(raise)
 		setMessage('')
-		updateQuota({
-			type: 'send',
-			model: defaultModel
-		}, t)
 	}
 
 	return (
@@ -186,7 +182,14 @@ export default function Page() {
 			>
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
 				<Progress
-					value={0}
+					value={((limits[apiKey]?.[defaultModel].rpd ?? 0) * 100) / LIMITS[defaultModel].rpd}
+					maxW='95%'
+					size='$1'
+				>
+					<Progress.Indicator transition='slowest' />
+				</Progress>
+				<Progress
+					value={((limits[apiKey]?.[defaultModel].tpd ?? 0) * 100) / LIMITS[defaultModel].tpd}
 					maxW='95%'
 					size='$1'
 				>
