@@ -39,6 +39,11 @@ export default function Page() {
 	const isPortrait = height > width
 	const { t } = useTranslation()
 
+	const groq = useMemo(
+		() => new Groq({ apiKey, dangerouslyAllowBrowser: true }),
+		[apiKey]
+	)
+
 	useEffect(() => {
 		if (conversations.length === 0) return
 
@@ -59,6 +64,19 @@ export default function Page() {
 		}).catch(raise)
 	}, [])
 
+	useEffect(() => {
+		supabase.functions.invoke<UpdateQuota>('update-quota', {
+			body: {
+				type: 'get',
+				apiKey
+			} satisfies Omit<UpdateReplyQuota, 'model' | 'tokens'>
+		}).then(({ error, data }) => {
+			if (error instanceof Error || data === null) {
+				toast.error(error?.message)
+			}
+		})
+	}, [])
+
 	if (!apiKey.trim() || apiKeyDialog) return (
 		<Api
 			{...{
@@ -68,11 +86,6 @@ export default function Page() {
 				setApiKeyDialog
 			}}
 		/>
-	)
-
-	const groq = useMemo(
-		() => new Groq({ apiKey, dangerouslyAllowBrowser: true }),
-		[apiKey]
 	)
 
 	// eslint-disable-next-line max-lines-per-function, max-statements
@@ -125,11 +138,12 @@ export default function Page() {
 					body: {
 						tokens: usage.total_tokens,
 						model: defaultModel,
-						apiKey: key
+						apiKey: key,
+						type: 'update'
 					} satisfies UpdateReplyQuota
 				}).then(({ error, data }) => {
 					if (error instanceof Error || data === null) {
-						toast.error(t('quota_update_err'))
+						toast.error(error?.message)
 						return
 					}
 					setLimits(prev => ({
@@ -141,8 +155,7 @@ export default function Page() {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
 			setConversations(prev => prev.slice(0, prev.length - 1))
-			toast.error(t('conn_err'), {
-				description: err.error.error.message,
+			toast.error(err.error.error.message, {
 				duration: 40_000
 			})
 			raise(err)
