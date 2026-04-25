@@ -105,7 +105,12 @@ export default function Page() {
 			if (typeof response !== 'string') return toast.error(t('no_res'))
 
 			setConversations(prev => [
-				...prev,
+				...prev.map(($, i, arr) => {
+					if ($.role !== 'user') return $
+					const isLast = arr.slice(i + 1).every(n => n.role !== 'user')
+					if (!isLast) return $
+					return { ...$, completion_tokens: usage?.prompt_tokens ?? 'failed!' } as IConversation
+				}),
 				{
 					date: composeId(),
 					role: 'assistant',
@@ -114,12 +119,6 @@ export default function Page() {
 					usage
 				}
 			])
-			setConversations(prev => {
-				const updated = [...prev]
-				const lastUser = [...updated].reverse().find($ => $.role === 'user')
-				if (lastUser) lastUser.completion_tokens = usage?.prompt_tokens ?? 'failed!'
-				return updated
-			})
 			prefs.getKey().then(key => {
 				if (key === null || usage?.total_tokens === undefined) toast.error(t('quota_update_err'))
 				else supabase.functions.invoke<UpdateQuota>('update-quota', {
