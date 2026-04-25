@@ -9,3 +9,14 @@ entrypoint = "./functions/get-api-key/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/get-api-key/*.html" ]
+
+[functions.update-quota]
+enabled = true
+verify_jwt = true
+import_map = "./functions/update-quota/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/update-quota/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/update-quota/*.html" ]
