@@ -1,7 +1,8 @@
 /* eslint-disable @stylistic/max-len */
+import type { Models } from '@/types';
 import type { Model } from 'groq-sdk/resources'
 
-export const defaultModel = 'llama-3.3-70b-versatile' satisfies Model['id']
+export const defaultModel: Models = 'llama-3.3-70b-versatile' satisfies Model['id']
 
 export const LIMITS = {
 	'allam-2-7b': { rpm: 30, rpd: 7_000, tpm: 6_000, tpd: 500_000, ash: 0, asd: 0 },
@@ -20,4 +21,4 @@ export const LIMITS = {
 	'qwen/qwen3-32b': { rpm: 60, rpd: 1_000, tpm: 6_000, tpd: 500_000, ash: 0, asd: 0 },
 	'whisper-large-v3': { rpm: 20, rpd: 2_000, tpm: 0, tpd: 0, ash: 7_200, asd: 28_800 },
 	'whisper-large-v3-turbo': { rpm: 20, rpd: 2_000, tpm: 0, tpd: 0, ash: 7_200, asd: 28_800 },
-}  as const satisfies Record<string, { rpm: number; rpd: number; tpm: number; tpd: number; ash: number; asd: number }>
+} as const satisfies Record<string, { rpm: number; rpd: number; tpm: number; tpd: number; ash: number; asd: number }>
