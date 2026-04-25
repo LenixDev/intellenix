@@ -34,8 +34,8 @@ export interface UpdateReplyQuota<T = CompletionUsage['total_tokens']> {
 }
 
 export type UpdateQuota = Record<Models, {
-	rpd: number
-	tpd: number
+	rpd?: number
+	tpd?: number
 }>
 
 export type ApiKeysQuota = Record<string, UpdateQuota>

@@ -65,17 +65,17 @@ export default function Page() {
 	}, [])
 
 	useEffect(() => {
+		if (!apiKey) return
 		supabase.functions.invoke<UpdateQuota>('update-quota', {
-			body: {
-				type: 'get',
-				apiKey
-			} satisfies Omit<UpdateReplyQuota, 'model' | 'tokens'>
+			body: { type: 'get', apiKey } satisfies Omit<UpdateReplyQuota, 'model' | 'tokens'>
 		}).then(({ error, data }) => {
 			if (error instanceof Error || data === null) {
 				toast.error(error?.message)
+				return
 			}
+			setLimits(prev => ({ ...prev, [apiKey]: data }))
 		})
-	}, [])
+	}, [apiKey])
 
 	if (!apiKey.trim() || apiKeyDialog) return (
 		<Api
@@ -146,6 +146,7 @@ export default function Page() {
 						toast.error(error?.message)
 						return
 					}
+					console.debug(data)
 					setLimits(prev => ({
 						...prev,
 						[apiKey]: data
@@ -194,14 +195,14 @@ export default function Page() {
 			>
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
 				<Progress
-					value={((limits[apiKey]?.[defaultModel].rpd ?? 0) * 100) / LIMITS[defaultModel].rpd}
+					value={((limits[apiKey]?.[defaultModel]?.rpd ?? 0) * 100) / LIMITS[defaultModel].rpd}
 					maxW='95%'
 					size='$1'
 				>
 					<Progress.Indicator transition='slowest' />
 				</Progress>
 				<Progress
-					value={((limits[apiKey]?.[defaultModel].tpd ?? 0) * 100) / LIMITS[defaultModel].tpd}
+					value={((limits[apiKey]?.[defaultModel]?.tpd ?? 0) * 100) / LIMITS[defaultModel].tpd}
 					maxW='95%'
 					size='$1'
 				>
