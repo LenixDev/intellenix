@@ -11,8 +11,10 @@
 		"lint": "pnpm exec eslint . --fix",
 		"build": "npx expo export --platform web",
 		"ip": "ipconfig getifaddr en0",
-		"supa-d": "supabase functions deploy --project-ref xnneyejwiffsbglxqvks",
-		"supa-fn": "supabase functions new"
+		"supadeploy": "supabase functions deploy --project-ref xnneyejwiffsbglxqvks",
+		"supanew": "supabase functions new",
+		"supastart": "supabase start",
+		"supaserve": "supabase functions serve --env-file .env.local --no-verify-jwt"
 	},
 	"dependencies": {
 		"@react-native-async-storage/async-storage": "^3.0.2",
