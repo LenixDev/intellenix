@@ -1,5 +1,6 @@
 import type { ChatCompletion } from 'groq-sdk/resources/chat/completions.mjs'
 import type { CompletionUsage } from 'groq-sdk/resources'
+import type { LIMITS } from './constants'
 
 export interface GetApiKey {
 	key: string
@@ -21,4 +22,17 @@ export type Conversation = {
 	role: 'user'
 	content: string
 	completion_tokens: 'calculating...' | CompletionUsage['completion_tokens'] | 'failed!'
+}
+
+export type Models = keyof typeof LIMITS
+
+export interface UpdateSendQuota {
+	type: 'send'
+	apiKey: string
+	model: Models
+}
+
+export interface UpdateReplyQuota<T = CompletionUsage['total_tokens']> {
+	type: 'reply'
+	tokens: CompletionUsage['total_tokens'] | T
 }

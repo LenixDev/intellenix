@@ -11,15 +11,32 @@ import { Message } from '@/components/chat/message'
 import { Send } from '@/components/chat/send'
 import { Kdb } from '@/components/chat/kdb'
 import { Preferences } from '@/components/chat/preferences'
-import { defaultModel, LIMITS } from '@/constants'
+import { defaultModel } from '@/constants'
 import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
-import type { Conversation as IConversation } from '@/types'
+import type { Conversation as IConversation, UpdateReplyQuota, UpdateSendQuota } from '@/types'
+import { supabase } from '@/supabase'
+import type { i18n } from 'i18next'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
 	const $ = new Date()
 	return `${$.getFullYear()}-${String($.getMonth() + 1).padStart(2, '0')}-${String($.getDate()).padStart(2, '0')} ${String($.getHours()).padStart(2, '0')}:${String($.getMinutes()).padStart(2, '0')}:${String($.getSeconds()).padStart(2, '0')}.${String($.getMilliseconds()).padStart(3, '0')}`
+}
+
+const updateQuota = (body: Omit<UpdateSendQuota, 'apiKey'> | UpdateReplyQuota<undefined>, t: i18n['t']) => {
+	prefs.getKey().then(key => {
+		if (
+			key === null ||
+			(body.type === 'reply' && body.tokens === undefined)
+		) toast.error(t('quota_update_err'))
+		else supabase.functions.invoke('update-quota', {
+			body: {
+				...body,
+				apiKey: key
+			}
+		}).catch(raise)
+	}).catch(raise)
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements
@@ -30,9 +47,6 @@ export default function Page() {
 	const [apiKey, setApiKey] = useState<string>('')
 	const [apiKeyDialog, setApiKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
-	const [limits, setLimits] = useState({
-		rpm: 0, rpd: 0, tpm: 0, tpd: 0
-	})
 
 	const scrollRef = useRef<ScrollView>(null)
 
@@ -65,21 +79,6 @@ export default function Page() {
 		}).catch(raise)
 	}, [])
 
-	useEffect(() => {
-		const minute = setInterval(() => {
-			setLimits(prev => ({ ...prev, rpm: 0, tpm: 0 }))
-		}, 60_000)
-
-		const day = setInterval(() => {
-			setLimits(prev => ({ ...prev, rpd: 0, tpd: 0 }))
-		}, 86_400_000)
-
-		return () => {
-			clearInterval(minute)
-			clearInterval(day)
-		}
-	}, [])
-
 	if (!apiKey.trim() || apiKeyDialog) return (
 		<Api
 			{...{
@@ -92,7 +91,7 @@ export default function Page() {
 	)
 
 	// eslint-disable-next-line max-lines-per-function, max-statements
-	const chat = async(request: string) => {
+	const reply = async (request: string) => {
 		setAiThinking(true)
 		try {
 			const {
@@ -136,13 +135,12 @@ export default function Page() {
 				if (lastUser) lastUser.completion_tokens = usage?.prompt_tokens ?? 'failed!'
 				return updated
 			})
-			setLimits(prev => ({
-				...prev,
-				tpm: prev.tpm + (usage?.total_tokens ?? 0),
-				tpd: prev.tpd + (usage?.total_tokens ?? 0),
-			}))
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch(err: any) {
+			updateQuota({
+				type: 'reply',
+				tokens: usage?.total_tokens
+			}, t)
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (err: any) {
 			setConversations(prev => prev.slice(0, prev.length - 1))
 			toast.error(t('conn_err'), {
 				description: err.error.error.message,
@@ -168,15 +166,13 @@ export default function Page() {
 				completion_tokens: 'calculating...'
 			}
 		])
-		chat(message).catch(raise)
+		reply(message).catch(raise)
 		setMessage('')
-		setLimits(prev => ({
-			...prev,
-			rpm: prev.rpm + 1,
-			rpd: prev.rpd + 1,
-		}))
+		updateQuota({
+			type: 'send',
+			model: defaultModel
+		}, t)
 	}
-	console.log(limits)
 
 	return (
 		<View items='center' width='100%' height='100%'>
@@ -190,7 +186,7 @@ export default function Page() {
 			>
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
 				<Progress
-					value={(limits.tpd * 100) / LIMITS[defaultModel].tpd}
+					value={0}
 					maxW='95%'
 					size='$1'
 				>
@@ -246,8 +242,8 @@ export default function Page() {
 							content: message,
 							send,
 							aiThinking,
-							r_tPM: limits.rpm >= LIMITS[defaultModel].rpm || limits.tpm >= LIMITS[defaultModel].tpm
-						}}/>
+							r_tPM: false
+						}} />
 					</View>
 				</View>
 				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
