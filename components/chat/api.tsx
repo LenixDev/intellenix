@@ -84,7 +84,7 @@ export const Api = ({
 								.catch(raise)
 						}}
 					>
-						{loading ? <Spinner /> : 'Use a free limited API Key'}
+						{loading ? <Spinner /> : 'Use a free public limited API Key'}
 					</Button>
 				</Dialog.Content>
 			</Dialog.Portal>
