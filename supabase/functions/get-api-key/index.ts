@@ -1,18 +1,17 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
 import type { GetApiKey } from '@types'
+import { init } from 'init'
 
-const CORS = {
-	'Access-Control-Allow-Origin': '*',
-	'Access-Control-Allow-Headers': '*'
-}
 
 Deno.serve(req => {
-	if (req.method === 'OPTIONS') return new Response(null, { headers: CORS })
+	const [success, res] = init(req)
+	if (!success) return res
+	
 	const key = Deno.env.get('API_KEY')
 	if (typeof key !== 'string') return new Response('missing key', { status: 500 })
 
 	return new Response(
 		JSON.stringify({ key } satisfies GetApiKey),
-		{ headers: { ...CORS, 'Content-Type': 'application/json' } }
+		{ headers: { ...res, 'Content-Type': 'application/json' } }
 	)
 })
