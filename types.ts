@@ -30,6 +30,7 @@ export interface UpdateReplyQuota<T = CompletionUsage['total_tokens']> {
 	tokens: CompletionUsage['total_tokens'] | T
 	apiKey: string
 	model: Models
+	type: 'update' | 'get'
 }
 
 export type UpdateQuota = Record<Models, {
