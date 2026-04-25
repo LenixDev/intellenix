@@ -70,7 +70,9 @@ export default function Page() {
 			body: { type: 'get', apiKey } satisfies Omit<UpdateReplyQuota, 'model' | 'tokens'>
 		}).then(({ error, data }) => {
 			if (error instanceof Error || data === null) {
-				toast.error(error?.message)
+				toast.error(t('err'), {
+					description: error?.message
+				})
 				return
 			}
 			setLimits(prev => ({ ...prev, [apiKey]: data }))
@@ -143,7 +145,9 @@ export default function Page() {
 					} satisfies UpdateReplyQuota
 				}).then(({ error, data }) => {
 					if (error instanceof Error || data === null) {
-						toast.error(error?.message)
+						toast.error(t('err'), {
+							description: error?.message
+						})
 						return
 					}
 					console.debug(data)

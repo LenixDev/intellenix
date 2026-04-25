@@ -14,5 +14,6 @@
 	"api_key": "API Key",
 	"api_success": "API Key updated",
 	"update": "Update",
-	"quota_update_err": "Failed to update your quota insights"
+	"quota_update_err": "Failed to update your quota insights",
+	"err": "Error"
 }
