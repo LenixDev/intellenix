@@ -39,11 +39,6 @@ export default function Page() {
 	const isPortrait = height > width
 	const { t } = useTranslation()
 
-	const groq = useMemo(
-		() => new Groq({ apiKey, dangerouslyAllowBrowser: true }),
-		[apiKey]
-	)
-
 	useEffect(() => {
 		if (conversations.length === 0) return
 
@@ -73,6 +68,11 @@ export default function Page() {
 				setApiKeyDialog
 			}}
 		/>
+	)
+
+	const groq = useMemo(
+		() => new Groq({ apiKey, dangerouslyAllowBrowser: true }),
+		[apiKey]
 	)
 
 	// eslint-disable-next-line max-lines-per-function, max-statements
