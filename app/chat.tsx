@@ -64,21 +64,6 @@ export default function Page() {
 		}).catch(raise)
 	}, [])
 
-	useEffect(() => {
-		if (!apiKey) return
-		supabase.functions.invoke<UpdateQuota>('update-quota', {
-			body: { type: 'get', apiKey } satisfies Omit<UpdateReplyQuota, 'model' | 'tokens'>
-		}).then(({ error, data }) => {
-			if (error instanceof Error || data === null) {
-				toast.error(t('err'), {
-					description: error?.message
-				})
-				return
-			}
-			setLimits(prev => ({ ...prev, [apiKey]: data }))
-		})
-	}, [apiKey])
-
 	if (!apiKey.trim() || apiKeyDialog) return (
 		<Api
 			{...{
@@ -134,29 +119,6 @@ export default function Page() {
 					usage
 				}
 			])
-			prefs.getKey().then(key => {
-				if (key === null || usage?.total_tokens === undefined) toast.error(t('quota_update_err'))
-				else supabase.functions.invoke<UpdateQuota>('update-quota', {
-					body: {
-						tokens: usage.total_tokens,
-						model: defaultModel,
-						apiKey: key,
-						type: 'update'
-					} satisfies UpdateReplyQuota
-				}).then(({ error, data }) => {
-					if (error instanceof Error || data === null) {
-						toast.error(t('err'), {
-							description: error?.message
-						})
-						return
-					}
-					console.debug(data)
-					setLimits(prev => ({
-						...prev,
-						[apiKey]: data
-					}))
-				})
-			}).catch(raise)
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (err: any) {
 			setConversations(prev => prev.slice(0, prev.length - 1))
@@ -198,20 +160,13 @@ export default function Page() {
 				gap='$2'
 			>
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
-				<Progress
-					value={((limits[apiKey]?.[defaultModel]?.rpd ?? 0) * 100) / LIMITS[defaultModel].rpd}
+				{/* <Progress
+					value={0}
 					maxW='95%'
 					size='$1'
 				>
 					<Progress.Indicator transition='slowest' />
-				</Progress>
-				<Progress
-					value={((limits[apiKey]?.[defaultModel]?.tpd ?? 0) * 100) / LIMITS[defaultModel].tpd}
-					maxW='95%'
-					size='$1'
-				>
-					<Progress.Indicator transition='slowest' />
-				</Progress>
+				</Progress> */}
 				<View
 					width='100%'
 					bg='$color3'
