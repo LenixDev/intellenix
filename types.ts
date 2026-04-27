@@ -27,17 +27,17 @@ export type Conversation = {
 		| 'failed!'
 }
 
-export type Models = keyof typeof LIMITS
+export type Model = keyof typeof LIMITS
 
 export interface UpdateReplyQuota<T = CompletionUsage['total_tokens']> {
 	tokens: CompletionUsage['total_tokens'] | T
 	key: string
-	model: Models
+	model: Model
 	type: 'update' | 'get'
 }
 
 export type UpdateQuota = Partial<
-	Record<Models, {
+	Record<Model, {
 		rpd: number
 		tpd: number
 	}>

@@ -8,14 +8,14 @@ import { Label, Select, Sheet, View } from 'tamagui'
 import { Selection } from '../selection'
 import { useTranslation } from 'react-i18next'
 import { ApiInput } from './api-input'
-import { Models } from '@/types'
+import { Model } from '@/types'
 import { prefs } from '@/storage'
 import { toast } from '@tamagui/toast/v2'
 import { i18n } from 'i18next'
 
 const setItem = (
-	model: Models,
-	setItemState: React.Dispatch<React.SetStateAction<Models>>,
+	model: Model,
+	setItemState: React.Dispatch<React.SetStateAction<Model>>,
 	t: i18n['t']
 ) => prefs.setKey(model, 'model').then(() => {
 	setItemState(model)
@@ -66,7 +66,7 @@ export const Preferences = ({
 						renderer={value => items.find(item => item.id === value)?.id}
 						defaultValue={defaultModel}
 						listLabel={t('models')}
-						{...{ item, setItem: (item: Models) => setItem(item, setItemState, t) }}
+						{...{ item, setItem: (item: Model) => setItem(item, setItemState, t) }}
 					>
 						{useMemo(
 							() => items.map((item, iter) => (
