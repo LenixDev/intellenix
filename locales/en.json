@@ -28,5 +28,6 @@
 	"tokens_used": "tokens used:",
 	"took": "took:",
 	"s": "s",
-	"service_tier": "service tier:"
+	"service_tier": "service tier:",
+	"conn_err": "Connection Error"
 }

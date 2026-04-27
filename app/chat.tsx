@@ -89,17 +89,18 @@ const sendMessage = async ({
 				usage
 			}
 		])
+		setMessage('')
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (err: any) {
 		setConversations(prev => prev.slice(0, prev.length - 1))
-		toast.error(err.error.error.message, {
+		toast.error(t('conn_err'), {
+			description: err?.error?.error?.message,
 			duration: 40_000
 		})
 		raise(err)
 	} finally {
 		setAiThinking(false)
 	}
-	setMessage('')
 	return undefined
 }
 
