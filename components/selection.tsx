@@ -1,4 +1,3 @@
-import { Task } from '@/types'
 import { ChevronDown, ChevronUp } from '@tamagui/lucide-icons-2'
 import {
 	type SelectProps,
@@ -10,7 +9,7 @@ import {
 import { LinearGradient } from 'tamagui/linear-gradient'
 
 // eslint-disable-next-line max-lines-per-function
-export const Selection = ({
+export const Selection = <T extends string,>({
 	renderer,
 	listLabel,
 	children,
@@ -21,8 +20,8 @@ export const Selection = ({
 	renderer: SelectProps['renderValue']
 	listLabel: string
 	children: React.ReactNode
-	item: Task
-	setItem: (item: Task) => void
+	item: T
+	setItem: (item: T) => void
 } & SelectTriggerProps) => (
 	<Select
 		value={item}

@@ -1,7 +1,6 @@
 import { defaultModel } from '@/constants'
 import { Check } from '@tamagui/lucide-icons-2'
 import type Groq from 'groq-sdk'
-import type { Model } from 'groq-sdk/resources'
 import { raise } from 'lenix'
 import { useEffect, useMemo, useState } from 'react'
 import { Label, Select, Sheet, View } from 'tamagui'
@@ -12,6 +11,7 @@ import { Model } from '@/types'
 import { prefs } from '@/storage'
 import { toast } from '@tamagui/toast/v2'
 import { i18n } from 'i18next'
+import type { Model as GroqModel } from 'groq-sdk/resources'
 
 const setItem = (
 	model: Model,
@@ -34,7 +34,7 @@ export const Preferences = ({
 	groq: Groq
 	isPortrait: boolean
 }) => {
-	const [items, setItems] = useState<Model[]>([])
+	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<typeof defaultModel>(defaultModel)
 
 	const { t } = useTranslation()
@@ -64,7 +64,6 @@ export const Preferences = ({
 					<Label>{t('models')}</Label>
 					<Selection
 						renderer={value => items.find(item => item.id === value)?.id}
-						defaultValue={defaultModel}
 						listLabel={t('models')}
 						{...{ item, setItem: (item: Model) => setItem(item, setItemState, t) }}
 					>
