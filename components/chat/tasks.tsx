@@ -12,8 +12,8 @@ export const Tasks = () => {
 
 	return (
 		<Selection
-			renderer={value => tasks.find(task => task === value) ?? 'ERR'}
-			defaultValue={tasks[1]}
+			renderer={$ => tasks.find($$ => $$ === $) ?? 'ERR'}
+			defaultValue={tasks[0]}
 			listLabel={t('tasks')}
 			bg='transparent'
 			borderColor='transparent'

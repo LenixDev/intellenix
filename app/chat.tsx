@@ -156,7 +156,7 @@ export default function Page() {
 	}, [conversations])
 
 	useEffect(() => {
-		prefs.getKey().then(key => {
+		prefs.getKey('api-key').then(key => {
 			if (key === null) setApiKeyDialog(true)
 			else setApiKey(key)
 		}).catch(raise)

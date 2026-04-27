@@ -12,8 +12,9 @@
 	"models": "Models",
 	"on": "on",
 	"api_key": "API Key",
-	"api_success": "API Key updated",
+	"api_success": "API Key saved",
 	"update": "Update",
 	"quota_update_err": "Failed to update your quota insights",
-	"err": "Error"
+	"err": "Error",
+	"model_success": "Model saved"
 }

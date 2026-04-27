@@ -39,7 +39,7 @@ export const Api = ({
 						disabled={apiKey.length === 0}
 						onPress={() => {
 							if (typeof apiKey === 'string' && apiKey.length === 0) return
-							const set = prefs.setKey(apiKey)
+							const set = prefs.setKey(apiKey, 'api-key')
 							if (set instanceof Promise) set.then(() => {
 								setApiKeyDialog(false)
 								window.location.reload()
@@ -69,7 +69,7 @@ export const Api = ({
 									setLoading(false)
 									return
 								}
-								const set = prefs.setKey(data.key)
+								const set = prefs.setKey(data.key, 'api-key')
 								if (set instanceof Promise) set.then(() => {
 									setApiKeyDialog(false)
 									setLoading(false)

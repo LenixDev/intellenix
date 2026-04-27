@@ -39,3 +39,5 @@ export type UpdateQuota = Partial<Record<Models, {
 }>>
 
 export type ApiKeysQuota = Record<string, UpdateQuota>
+
+export type Keys = 'api-key' | 'model'
