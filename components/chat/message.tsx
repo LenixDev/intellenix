@@ -7,14 +7,14 @@ export const Message = ({
 	setContent,
 	send,
 	aiThinking,
-	apiKey,
+	key,
 	isMac,
 }: {
 	content: string
 	setContent: (content: string) => void
 	send: () => void
 	aiThinking: boolean
-	apiKey: string
+	key: string
 	isMac: boolean
 }) => {
 	const { t } = useTranslation()
@@ -50,12 +50,12 @@ export const Message = ({
 			px={2}
 			flex={1}
 			bg='transparent'
-			autoComplete='on'
-			autoCorrect
+			autoComplete='on' /* TODO: add to config */
+			autoCorrect /* TODO: add to config */
 			placeholder={t('chat_intell')}
 			value={content}
 			onChangeText={setContent}
-			readOnly={!apiKey}
+			readOnly={!key}
 			onKeyDown={event => {
 				if (event.key !== 'Enter') return
 				if (isMac ? !event.metaKey : !event.ctrlKey) return

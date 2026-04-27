@@ -127,8 +127,8 @@ export default function Page() {
 	const [conversations, setConversations] = useState<IConversation[]>([])
 	const [message, setMessage] = useState('')
 	const [aiThinking, setAiThinking] = useState(false)
-	const [apiKey, setApiKey] = useState<string>('')
-	const [apiKeyDialog, setApiKeyDialog] = useState(false)
+	const [key, setKey] = useState<string>('')
+	const [keyDialog, setKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
 
 	const scrollRef = useRef<ScrollView>(null)
@@ -138,8 +138,8 @@ export default function Page() {
 	const { t } = useTranslation()
 
 	const groq = useMemo(
-		() => new Groq({ apiKey, dangerouslyAllowBrowser: true }),
-		[apiKey]
+		() => new Groq({ apiKey: key, dangerouslyAllowBrowser: true }),
+		[key]
 	)
 
 	useEffect(() => {
@@ -156,19 +156,19 @@ export default function Page() {
 	}, [conversations])
 
 	useEffect(() => {
-		prefs.getKey('api-key').then(key => {
-			if (key === null) setApiKeyDialog(true)
-			else setApiKey(key)
+		prefs.getKey('key').then(key => {
+			if (key === null) setKeyDialog(true)
+			else setKey(key)
 		}).catch(raise)
 	}, [])
 
-	if (!apiKey.trim() || apiKeyDialog) return (
+	if (!key.trim() || keyDialog) return (
 		<Api
 			{...{
-				apiKey,
-				setApiKey,
-				apiKeyDialog,
-				setApiKeyDialog
+				key,
+				setKey,
+				keyDialog,
+				setKeyDialog
 			}}
 		/>
 	)
@@ -213,7 +213,7 @@ export default function Page() {
 								setContent: setMessage,
 								send: () => send({ message, setConversations, setMessage, t, setAiThinking, groq, conversations }),
 								aiThinking,
-								apiKey,
+								key,
 								isMac,
 							}}
 						/>

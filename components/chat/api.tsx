@@ -1,56 +1,58 @@
 import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
-import type { GetApiKey } from '@/types'
+import type { GetKey } from '@/types'
 import { toast } from '@tamagui/toast/v2'
 import { raise } from 'lenix'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button, Dialog, Input, Separator, View, Text, XStack, Spinner } from 'tamagui'
 
 // eslint-disable-next-line max-lines-per-function
 export const Api = ({
-	apiKey,
-	setApiKey,
-	apiKeyDialog,
-	setApiKeyDialog,
+	key,
+	setKey,
+	keyDialog,
+	setKeyDialog,
 }: {
-	apiKey: string
-	setApiKey: (apiKey: string) => void
-	apiKeyDialog: boolean
-	setApiKeyDialog: (apiKeyDialog: boolean) => void
+	key: string
+	setKey: (key: string) => void
+	keyDialog: boolean
+	setKeyDialog: (keyDialog: boolean) => void
 }) => {
 	const [loading, setLoading] = useState(false)
+	const { t } = useTranslation()
 	return (
-		<Dialog open={apiKeyDialog} onOpenChange={setApiKeyDialog}>
+		<Dialog open={keyDialog} onOpenChange={setKeyDialog}>
 			<Dialog.Portal>
 				<Dialog.Overlay />
 				<Dialog.Content gap='$6'>
 					<View>
-						<Dialog.Title>Enter your AI API Key</Dialog.Title>
+						<Dialog.Title>{t('enter_key')}</Dialog.Title>
 						<Dialog.Description>
-							Please fill in your AI API Key.
+							{t('fill_key')}
 						</Dialog.Description>
 					</View>
 					<Input
 						type='password'
 						secureTextEntry
-						value={apiKey}
-						onChangeText={setApiKey} />
+						value={key}
+						onChangeText={setKey} />
 					<Button
-						disabled={apiKey.length === 0}
+						disabled={key.length === 0}
 						onPress={() => {
-							if (typeof apiKey === 'string' && apiKey.length === 0) return
-							const set = prefs.setKey(apiKey, 'api-key')
+							if (typeof key === 'string' && key.length === 0) return
+							const set = prefs.setKey(key, 'key')
 							if (set instanceof Promise) set.then(() => {
-								setApiKeyDialog(false)
+								setKeyDialog(false)
 								window.location.reload()
 							}).catch(raise)
 							else {
-								setApiKeyDialog(false)
+								setKeyDialog(false)
 								window.location.reload()
 							}
 						}}
 					>
-						Submit
+						{t('submit')}
 					</Button>
 					<XStack items='center' gap='$4'>
 						<Separator />
@@ -63,20 +65,20 @@ export const Api = ({
 						onPress={() => {
 							setLoading(true)
 							// eslint-disable-next-line @stylistic/max-len
-							supabase.functions.invoke<GetApiKey>('get-api-key').then(({ data, error }) => {
+							supabase.functions.invoke<GetKey>('get-key').then(({ data, error }) => {
 								if (error instanceof Error || !data) {
-									toast.error('Could not retrieve API Key from the server')
+									toast.error(t('key_err'))
 									setLoading(false)
 									return
 								}
-								const set = prefs.setKey(data.key, 'api-key')
+								const set = prefs.setKey(data.key, 'key')
 								if (set instanceof Promise) set.then(() => {
-									setApiKeyDialog(false)
+									setKeyDialog(false)
 									setLoading(false)
 									window.location.reload()
 								}).catch(raise)
 								else {
-									setApiKeyDialog(false)
+									setKeyDialog(false)
 									setLoading(false)
 									window.location.reload()
 								}
@@ -84,7 +86,7 @@ export const Api = ({
 								.catch(raise)
 						}}
 					>
-						{loading ? <Spinner /> : 'Use a free public limited API Key'}
+						{loading ? <Spinner /> : t('pub_key')}
 					</Button>
 				</Dialog.Content>
 			</Dialog.Portal>

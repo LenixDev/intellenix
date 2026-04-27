@@ -23,7 +23,7 @@ export const ApiInput = () => {
 			<Button
 				disabled={key.length === 0}
 				onPress={() => {
-					const pref = prefs.setKey(key, 'api-key')
+					const pref = prefs.setKey(key, 'key')
 					if (pref instanceof Promise) pref.
 						then(() => {
 							toast.success(t('api_success'))

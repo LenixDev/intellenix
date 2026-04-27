@@ -1,11 +1,11 @@
 
-[functions.get-api-key]
+[functions.get-key]
 enabled = true
 verify_jwt = false
-import_map = "./functions/get-api-key/deno.json"
+import_map = "./functions/get-key/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
-entrypoint = "./functions/get-api-key/index.ts"
+entrypoint = "./functions/get-key/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
-# static_files = [ "./functions/get-api-key/*.html" ]
+# static_files = [ "./functions/get-key/*.html" ]

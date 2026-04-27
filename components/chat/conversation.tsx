@@ -1,5 +1,6 @@
 import type { Conversation as IConversation } from '@/types'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ScrollView, Text, View } from 'tamagui'
 
 // eslint-disable-next-line max-lines-per-function
@@ -13,6 +14,7 @@ export const Conversation = ({
 	isPortrait: boolean
 }) => {
 	const [shown, setShown] = useState<Record<string, boolean>>({})
+	const { t } = useTranslation()
 
 	return (
 		<ScrollView
@@ -68,7 +70,7 @@ export const Conversation = ({
 								fontStyle='italic'
 								fontSize='$1'
 							>
-								tokens used: {$.completion_tokens}
+								{t('tokens_used')} {$.completion_tokens}
 							</Text>
 						</View>
 					</View>
@@ -107,7 +109,7 @@ export const Conversation = ({
 								fontStyle='italic'
 								fontSize='$1'
 							>
-								took: {$.usage?.queue_time?.toFixed(2)}s | tokens used: {$.usage?.completion_tokens} | service tier: {$.service_tier}
+								{t('took')} {$.usage?.queue_time?.toFixed(2)}{t('s')} | {t('tokens_used')} {$.usage?.completion_tokens} | {t('service_tier')} {$.service_tier}
 							</Text>
 						</View>
 					</View>

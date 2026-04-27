@@ -16,5 +16,17 @@
 	"save": "Save",
 	"quota_update_err": "Failed to update your quota insights",
 	"err": "Error",
-	"model_success": "Model saved"
+	"model_success": "Model saved",
+	"pub_key": "Use a free public limited API Key",
+	"key_err": "Could not retrieve API Key from the server",
+	"submit": "Submit",
+	"fill_key": "Please fill in your AI API Key.",
+	"enter_key": "Enter your AI API Key",
+	"press": "Press",
+	"to_focus": "to focus",
+	"to_send": "to send",
+	"tokens_used": "tokens used:",
+	"took": "took:",
+	"s": "s",
+	"service_tier": "service tier:"
 }
