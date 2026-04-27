@@ -42,7 +42,7 @@ export const Conversation = ({
 							setShown({ [$.date]: true })
 						}}
 						onClick={() => {
-							setShown({ [$.date]: shown[$.date] === false })
+							setShown({ [$.date]: !shown[$.date] })
 						}}
 						onMouseLeave={() => {
 							setShown({ [$.date]: false })

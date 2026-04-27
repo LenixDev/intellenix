@@ -24,16 +24,11 @@ export const ApiInput = () => {
 				disabled={key.length === 0}
 				onPress={() => {
 					const pref = prefs.setKey(key, 'key')
-					if (pref instanceof Promise) pref.
-						then(() => {
-							toast.success(t('api_success'))
-							setKey('')
-						}).
-						catch(raise)
-					else {
+					pref.then(() => {
 						toast.success(t('api_success'))
 						setKey('')
-					}
+					}).
+					catch(raise)
 				}}
 			>
 				{t('save')}

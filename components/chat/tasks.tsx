@@ -5,11 +5,11 @@ import { Selection } from '../selection'
 import { useTranslation } from 'react-i18next'
 import type { Task } from '@/types'
 
-const TASK_KEYS: Task[] = ['programming', 'health'] as const
+const TASK_KEYS = ['programming', 'health'] as const satisfies readonly Task[]
 
 export const Tasks = () => {
 	const { t } = useTranslation()
-	const [item, setItem] = useState<Task>('health')
+	const [item, setItem] = useState<Task>(TASK_KEYS[0])
 
 	return (
 		<Selection
