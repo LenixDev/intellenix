@@ -9,14 +9,13 @@ const TASK_KEYS: Task[] = ['programming', 'health'] as const
 
 export const Tasks = () => {
 	const { t } = useTranslation()
-	const tasks = useMemo(() => TASK_KEYS.map($ => t($)), [t])
 	const [item, setItem] = useState<Task>('health')
 
 	return (
 		<Selection
 			item={item}
 			setItem={setItem}
-			renderer={$ => tasks.find($$ => $$ === $) ?? 'ERR'}
+			renderer={$ => t($)}
 			listLabel={t('tasks')}
 			bg='transparent'
 			borderColor='transparent'
