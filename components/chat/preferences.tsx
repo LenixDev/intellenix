@@ -13,7 +13,11 @@ import { prefs } from '@/storage'
 import { toast } from '@tamagui/toast/v2'
 import { i18n } from 'i18next'
 
-const setItem = (model: Models, setItemState: React.Dispatch<React.SetStateAction<Models>>, t: i18n['t']) => prefs.setKey(model, 'model').then(() => {
+const setItem = (
+	model: Models,
+	setItemState: React.Dispatch<React.SetStateAction<Models>>,
+	t: i18n['t']
+) => prefs.setKey(model, 'model').then(() => {
 	setItemState(model)
 	toast.success(t('model_success'))
 }).catch(raise)

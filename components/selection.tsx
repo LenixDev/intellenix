@@ -57,7 +57,8 @@ export const Selection = ({
 					end={[0, 1]}
 					fullscreen
 					colors={['$background', 'transparent']}
-					rounded='$4' />
+					rounded='$4'
+				/>
 			</Select.ScrollUpButton>
 			<Select.Viewport
 				bg='$background'

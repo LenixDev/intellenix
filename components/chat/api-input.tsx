@@ -36,7 +36,7 @@ export const ApiInput = () => {
 					}
 				}}
 			>
-				{t('update')}
+				{t('save')}
 			</Button>
 		</View>
 	)
