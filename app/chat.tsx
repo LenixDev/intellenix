@@ -49,6 +49,7 @@ const sendMessage = async ({
 	])
 	setAiThinking(true)
 	try {
+		setMessage('')
 		const {
 			choices, service_tier, usage
 		} = await groq.chat.completions.create({
@@ -89,7 +90,6 @@ const sendMessage = async ({
 				usage
 			}
 		])
-		setMessage('')
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (err: any) {
 		setConversations(prev => prev.slice(0, prev.length - 1))
@@ -97,6 +97,7 @@ const sendMessage = async ({
 			description: err?.error?.error?.message,
 			duration: 40_000
 		})
+		setMessage(message)
 		raise(err)
 	} finally {
 		setAiThinking(false)
