@@ -23,16 +23,30 @@ const composeId = () => {
 	return `${$.getFullYear()}-${String($.getMonth() + 1).padStart(2, '0')}-${String($.getDate()).padStart(2, '0')} ${String($.getHours()).padStart(2, '0')}:${String($.getMinutes()).padStart(2, '0')}:${String($.getSeconds()).padStart(2, '0')}.${String($.getMilliseconds()).padStart(3, '0')}`
 }
 
-const reply = async ({
-	request, setAiThinking, groq, conversations, setConversations, t
+const sendMessage = async ({
+	message, setConversations, setMessage, t, setAiThinking, groq, conversations
 }: {
-	request: string
-	setAiThinking: (aiThinking: boolean) => void
-	groq: Groq,
-	conversations: IConversation[]
+	message: string
 	setConversations: React.Dispatch<SetStateAction<IConversation[]>>
+	setMessage: (message: string) => void
 	t: i18n['t']
+	setAiThinking: (aiThinking: boolean) => void
+	groq: Groq
+	conversations: IConversation[]
 }) => {
+	if (!message.trim()) {
+		toast.info(t('not_yet'))
+		return
+	}
+	setConversations(prev => [
+		...prev,
+		{
+			date: composeId(),
+			content: message,
+			role: 'user',
+			completion_tokens: 'calculating...'
+		}
+	])
 	setAiThinking(true)
 	try {
 		const {
@@ -43,7 +57,7 @@ const reply = async ({
 				...conversations.map(({ role, content }) => ({ role, content })),
 				{
 					role: 'user',
-					content: request
+					content: message
 				}
 			],
 			model: defaultModel,
@@ -85,41 +99,8 @@ const reply = async ({
 	} finally {
 		setAiThinking(false)
 	}
-	return undefined
-}
-const send = ({
-	message, setConversations, setMessage, t, setAiThinking, groq, conversations
-}: {
-	message: string
-	setConversations: React.Dispatch<SetStateAction<IConversation[]>>
-	setMessage: (message: string) => void
-	t: i18n['t']
-	setAiThinking: (aiThinking: boolean) => void
-	groq: Groq
-	conversations: IConversation[]
-}) => {
-	if (!message.trim()) {
-		toast.info(t('not_yet'))
-		return
-	}
-	setConversations(prev => [
-		...prev,
-		{
-			date: composeId(),
-			content: message,
-			role: 'user',
-			completion_tokens: 'calculating...'
-		}
-	])
-	reply({
-		request: message,
-		setAiThinking,
-		groq,
-		conversations,
-		setConversations,
-		t
-	}).catch(raise)
 	setMessage('')
+	return undefined
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements
@@ -173,6 +154,8 @@ export default function Page() {
 		/>
 	)
 
+	const send = () => sendMessage({ message, setConversations, setMessage, t, setAiThinking, groq, conversations })
+
 	return (
 		<View items='center' width='100%' height='100%'>
 			<View
@@ -211,7 +194,7 @@ export default function Page() {
 							{...{
 								content: message,
 								setContent: setMessage,
-								send: () => send({ message, setConversations, setMessage, t, setAiThinking, groq, conversations }),
+								send,
 								aiThinking,
 								apiKey: key,
 								isMac,
@@ -239,9 +222,9 @@ export default function Page() {
 						<Tasks />
 						<Send {...{
 							content: message,
-							send: () => send({ message, setConversations, setMessage, t, setAiThinking, groq, conversations }),
+							send,
 							aiThinking,
-							r_tPM: false
+							r_tPM: false /* TODO: block when quota exceeded */
 						}} />
 					</View>
 				</View>
