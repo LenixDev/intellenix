@@ -1,4 +1,4 @@
-import { Models } from '@/types'
+import { Task } from '@/types'
 import { ChevronDown, ChevronUp } from '@tamagui/lucide-icons-2'
 import {
 	type SelectProps,
@@ -23,8 +23,8 @@ export const Selection = ({
 	defaultValue: string
 	listLabel: string
 	children: React.ReactNode
-	item: Models
-	setItem: (item: Models) => void
+	item: Task
+	setItem: (item: Task) => void
 } & SelectTriggerProps) => (
 	<Select
 		value={item}

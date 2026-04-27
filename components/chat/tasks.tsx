@@ -1,17 +1,21 @@
 import { Check } from '@tamagui/lucide-icons-2'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Select } from 'tamagui'
 import { Selection } from '../selection'
 import { useTranslation } from 'react-i18next'
+import type { Task } from '@/types'
 
-const TASK_KEYS = ['programming', 'health'] as const
+const TASK_KEYS: Task[] = ['programming', 'health'] as const
 
 export const Tasks = () => {
 	const { t } = useTranslation()
 	const tasks = useMemo(() => TASK_KEYS.map($ => t($)), [t])
+	const [item, setItem] = useState<Task>('health')
 
 	return (
 		<Selection
+			item={item}
+			setItem={setItem}
 			renderer={$ => tasks.find($$ => $$ === $) ?? 'ERR'}
 			defaultValue={tasks[0]}
 			listLabel={t('tasks')}
