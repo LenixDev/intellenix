@@ -9,12 +9,12 @@ import { Button, Dialog, Input, Separator, View, Text, XStack, Spinner } from 't
 
 // eslint-disable-next-line max-lines-per-function
 export const Api = ({
-	Key,
+	apiKey,
 	setKey,
 	keyDialog,
 	setKeyDialog,
 }: {
-	Key: string
+	apiKey: string
 	setKey: (key: string) => void
 	keyDialog: boolean
 	setKeyDialog: (keyDialog: boolean) => void
@@ -35,13 +35,13 @@ export const Api = ({
 					<Input
 						type='password'
 						secureTextEntry
-						value={Key}
+						value={apiKey}
 						onChangeText={setKey} />
 					<Button
-						disabled={Key.length === 0}
+						disabled={apiKey.length === 0}
 						onPress={() => {
-							if (typeof Key === 'string' && Key.length === 0) return
-							const set = prefs.setKey(Key, 'key')
+							if (typeof apiKey === 'string' && apiKey.length === 0) return
+							const set = prefs.setKey(apiKey, 'key')
 							if (set instanceof Promise) set.then(() => {
 								setKeyDialog(false)
 								window.location.reload()

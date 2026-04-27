@@ -127,7 +127,7 @@ export default function Page() {
 	const [conversations, setConversations] = useState<IConversation[]>([])
 	const [message, setMessage] = useState('')
 	const [aiThinking, setAiThinking] = useState(false)
-	const [Key, setKey] = useState<string>('')
+	const [key, setKey] = useState<string>('')
 	const [keyDialog, setKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
 
@@ -138,8 +138,8 @@ export default function Page() {
 	const { t } = useTranslation()
 
 	const groq = useMemo(
-		() => new Groq({ apiKey: Key, dangerouslyAllowBrowser: true }),
-		[Key]
+		() => new Groq({ apiKey: key, dangerouslyAllowBrowser: true }),
+		[key]
 	)
 
 	useEffect(() => {
@@ -162,10 +162,10 @@ export default function Page() {
 		}).catch(raise)
 	}, [])
 
-	if (!Key.trim() || keyDialog) return (
+	if (!key.trim() || keyDialog) return (
 		<Api
 			{...{
-				Key,
+				apiKey: key,
 				setKey,
 				keyDialog,
 				setKeyDialog
@@ -213,7 +213,7 @@ export default function Page() {
 								setContent: setMessage,
 								send: () => send({ message, setConversations, setMessage, t, setAiThinking, groq, conversations }),
 								aiThinking,
-								key: Key,
+								apiKey: key,
 								isMac,
 							}}
 						/>
