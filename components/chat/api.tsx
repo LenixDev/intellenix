@@ -41,22 +41,17 @@ export const Api = ({
 						disabled={apiKey.length === 0}
 						onPress={() => {
 							if (typeof apiKey === 'string' && apiKey.length === 0) return
-							const set = prefs.setKey(apiKey, 'key')
-							if (set instanceof Promise) set.then(() => {
+							prefs.setKey(apiKey, 'key').then(() => {
 								setKeyDialog(false)
 								window.location.reload()
 							}).catch(raise)
-							else {
-								setKeyDialog(false)
-								window.location.reload()
-							}
 						}}
 					>
 						{t('submit')}
 					</Button>
 					<XStack items='center' gap='$4'>
 						<Separator />
-						<Text color='$color06' fontSize='$1'>Or</Text>
+						<Text color='$color06' fontSize='$1'>{t('or')}</Text>
 						<Separator />
 					</XStack>
 					<Button
@@ -71,19 +66,12 @@ export const Api = ({
 									setLoading(false)
 									return
 								}
-								const set = prefs.setKey(data.key, 'key')
-								if (set instanceof Promise) set.then(() => {
+								prefs.setKey(data.key, 'key').then(() => {
 									setKeyDialog(false)
 									setLoading(false)
 									window.location.reload()
 								}).catch(raise)
-								else {
-									setKeyDialog(false)
-									setLoading(false)
-									window.location.reload()
-								}
-							})
-								.catch(raise)
+							}).catch(raise)
 						}}
 					>
 						{loading ? <Spinner /> : t('pub_key')}

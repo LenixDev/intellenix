@@ -94,7 +94,8 @@ export const Selection = <T extends string,>({
 					end={[0, 1]}
 					fullscreen
 					colors={['transparent', '$background']}
-					rounded='$4' />
+					rounded='$4'
+				/>
 			</Select.ScrollDownButton>
 		</Select.Content>
 	</Select>
