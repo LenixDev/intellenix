@@ -12,7 +12,6 @@ import { LinearGradient } from 'tamagui/linear-gradient'
 // eslint-disable-next-line max-lines-per-function
 export const Selection = ({
 	renderer,
-	defaultValue,
 	listLabel,
 	children,
 	item,
@@ -20,7 +19,6 @@ export const Selection = ({
 	...props
 }: {
 	renderer: SelectProps['renderValue']
-	defaultValue: string
 	listLabel: string
 	children: React.ReactNode
 	item: Task

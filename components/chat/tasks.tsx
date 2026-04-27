@@ -17,7 +17,6 @@ export const Tasks = () => {
 			item={item}
 			setItem={setItem}
 			renderer={$ => tasks.find($$ => $$ === $) ?? 'ERR'}
-			defaultValue={tasks[0]}
 			listLabel={t('tasks')}
 			bg='transparent'
 			borderColor='transparent'
@@ -28,15 +27,15 @@ export const Tasks = () => {
 			}}
 		>
 			{useMemo(
-				() => tasks.map((item, iter) => (
-					<Select.Item index={iter} key={item} value={item}>
-						<Select.ItemText>{item}</Select.ItemText>
+				() => TASK_KEYS.map((key, iter) => (
+					<Select.Item index={iter} key={key} value={key}>
+						<Select.ItemText>{t(key)}</Select.ItemText>
 						<Select.ItemIndicator marginLeft='auto'>
 							<Check size={16} />
 						</Select.ItemIndicator>
 					</Select.Item>
 				)),
-				[tasks]
+				[t]
 			)}
 		</Selection>
 	)
