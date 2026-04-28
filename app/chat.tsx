@@ -139,11 +139,13 @@ export default function Page() {
 	}, [conversations])
 
 	useEffect(() => {
+		console.log(key)
+		if (key.trim()) return
 		prefs.getKey('key').then(key => {
 			if (key === null) setKeyDialog(true)
 			else setKey(key)
 		}).catch(raise)
-	}, [])
+	}, [key])
 
 	if (!key.trim() || keyDialog) return (
 		<Api
@@ -237,7 +239,8 @@ export default function Page() {
 					open: sheetOpen,
 					setOpen: setSheetOpen,
 					groq,
-					isPortrait
+					isPortrait,
+					setKey
 				}}
 			/>
 		</View>

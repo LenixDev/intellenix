@@ -27,12 +27,14 @@ export const Preferences = ({
 	open,
 	setOpen,
 	groq,
-	isPortrait
+	isPortrait,
+	setKey
 }: {
 	open: boolean
 	setOpen: (open: boolean) => void
 	groq: Groq
 	isPortrait: boolean
+	setKey: (key: string) => void
 }) => {
 	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<typeof defaultModel>(defaultModel)
@@ -59,7 +61,7 @@ export const Preferences = ({
 				justify='space-evenly'
 				flexDirection={isPortrait ? 'column' : 'row'}
 			>
-				<ApiInput />
+				<ApiInput {...{ setKey }} />
 				<View>
 					<Label>{t('models')}</Label>
 					<Selection
