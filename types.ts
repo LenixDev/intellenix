@@ -29,21 +29,12 @@ export type Conversation = {
 
 export type Model = keyof typeof LIMITS
 
-export interface UpdateReplyQuota<T = CompletionUsage['total_tokens']> {
-	tokens: CompletionUsage['total_tokens'] | T
-	key: string
-	model: Model
-	type: 'update' | 'get'
-}
-
 export type Quota = Record<Model, {
 	rpd: number
 	tpd: number
 }>
 
-export type UpdateQuota = Partial<Quota>
-
-export type KeysQuota = Record<string, UpdateQuota>
+export type KeysQuota = Record<string, Partial<Quota>>
 
 export type Key = 'key' | 'model'
 export type Task = 'programming' | 'health'
