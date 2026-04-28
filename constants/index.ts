@@ -32,7 +32,7 @@ export const LIMITS = {
 		rpm: 30,
 		rpd: 250,
 		tpm: 70_000,
-		tpd: 0,
+		tpd: Infinity,
 		ash: 0,
 		asd: 0
 	},
