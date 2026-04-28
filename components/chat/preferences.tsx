@@ -52,8 +52,18 @@ export const Preferences = ({
 	}, [])
 
 	return (
-		<Sheet modal open={open} onOpenChange={setOpen} snapPoints={[50, 10]}>
-			<Sheet.Overlay />
+		<Sheet
+			dismissOnSnapToBottom
+			transition='superLazy'
+			modal
+			open={open}
+			onOpenChange={setOpen}
+			snapPoints={[50, 10]}
+		>
+			<Sheet.Overlay
+				transition='quickest'
+				bg='$color02'
+			/>
 			<Sheet.Handle />
 			<Sheet.Frame
 				bg='$color6'

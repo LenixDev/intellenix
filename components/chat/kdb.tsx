@@ -25,7 +25,7 @@ export const Kdb = ({ isMac }: { isMac: boolean }) => {
 					<Kbd size={10}>
 						{isMac ? <Command color='$color06' size={10} /> : 'Ctrl'}
 					</Kbd>
-					<Text>+</Text>
+					<Text> + </Text>
 					<Kbd size={10}>Enter</Kbd>
 				</View>
 				<Text color='$color06' fontSize='$1'>

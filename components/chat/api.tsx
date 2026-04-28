@@ -22,7 +22,7 @@ export const Api = ({
 	const [loading, setLoading] = useState(false)
 	const { t } = useTranslation()
 	return (
-		<Dialog open={keyDialog} onOpenChange={setKeyDialog}>
+		<Dialog open={keyDialog} onOpenChange={open => { if (!open) return; setKeyDialog(open) }}>
 			<Dialog.Portal>
 				<Dialog.Overlay />
 				<Dialog.Content gap='$6'>
