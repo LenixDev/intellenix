@@ -1,6 +1,7 @@
 import type { ChatCompletion } from 'groq-sdk/resources/chat/completions.mjs'
 import type { CompletionUsage } from 'groq-sdk/resources'
 import type { LIMITS } from './constants'
+import { PostgrestError } from '@supabase/supabase-js'
 
 export interface GetKey {
 	key: string
@@ -29,12 +30,23 @@ export type Conversation = {
 
 export type Model = keyof typeof LIMITS
 
-export type Quota = Record<Model, {
-	rpd: number
-	tpd: number
-}>
+export type Quota = Record<Model, DailyQuota>
 
 export type KeysQuota = Record<string, Partial<Quota>>
 
 export type Key = 'key' | 'model'
 export type Task = 'programming' | 'health'
+
+export type DailyQuotaFunction = DailyQuota | {
+	error: PostgrestError['message']
+}
+
+export interface DailyQuota {
+	rpd: number
+	tpd: number
+}
+
+export interface GetQuota {
+	key: string
+	model: Model
+}

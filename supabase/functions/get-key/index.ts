@@ -11,6 +11,6 @@ Deno.serve(req => {
 
 	return new Response(
 		JSON.stringify({ key } satisfies GetKey),
-		{ headers: { ...res, 'Content-Type': 'application/json' } }
+		{ headers: res }
 	)
 })

@@ -1,4 +1,4 @@
-import { Button, Progress, type ScrollView, useWindowDimensions, View } from 'tamagui'
+import { Button, Progress, type ScrollView, Text, useWindowDimensions, View } from 'tamagui'
 import { SlidersHorizontal } from '@tamagui/lucide-icons-2'
 import { SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import Groq from 'groq-sdk'
@@ -14,8 +14,9 @@ import { Preferences } from '@/components/chat/preferences'
 import { defaultModel } from '@/constants'
 import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
-import type { Conversation as IConversation } from '@/types'
+import type { DailyQuotaFunction, GetQuota, Conversation as IConversation, KeysQuota } from '@/types'
 import { i18n } from 'i18next'
+import { supabase } from '@/supabase'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -113,6 +114,14 @@ export default function Page() {
 	const [key, setKey] = useState<string>('')
 	const [keyDialog, setKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
+	const [quota, setQuota] = useState<KeysQuota>({
+		[key]: {
+			[defaultModel]: {
+				rpd: 0,
+				tpd: 0
+			}
+		}
+	})
 
 	const scrollRef = useRef<ScrollView>(null)
 
@@ -139,11 +148,31 @@ export default function Page() {
 	}, [conversations])
 
 	useEffect(() => {
-		console.log(key)
 		if (key.trim()) return
 		prefs.getKey('key').then(key => {
-			if (key === null) setKeyDialog(true)
-			else setKey(key)
+			if (!key) return setKeyDialog(true)
+			setKey(key)
+			console.debug(key, defaultModel)
+			supabase.functions.invoke<DailyQuotaFunction>('quota', { body: {
+				key,
+				model: defaultModel
+			} satisfies GetQuota}).then(({ error, data }) => {
+				if (error instanceof Error || !data) {
+					toast.error(t('err'), {
+						description: error?.message,
+						duration: 40_000
+					})
+					return
+				}
+				if ('error' in data) {
+					toast.error(t('err'), {
+						description: data.error,
+						duration: 40_000
+					})
+					return
+				}
+				setQuota({ [key]: { [defaultModel]: { rpd: data.rpd, tpd: data.tpd } } })
+			})
 		}).catch(raise)
 	}, [key])
 
@@ -171,13 +200,22 @@ export default function Page() {
 				gap='$2'
 			>
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
-				{/* <Progress
-					value={0}
+				<Text>RPD</Text>
+				<Progress
+					value={quota[key]?.[defaultModel]?.rpd ?? 0}
 					maxW='95%'
 					size='$1'
 				>
 					<Progress.Indicator transition='slowest' />
-				</Progress> */}
+				</Progress>
+				<Text>TPD</Text>
+				<Progress
+					value={quota[key]?.[defaultModel]?.tpd ?? 0}
+					maxW='95%'
+					size='$1'
+				>
+					<Progress.Indicator transition='slowest' />
+				</Progress>
 				<View
 					width='100%'
 					bg='$color3'

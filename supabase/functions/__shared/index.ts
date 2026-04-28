@@ -1,9 +1,11 @@
-const CORS = {
-	'Access-Control-Allow-Origin': '*',
-	'Access-Control-Allow-Headers': '*'
-} as const
-
-export const init = (req: Request): [false, Response] | [true, typeof CORS] => {
-	if (req.method === 'OPTIONS') return [false, new Response(null, { headers: CORS })]
-	return [true, CORS]
+export const init = (req: Request): [false, Response] | [true, Record<string, string>] => {
+	if (req.method === 'OPTIONS') return [false, new Response('ok', { headers: {
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Headers': '*',
+	}})]
+	return [true, {
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Headers': '*',
+		'Content-Type': 'application/json'
+	}]
 }
