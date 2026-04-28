@@ -1,7 +1,7 @@
 /* eslint-disable @stylistic/max-len */
 import type { Model } from '@/types'
 
-export const defaultModel: Model = 'llama-3.3-70b-versatile'
+export const defaultModel = 'llama-3.3-70b-versatile' as const satisfies Model
 
 export const LIMITS = {
 	'allam-2-7b': {
