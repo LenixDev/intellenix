@@ -1,4 +1,4 @@
-import { defaultModel } from '@/constants'
+import { defaultModel, LIMITS } from '@/constants'
 import { Check } from '@tamagui/lucide-icons-2'
 import type Groq from 'groq-sdk'
 import { raise } from 'lenix'
@@ -61,12 +61,12 @@ export const Preferences = ({
 			snapPoints={[50, 10]}
 		>
 			<Sheet.Overlay
-				transition='quickest'
+				transition='quick'
 				bg='$color02'
 			/>
 			<Sheet.Handle />
 			<Sheet.Frame
-				bg='$color6'
+				bg='$color2'
 				items='center'
 				justify='space-evenly'
 				flexDirection={isPortrait ? 'column' : 'row'}
@@ -86,7 +86,7 @@ export const Preferences = ({
 										<Select.ItemText>{item.id}</Select.ItemText>
 										<View flexDirection='row'>
 											<Select.ItemText color='$color7' fontSize='$2'>
-												{item.owned_by}&nbsp;
+												{t('by')} {item.owned_by}&nbsp;
 											</Select.ItemText>
 											<Select.ItemText color='$color7' fontSize='$2'>
 												{t('on')}{' '}
@@ -99,6 +99,24 @@ export const Preferences = ({
 												)}
 											</Select.ItemText>
 										</View>
+										<Select.ItemText color='$color7' fontSize='$2'>
+											{t('rpm')}: {LIMITS[item.id as Model].rpm}
+										</Select.ItemText>
+										<Select.ItemText color='$color7' fontSize='$2'>
+											{t('tpm')}: {LIMITS[item.id as Model].tpm}
+										</Select.ItemText>
+										<Select.ItemText color='$color7' fontSize='$2'>
+											{t('rpd')}: {LIMITS[item.id as Model].rpd}
+										</Select.ItemText>
+										<Select.ItemText color='$color7' fontSize='$2'>
+											{t('tpd')}: {LIMITS[item.id as Model].tpd}
+										</Select.ItemText>
+										<Select.ItemText color='$color7' fontSize='$2'>
+											{t('ash')}: {LIMITS[item.id as Model].ash}
+										</Select.ItemText>
+										<Select.ItemText color='$color7' fontSize='$2'>
+											{t('asd')}: {LIMITS[item.id as Model].asd}
+										</Select.ItemText>
 									</View>
 									<Select.ItemIndicator marginLeft='auto'>
 										<Check size={16} />

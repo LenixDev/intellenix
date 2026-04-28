@@ -29,5 +29,12 @@
 	"took": "took:",
 	"s": "s",
 	"service_tier": "service tier:",
-	"conn_err": "Connection Error"
+	"conn_err": "Connection Error",
+	"rpm": "Request per minute",
+	"rpd": "Request per day",
+	"tpm": "Tokens per minute",
+	"tpd": "Tokens per day",
+	"ash": "Audio seconds per hour",
+	"asd": "Audio seconds per hour",
+	"by": "By"
 }
