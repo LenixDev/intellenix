@@ -20,11 +20,9 @@ export const Conversation = ({
 		<ScrollView
 			ref={scrollRef}
 			width='100%'
+			mt='$10'
 			px={isPortrait ? '$2' : '$5'}
-			pb='$10'
 			flex={1}
-			justify='flex-end'
-			minH={0}
 			onContentSizeChange={() => {
 				scrollRef.current?.scrollToEnd({ animated: true })
 			}}
