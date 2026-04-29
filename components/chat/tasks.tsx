@@ -4,6 +4,7 @@ import { Select } from 'tamagui'
 import { Selection } from '../selection'
 import { useTranslation } from 'react-i18next'
 import type { Task } from '@/types'
+import { toast } from '@tamagui/toast/v2'
 
 const TASK_KEYS = ['programming', 'health'] as const satisfies readonly Task[]
 
@@ -14,7 +15,10 @@ export const Tasks = () => {
 	return (
 		<Selection
 			item={item}
-			setItem={setItem}
+			setItem={$ => {
+				toast.info(t('not_yet'))
+				setItem($)
+			}}
 			renderer={$ => t($)}
 			listLabel={t('tasks')}
 			bg='transparent'
