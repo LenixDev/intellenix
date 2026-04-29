@@ -20,7 +20,7 @@ export const Tasks = () => {
 			bg='transparent'
 			borderColor='transparent'
 			hoverStyle={{
-				background: '$backgroundHover',
+				background: '$background',
 				cursor: 'pointer',
 				borderColor: '$color6'
 			}}>

@@ -273,22 +273,6 @@ export default function Page() {
 				pb='$5'
 				gap='$2'>
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
-				<Hover content={() => <Text color='$color4'>{t('used_rpd')}</Text>}>
-					<Progress
-						value={quota[key]?.[defaultModel]?.rpd ?? 0}
-						maxW='95%'
-						size='$1'>
-						<Progress.Indicator transition='slowest' />
-					</Progress>
-				</Hover>
-				<Hover content={() => <Text color='$color4'>{t('used_tpd')}</Text>}>
-					<Progress
-						value={quota[key]?.[defaultModel]?.tpd ?? 0}
-						maxW='95%'
-						size='$1'>
-						<Progress.Indicator transition='slowest' />
-					</Progress>
-				</Hover>
 				<View
 					width='100%'
 					bg='$color3'
@@ -315,6 +299,24 @@ export default function Page() {
 						/>
 					</View>
 					<View flexDirection='row' justify='flex-end' gap='$2' items='center'>
+						<Hover content={() => <Text color='$color4'>{t('used_rpd')}</Text>}>
+							<Progress
+								value={quota[key]?.[defaultModel]?.rpd ?? 0}
+								bg='$color4'
+								width='$true'
+								size='$1'>
+								<Progress.Indicator transition='slowest' />
+							</Progress>
+						</Hover>
+						<Hover content={() => <Text color='$color4'>{t('used_tpd')}</Text>}>
+							<Progress
+								value={quota[key]?.[defaultModel]?.tpd ?? 0}
+								bg='$color4'
+								width='$true'
+								size='$1'>
+								<Progress.Indicator transition='slowest' />
+							</Progress>
+						</Hover>
 						<Button
 							chromeless
 							size='$3'
