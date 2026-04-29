@@ -10,10 +10,7 @@
 	"consistent-return": "warn",
 	"consistent-this": "warn",
 	"constructor-super": "warn",
-	"curly": [
-		"warn",
-		"multi"
-	],
+	"curly": ["warn", "multi"],
 	"default-case": "warn",
 	"default-case-last": "warn",
 	"default-param-last": "warn",
@@ -30,11 +27,7 @@
 	"id-length": [
 		"warn",
 		{
-			"exceptions": [
-				"_",
-				"t",
-				"$"
-			]
+			"exceptions": ["_", "t", "$"]
 		}
 	],
 	"id-match": "warn",

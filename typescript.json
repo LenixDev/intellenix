@@ -70,11 +70,7 @@
 		"warn",
 		{
 			"selector": "variable",
-			"format": [
-				"camelCase",
-				"UPPER_CASE",
-				"PascalCase"
-			]
+			"format": ["camelCase", "UPPER_CASE", "PascalCase"]
 		}
 	],
 	"@typescript-eslint/no-array-delete": "warn",

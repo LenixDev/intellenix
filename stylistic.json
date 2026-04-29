@@ -1,14 +1,8 @@
 {
 	"@stylistic/array-bracket-newline": "warn",
 	"@stylistic/array-bracket-spacing": "warn",
-	"@stylistic/array-element-newline": [
-		"warn",
-		"consistent"
-	],
-	"@stylistic/arrow-parens": [
-		"warn",
-		"as-needed"
-	],
+	"@stylistic/array-element-newline": ["warn", "consistent"],
+	"@stylistic/arrow-parens": ["warn", "as-needed"],
 	"@stylistic/arrow-spacing": "warn",
 	"@stylistic/block-spacing": "warn",
 	"@stylistic/brace-style": "warn",
@@ -19,18 +13,12 @@
 	"@stylistic/curly-newline": "warn",
 	"@stylistic/dot-location": "warn",
 	"@stylistic/eol-last": "warn",
-	"@stylistic/function-call-argument-newline": [
-		"warn",
-		"consistent"
-	],
+	"@stylistic/function-call-argument-newline": ["warn", "consistent"],
 	"@stylistic/function-call-spacing": "warn",
 	"@stylistic/function-paren-newline": "warn",
 	"@stylistic/generator-star-spacing": "warn",
 	"@stylistic/implicit-arrow-linebreak": "warn",
-	"@stylistic/indent": [
-		"warn",
-		"tab"
-	],
+	"@stylistic/indent": ["warn", "tab"],
 	"@stylistic/indent-binary-ops": "warn",
 	"@stylistic/jsx-child-element-spacing": "warn",
 	"@stylistic/jsx-closing-bracket-location": "warn",
@@ -41,10 +29,7 @@
 	"@stylistic/jsx-equals-spacing": "warn",
 	"@stylistic/jsx-first-prop-new-line": "warn",
 	"@stylistic/jsx-function-call-newline": "warn",
-	"@stylistic/jsx-indent-props": [
-		"warn",
-		0
-	],
+	"@stylistic/jsx-indent-props": ["warn", 0],
 	"@stylistic/jsx-max-props-per-line": [
 		"warn",
 		{
@@ -65,10 +50,7 @@
 	],
 	"@stylistic/jsx-pascal-case": "warn",
 	"@stylistic/exp-jsx-props-style": "warn",
-	"@stylistic/jsx-quotes": [
-		"warn",
-		"prefer-single"
-	],
+	"@stylistic/jsx-quotes": ["warn", "prefer-single"],
 	"@stylistic/jsx-self-closing-comp": "warn",
 	"@stylistic/jsx-tag-spacing": "warn",
 	"@stylistic/jsx-wrap-multilines": "warn",
@@ -94,10 +76,7 @@
 		}
 	],
 	"@stylistic/multiline-comment-style": "warn",
-	"@stylistic/multiline-ternary": [
-		"warn",
-		"never"
-	],
+	"@stylistic/multiline-ternary": ["warn", "never"],
 	"@stylistic/new-parens": "warn",
 	"@stylistic/newline-per-chained-call": [
 		"warn",
@@ -129,10 +108,7 @@
 	"@stylistic/no-whitespace-before-property": "warn",
 	"@stylistic/nonblock-statement-body-position": "warn",
 	"@stylistic/object-curly-newline": "warn",
-	"@stylistic/object-curly-spacing": [
-		"warn",
-		"always"
-	],
+	"@stylistic/object-curly-spacing": ["warn", "always"],
 	"@stylistic/object-property-newline": [
 		"warn",
 		{
@@ -141,15 +117,9 @@
 	],
 	"@stylistic/one-var-declaration-per-line": "warn",
 	"@stylistic/operator-linebreak": "warn",
-	"@stylistic/padded-blocks": [
-		"warn",
-		"never"
-	],
+	"@stylistic/padded-blocks": ["warn", "never"],
 	"@stylistic/padding-line-between-statements": "warn",
-	"@stylistic/quote-props": [
-		"warn",
-		"as-needed"
-	],
+	"@stylistic/quote-props": ["warn", "as-needed"],
 	"@stylistic/quotes": [
 		"warn",
 		"single",
@@ -158,17 +128,11 @@
 		}
 	],
 	"@stylistic/rest-spread-spacing": "warn",
-	"@stylistic/semi": [
-		"warn",
-		"never"
-	],
+	"@stylistic/semi": ["warn", "never"],
 	"@stylistic/semi-spacing": "warn",
 	"@stylistic/semi-style": "warn",
 	"@stylistic/space-before-blocks": "warn",
-	"@stylistic/space-before-function-paren": [
-		"warn",
-		"never"
-	],
+	"@stylistic/space-before-function-paren": ["warn", "never"],
 	"@stylistic/space-in-parens": "warn",
 	"@stylistic/space-infix-ops": "warn",
 	"@stylistic/space-unary-ops": "warn",

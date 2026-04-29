@@ -242,13 +242,16 @@ export default function Page() {
 	}, [key, model])
 
 	useEffect(() => {
-		prefs.getKey('model').then(model => {
-			if (!model) {
-				toast.error(t('get_model_err'))
-				return
-			}
-			setModel(model as Model)
-		}).catch(raise)
+		prefs
+			.getKey('model')
+			.then(model => {
+				if (!model) {
+					toast.error(t('get_model_err'))
+					return
+				}
+				setModel(model as Model)
+			})
+			.catch(raise)
 	}, [model])
 
 	if (!key.trim() || keyDialog)
@@ -327,8 +330,18 @@ export default function Page() {
 								bg: '$background08'
 							}}
 						/>
-						<View flexDirection='row' justify='flex-end' gap='$2' items='center'>
-							<Hover placement='bottom-end' content={() => <Text color='$color4'>{t('used_rpd')}({quota[key]?.[model]?.rpd.toFixed(2) ?? 0}%)</Text>}>
+						<View
+							flexDirection='row'
+							justify='flex-end'
+							gap='$2'
+							items='center'>
+							<Hover
+								placement='bottom-end'
+								content={() => (
+									<Text color='$color4'>
+										{t('used_rpd')}({quota[key]?.[model]?.rpd.toFixed(2) ?? 0}%)
+									</Text>
+								)}>
 								<Progress
 									value={quota[key]?.[model]?.rpd ?? 0}
 									bg='$color4'
@@ -338,7 +351,13 @@ export default function Page() {
 									<Progress.Indicator transition='slowest' />
 								</Progress>
 							</Hover>
-							<Hover placement='bottom-start' content={() => <Text color='$color4'>{t('used_tpd')}({quota[key]?.[model]?.tpd.toFixed(2) ?? 0}%)</Text>}>
+							<Hover
+								placement='bottom-start'
+								content={() => (
+									<Text color='$color4'>
+										{t('used_tpd')}({quota[key]?.[model]?.tpd.toFixed(2) ?? 0}%)
+									</Text>
+								)}>
 								<Progress
 									value={quota[key]?.[model]?.tpd ?? 0}
 									bg='$color4'

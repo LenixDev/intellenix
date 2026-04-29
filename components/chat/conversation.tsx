@@ -42,10 +42,7 @@ export const Conversation = ({
 							onMouseEnter={() => setShown({ [$.date]: true })}
 							onClick={() => setShown({ [$.date]: !shown[$.date] })}
 							onMouseLeave={() => setShown({ [$.date]: false })}>
-							<View
-								flexDirection='row'
-								items='center'
-								gap='$3'>
+							<View flexDirection='row' items='center' gap='$3'>
 								<Button
 									chromeless
 									circular
@@ -76,10 +73,7 @@ export const Conversation = ({
 									{$.content}
 								</Text>
 							</View>
-							<View
-								opacity={opacify}
-								gap={0}
-								items='flex-end'>
+							<View opacity={opacify} gap={0} items='flex-end'>
 								<Text color='$color04' fontSize='$1'>
 									{$.date}
 								</Text>
@@ -97,9 +91,7 @@ export const Conversation = ({
 						onMouseEnter={() => setShown({ [$.date]: true })}
 						onClick={() => setShown({ [$.date]: shown[$.date] === false })}
 						onMouseLeave={() => setShown({ [$.date]: false })}>
-						<View
-							flexDirection='row'
-							gap='$3'>
+						<View flexDirection='row' gap='$3'>
 							<Text maxW='90%' self='flex-start' color='$color'>
 								{$.content}
 							</Text>
