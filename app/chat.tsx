@@ -321,9 +321,7 @@ export default function Page() {
 							size='$3'
 							iconSize='$6'
 							icon={Plus}
-							onPress={() => {
-								toast.info(t('not_yet'))
-							}}
+							onPress={() => toast.info(t('not_yet'))}
 							hoverStyle={{
 								borderColor: '$color6',
 								bg: '$background08'
@@ -334,7 +332,8 @@ export default function Page() {
 								<Progress
 									value={quota[key]?.[model]?.rpd ?? 0}
 									bg='$color4'
-									width='$true'
+									minW={0}
+									maxW='$2'
 									size='$1'>
 									<Progress.Indicator transition='slowest' />
 								</Progress>
@@ -343,7 +342,8 @@ export default function Page() {
 								<Progress
 									value={quota[key]?.[model]?.tpd ?? 0}
 									bg='$color4'
-									width='$true'
+									minW={0}
+									maxW='$2'
 									size='$1'>
 									<Progress.Indicator transition='slowest' />
 								</Progress>
