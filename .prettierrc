@@ -6,5 +6,9 @@
 	"semi": false,
 	"singleQuote": true,
 	"jsxSingleQuote": true,
-	"arrowParens": "avoid"
+	"arrowParens": "avoid",
+	"bracketSameLine": true,
+	"bracketSpacing": true,
+	"trailingComma": "none",
+	"singleAttributePerLine": false
 }

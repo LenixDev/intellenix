@@ -5,14 +5,23 @@ import { toast } from '@tamagui/toast/v2'
 import { raise } from 'lenix'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Dialog, Input, Separator, View, Text, XStack, Spinner } from 'tamagui'
+import {
+	Button,
+	Dialog,
+	Input,
+	Separator,
+	View,
+	Text,
+	XStack,
+	Spinner
+} from 'tamagui'
 
 // eslint-disable-next-line max-lines-per-function
 export const Api = ({
 	apiKey,
 	setKey,
 	keyDialog,
-	setKeyDialog,
+	setKeyDialog
 }: {
 	apiKey: string
 	setKey: (key: string) => void
@@ -22,36 +31,44 @@ export const Api = ({
 	const [loading, setLoading] = useState(false)
 	const { t } = useTranslation()
 	return (
-		<Dialog open={keyDialog} onOpenChange={open => { if (!open) return; setKeyDialog(open) }}>
+		<Dialog
+			open={keyDialog}
+			onOpenChange={open => {
+				if (!open) return
+				setKeyDialog(open)
+			}}>
 			<Dialog.Portal>
 				<Dialog.Overlay />
 				<Dialog.Content gap='$6'>
 					<View>
 						<Dialog.Title>{t('enter_key')}</Dialog.Title>
-						<Dialog.Description>
-							{t('fill_key')}
-						</Dialog.Description>
+						<Dialog.Description>{t('fill_key')}</Dialog.Description>
 					</View>
 					<Input
 						type='password'
 						secureTextEntry
 						value={apiKey}
-						onChangeText={setKey} />
+						onChangeText={setKey}
+					/>
 					<Button
 						disabled={apiKey.length === 0}
 						onPress={() => {
 							if (typeof apiKey === 'string' && apiKey.length === 0) return
-							prefs.setKey(apiKey, 'key').then(() => {
-								setKeyDialog(false)
-								window.location.reload()
-							}).catch(raise)
-						}}
-					>
+							prefs
+								.setKey(apiKey, 'key')
+								.then(() => {
+									setKeyDialog(false)
+									window.location.reload()
+								})
+								.catch(raise)
+						}}>
 						{t('submit')}
 					</Button>
 					<XStack items='center' gap='$4'>
 						<Separator />
-						<Text color='$color06' fontSize='$1'>{t('or')}</Text>
+						<Text color='$color06' fontSize='$1'>
+							{t('or')}
+						</Text>
 						<Separator />
 					</XStack>
 					<Button
@@ -60,21 +77,28 @@ export const Api = ({
 						onPress={() => {
 							setLoading(true)
 							// eslint-disable-next-line @stylistic/max-len
-							supabase.functions.invoke<GetKey>('get-key').then(({ data, error }) => {
-								if (error instanceof Error || !data) {
-									toast.error(t('key_err'))
-									setLoading(false)
-									return
-								}
-								prefs.setKey(data.key, 'key').then(() => {
-									setKeyDialog(false)
-									setLoading(false)
-									window.location.reload()
-								}).catch(raise)
-							}).catch(raise)
-						}}
-					>
-						{loading ? <Spinner /> : t('pub_key')}
+							supabase.functions
+								.invoke<GetKey>('get-key')
+								.then(({ data, error }) => {
+									if (error instanceof Error || !data) {
+										toast.error(t('key_err'))
+										setLoading(false)
+										return
+									}
+									prefs
+										.setKey(data.key, 'key')
+										.then(() => {
+											setKeyDialog(false)
+											setLoading(false)
+											window.location.reload()
+										})
+										.catch(raise)
+								})
+								.catch(raise)
+						}}>
+						{loading ?
+							<Spinner />
+						:	t('pub_key')}
 					</Button>
 				</Dialog.Content>
 			</Dialog.Portal>

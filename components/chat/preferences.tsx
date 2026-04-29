@@ -17,10 +17,14 @@ const setItem = (
 	model: Model,
 	setItemState: React.Dispatch<React.SetStateAction<Model>>,
 	t: i18n['t']
-) => prefs.setKey(model, 'model').then(() => {
-	setItemState(model)
-	toast.success(t('model_success'))
-}).catch(raise)
+) =>
+	prefs
+		.setKey(model, 'model')
+		.then(() => {
+			setItemState(model)
+			toast.success(t('model_success'))
+		})
+		.catch(raise)
 
 // eslint-disable-next-line max-lines-per-function
 export const Preferences = ({
@@ -43,12 +47,12 @@ export const Preferences = ({
 
 	useEffect(() => {
 		if (items.length > 0) return
-		groq.models.
-			list().
-			then(({ data }) => {
+		groq.models
+			.list()
+			.then(({ data }) => {
 				setItems(data)
-			}).
-			catch(raise)
+			})
+			.catch(raise)
 	}, [])
 
 	return (
@@ -58,71 +62,69 @@ export const Preferences = ({
 			modal
 			open={open}
 			onOpenChange={setOpen}
-			snapPoints={[50, 10]}
-		>
-			<Sheet.Overlay
-				transition='quick'
-				bg='$color02'
-			/>
+			snapPoints={[50, 10]}>
+			<Sheet.Overlay transition='quick' bg='$color02' />
 			<Sheet.Handle />
 			<Sheet.Frame
 				bg='$color2'
 				items='center'
 				justify='space-evenly'
-				flexDirection={isPortrait ? 'column' : 'row'}
-			>
+				flexDirection={isPortrait ? 'column' : 'row'}>
 				<ApiInput {...{ setKey }} />
 				<View>
 					<Label>{t('models')}</Label>
 					<Selection
 						renderer={value => items.find(item => item.id === value)?.id}
 						listLabel={t('models')}
-						{...{ item, setItem: (item: Model) => setItem(item, setItemState, t) }}
-					>
+						{...{
+							item,
+							setItem: (item: Model) => setItem(item, setItemState, t)
+						}}>
 						{useMemo(
-							() => items.map((item, iter) => (
-								<Select.Item index={iter} key={item.id} value={item.id}>
-									<View>
-										<Select.ItemText>{item.id}</Select.ItemText>
-										<View flexDirection='row'>
+							() =>
+								items.map((item, iter) => (
+									<Select.Item index={iter} key={item.id} value={item.id}>
+										<View>
+											<Select.ItemText>{item.id}</Select.ItemText>
+											<View flexDirection='row'>
+												<Select.ItemText color='$color7' fontSize='$2'>
+													{t('by')} {item.owned_by}&nbsp;
+												</Select.ItemText>
+												<Select.ItemText color='$color7' fontSize='$2'>
+													{t('on')}{' '}
+													{new Date(item.created * 1000).toLocaleDateString(
+														undefined,
+														{
+															year: 'numeric',
+															month: 'short'
+														}
+													)}
+												</Select.ItemText>
+											</View>
 											<Select.ItemText color='$color7' fontSize='$2'>
-												{t('by')} {item.owned_by}&nbsp;
+												{t('rpm')}: {LIMITS[item.id as Model].rpm}
 											</Select.ItemText>
 											<Select.ItemText color='$color7' fontSize='$2'>
-												{t('on')}{' '}
-												{new Date(item.created * 1000).toLocaleDateString(
-													undefined,
-													{
-														year: 'numeric',
-														month: 'short'
-													}
-												)}
+												{t('tpm')}: {LIMITS[item.id as Model].tpm}
+											</Select.ItemText>
+											<Select.ItemText color='$color7' fontSize='$2'>
+												{t('rpd')}: {LIMITS[item.id as Model].rpd}
+											</Select.ItemText>
+											<Select.ItemText color='$color7' fontSize='$2'>
+												{t('tpd')}: {LIMITS[item.id as Model].tpd}
+											</Select.ItemText>
+											<Select.ItemText color='$color7' fontSize='$2'>
+												{t('ash')}: {LIMITS[item.id as Model].ash}
+											</Select.ItemText>
+											<Select.ItemText color='$color7' fontSize='$2'>
+												{t('asd')}: {LIMITS[item.id as Model].asd}
 											</Select.ItemText>
 										</View>
-										<Select.ItemText color='$color7' fontSize='$2'>
-											{t('rpm')}: {LIMITS[item.id as Model].rpm}
-										</Select.ItemText>
-										<Select.ItemText color='$color7' fontSize='$2'>
-											{t('tpm')}: {LIMITS[item.id as Model].tpm}
-										</Select.ItemText>
-										<Select.ItemText color='$color7' fontSize='$2'>
-											{t('rpd')}: {LIMITS[item.id as Model].rpd}
-										</Select.ItemText>
-										<Select.ItemText color='$color7' fontSize='$2'>
-											{t('tpd')}: {LIMITS[item.id as Model].tpd}
-										</Select.ItemText>
-										<Select.ItemText color='$color7' fontSize='$2'>
-											{t('ash')}: {LIMITS[item.id as Model].ash}
-										</Select.ItemText>
-										<Select.ItemText color='$color7' fontSize='$2'>
-											{t('asd')}: {LIMITS[item.id as Model].asd}
-										</Select.ItemText>
-									</View>
-									<Select.ItemIndicator marginLeft='auto'>
-										<Check size={16} />
-									</Select.ItemIndicator>
-								</Select.Item>
-							)),
+										<Select.ItemIndicator marginLeft='auto'>
+											<Check size={16} />
+										</Select.ItemIndicator>
+									</Select.Item>
+								)),
 							[items]
 						)}
 					</Selection>

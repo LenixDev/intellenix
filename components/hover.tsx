@@ -1,15 +1,14 @@
-import { Tooltip } from 'tamagui';
+import { Tooltip } from 'tamagui'
 
 export const Hover = ({
-	children, content
+	children,
+	content
 }: {
 	children: React.ReactNode
 	content: () => React.ReactNode
 }) => (
 	<Tooltip placement='top'>
-		<Tooltip.Trigger asChild>
-			{children}
-		</Tooltip.Trigger>
+		<Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
 		<Tooltip.Content
 			enterStyle={{ x: 0, y: -5, opacity: 0, scale: 0.9 }}
 			exitStyle={{ x: 0, y: -5, opacity: 0, scale: 0.9 }}
@@ -24,11 +23,10 @@ export const Hover = ({
 				'quick',
 				{
 					opacity: {
-						overshootClamping: true,
-					},
-				},
-			]}
-		>
+						overshootClamping: true
+					}
+				}
+			]}>
 			<Tooltip.Arrow bg='$color9' />
 			{content()}
 		</Tooltip.Content>

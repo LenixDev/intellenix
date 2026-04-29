@@ -26,53 +26,47 @@ export const Conversation = ({
 			onContentSizeChange={() => {
 				scrollRef.current?.scrollToEnd({ animated: true })
 			}}
-			scrollbarWidth='none'
-		>
+			scrollbarWidth='none'>
 			{/* eslint-disable-next-line max-lines-per-function */}
 			{conversations.map($ => {
-				if ($.role === 'user') return (
-					<View
-						key={$.date}
-						items='flex-end'
-						gap='$4'
-						mb='$5'
-						onMouseEnter={() => {
-							setShown({ [$.date]: true })
-						}}
-						onClick={() => {
-							setShown({ [$.date]: !shown[$.date] })
-						}}
-						onMouseLeave={() => {
-							setShown({ [$.date]: false })
-						}}
-					>
-						<Text
-							py='$2'
-							px='$3'
-							maxW='90%'
-							color='$colorFocus'
-							bg='$color01'
-							rounded='$5'
-						>
-							{$.content}
-						</Text>
-						<View opacity={shown[$.date] === true ? 1 : 0} gap={0} items='flex-end'>
+				if ($.role === 'user')
+					return (
+						<View
+							key={$.date}
+							items='flex-end'
+							gap='$4'
+							mb='$5'
+							onMouseEnter={() => {
+								setShown({ [$.date]: true })
+							}}
+							onClick={() => {
+								setShown({ [$.date]: !shown[$.date] })
+							}}
+							onMouseLeave={() => {
+								setShown({ [$.date]: false })
+							}}>
 							<Text
-								color='$color04'
-								fontSize='$1'
-							>
-								{$.date}
+								py='$2'
+								px='$3'
+								maxW='90%'
+								color='$colorFocus'
+								bg='$color01'
+								rounded='$5'>
+								{$.content}
 							</Text>
-							<Text
-								color='$color04'
-								fontStyle='italic'
-								fontSize='$1'
-							>
-								{t('tokens_used')} {$.completion_tokens}
-							</Text>
+							<View
+								opacity={shown[$.date] === true ? 1 : 0}
+								gap={0}
+								items='flex-end'>
+								<Text color='$color04' fontSize='$1'>
+									{$.date}
+								</Text>
+								<Text color='$color04' fontStyle='italic' fontSize='$1'>
+									{t('tokens_used')} {$.completion_tokens}
+								</Text>
+							</View>
 						</View>
-					</View>
-				)
+					)
 				return (
 					<View
 						key={$.date}
@@ -86,28 +80,18 @@ export const Conversation = ({
 						}}
 						onMouseLeave={() => {
 							setShown({ [$.date]: false })
-						}}
-					>
-						<Text
-							maxW='90%'
-							self='flex-start'
-							color='$color'
-						>
+						}}>
+						<Text maxW='90%' self='flex-start' color='$color'>
 							{$.content}
 						</Text>
 						<View opacity={shown[$.date] === true ? 1 : 0} gap={0}>
-							<Text
-								color='$color04'
-								fontSize='$1'
-							>
+							<Text color='$color04' fontSize='$1'>
 								{$.date}
 							</Text>
-							<Text
-								color='$color04'
-								fontStyle='italic'
-								fontSize='$1'
-							>
-								{t('took')} {$.usage?.queue_time?.toFixed(2)}{t('s')} | {t('tokens_used')} {$.usage?.completion_tokens} | {t('service_tier')} {$.service_tier}
+							<Text color='$color04' fontStyle='italic' fontSize='$1'>
+								{t('took')} {$.usage?.queue_time?.toFixed(2)}
+								{t('s')} | {t('tokens_used')} {$.usage?.completion_tokens} |{' '}
+								{t('service_tier')} {$.service_tier}
 							</Text>
 						</View>
 					</View>

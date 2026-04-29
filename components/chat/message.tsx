@@ -8,7 +8,7 @@ export const Message = ({
 	send,
 	aiThinking,
 	apiKey,
-	isMac,
+	isMac
 }: {
 	content: string
 	setContent: (content: string) => void

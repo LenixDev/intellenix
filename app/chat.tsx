@@ -1,4 +1,12 @@
-import { Button, Progress, type ScrollView, Text, Tooltip, useWindowDimensions, View } from 'tamagui'
+import {
+	Button,
+	Progress,
+	type ScrollView,
+	Text,
+	Tooltip,
+	useWindowDimensions,
+	View
+} from 'tamagui'
 import { SlidersHorizontal } from '@tamagui/lucide-icons-2'
 import { SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import Groq from 'groq-sdk'
@@ -14,7 +22,12 @@ import { Preferences } from '@/components/chat/preferences'
 import { defaultModel } from '@/constants'
 import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
-import type { DailyQuotaFunction, QuotaFunction, Conversation as IConversation, KeysQuota } from '@/types'
+import type {
+	DailyQuotaFunction,
+	QuotaFunction,
+	Conversation as IConversation,
+	KeysQuota
+} from '@/types'
 import { i18n } from 'i18next'
 import { supabase } from '@/supabase'
 import { Hover } from '@/components/hover'
@@ -62,28 +75,28 @@ const sendMessage = async ({
 	setAiThinking(true)
 	try {
 		setMessage('')
-		const {
-			choices, service_tier, usage
-		} = await groq.chat.completions.create({
-			messages: [
-				// eslint-disable-next-line @stylistic/max-len
-				...conversations.map(({ role, content }) => ({ role, content })),
-				{
-					role: 'user',
-					content: message
-				}
-			],
-			model: defaultModel,
-			// temperature: null,
-			// search_settings: null,
-			// reasoning_effort: null,
-			// max_completion_tokens: null,
-			// include_reasoning: null,
-			// documents: null,
-			// compound_custom: null,
-			// tools: null,
-			// user: null
-		})
+		const { choices, service_tier, usage } = await groq.chat.completions.create(
+			{
+				messages: [
+					// eslint-disable-next-line @stylistic/max-len
+					...conversations.map(({ role, content }) => ({ role, content })),
+					{
+						role: 'user',
+						content: message
+					}
+				],
+				model: defaultModel
+				// temperature: null,
+				// search_settings: null,
+				// reasoning_effort: null,
+				// max_completion_tokens: null,
+				// include_reasoning: null,
+				// documents: null,
+				// compound_custom: null,
+				// tools: null,
+				// user: null
+			}
+		)
 		const response = choices[0]?.message.content
 		if (typeof response !== 'string') return toast.error(t('no_res'))
 
@@ -92,7 +105,10 @@ const sendMessage = async ({
 				if ($.role !== 'user') return $
 				const isLast = arr.slice(i + 1).every(n => n.role !== 'user')
 				if (!isLast) return $
-				return { ...$, completion_tokens: usage?.prompt_tokens ?? 'failed!' } as IConversation
+				return {
+					...$,
+					completion_tokens: usage?.prompt_tokens ?? 'failed!'
+				} as IConversation
 			}),
 			{
 				date: composeId(),
@@ -108,26 +124,30 @@ const sendMessage = async ({
 			})
 			return
 		}
-		supabase.functions.invoke<DailyQuotaFunction>('quota', { body: {
-			type: 'consume',
-			key,
-			model: defaultModel,
-			tokens: usage.total_tokens
-		} satisfies QuotaFunction}).then(({ error, data }) => {
-			if (error instanceof Error || !data) {
-				toast.error(t('err'), {
-					description: error.message,
-				})
-				return
-			}
-			if ('error' in data) {
-				toast.error(t('err'), {
-					description: data.error,
-				})
-				return
-			}
-			setQuota({ [key]: { [defaultModel]: data } })
-		})
+		supabase.functions
+			.invoke<DailyQuotaFunction>('quota', {
+				body: {
+					type: 'consume',
+					key,
+					model: defaultModel,
+					tokens: usage.total_tokens
+				} satisfies QuotaFunction
+			})
+			.then(({ error, data }) => {
+				if (error instanceof Error || !data) {
+					toast.error(t('err'), {
+						description: error.message
+					})
+					return
+				}
+				if ('error' in data) {
+					toast.error(t('err'), {
+						description: data.error
+					})
+					return
+				}
+				setQuota({ [key]: { [defaultModel]: data } })
+			})
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (err: any) {
 		setConversations(prev => prev.slice(0, prev.length - 1))
@@ -186,47 +206,62 @@ export default function Page() {
 
 	useEffect(() => {
 		if (key.trim()) return
-		prefs.getKey('key').then(key => {
-			if (!key) return setKeyDialog(true)
-			setKey(key)
-			supabase.functions.invoke<DailyQuotaFunction>('quota', {
-				body: {
-					type: 'get',
-					key,
-					model: defaultModel
-				} satisfies QuotaFunction
-			}).then(({ error, data }) => {
-				if (error instanceof Error || !data) {
-					toast.error(t('err'), {
-						description: error?.message,
+		prefs
+			.getKey('key')
+			.then(key => {
+				if (!key) return setKeyDialog(true)
+				setKey(key)
+				supabase.functions
+					.invoke<DailyQuotaFunction>('quota', {
+						body: {
+							type: 'get',
+							key,
+							model: defaultModel
+						} satisfies QuotaFunction
 					})
-					return
-				}
-				if ('error' in data) {
-					toast.error(t('err'), {
-						description: data.error,
+					.then(({ error, data }) => {
+						if (error instanceof Error || !data) {
+							toast.error(t('err'), {
+								description: error?.message
+							})
+							return
+						}
+						if ('error' in data) {
+							toast.error(t('err'), {
+								description: data.error
+							})
+							return
+						}
+						setQuota({ [key]: { [defaultModel]: data } })
 					})
-					return
-				}
-				setQuota({ [key]: { [defaultModel]: data } })
 			})
-		}).catch(raise)
+			.catch(raise)
 	}, [key])
 
-	if (!key.trim() || keyDialog) return (
-		<Api
-			{...{
-				apiKey: key,
-				setKey,
-				keyDialog,
-				setKeyDialog
-			}}
-		/>
-	)
+	if (!key.trim() || keyDialog)
+		return (
+			<Api
+				{...{
+					apiKey: key,
+					setKey,
+					keyDialog,
+					setKeyDialog
+				}}
+			/>
+		)
 
-	const send = () => sendMessage({
-		message, setConversations, setMessage, t, setAiThinking, groq, conversations, key, setQuota
-	})
+	const send = () =>
+		sendMessage({
+			message,
+			setConversations,
+			setMessage,
+			t,
+			setAiThinking,
+			groq,
+			conversations,
+			key,
+			setQuota
+		})
 
 	return (
 		<View items='center' width='100%' height='100%'>
@@ -236,32 +271,21 @@ export default function Page() {
 				items='center'
 				justify='flex-end'
 				pb='$5'
-				gap='$2'
-			>
+				gap='$2'>
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
-				<Hover content={() =>
-					<Text color='$color4'>
-						{t('used_rpd')}
-					</Text>
-				}>
+				<Hover content={() => <Text color='$color4'>{t('used_rpd')}</Text>}>
 					<Progress
 						value={quota[key]?.[defaultModel]?.rpd ?? 0}
 						maxW='95%'
-						size='$1'
-					>
+						size='$1'>
 						<Progress.Indicator transition='slowest' />
 					</Progress>
 				</Hover>
-				<Hover content={() =>
-					<Text color='$color4'>
-						{t('used_tpd')}
-					</Text>
-				}>
+				<Hover content={() => <Text color='$color4'>{t('used_tpd')}</Text>}>
 					<Progress
 						value={quota[key]?.[defaultModel]?.tpd ?? 0}
 						maxW='95%'
-						size='$1'
-					>
+						size='$1'>
 						<Progress.Indicator transition='slowest' />
 					</Progress>
 				</Hover>
@@ -273,14 +297,12 @@ export default function Page() {
 					px='$4'
 					pb='$2'
 					justify='center'
-					border='1px solid $color6'
-				>
+					border='1px solid $color6'>
 					<View
 						width='100%'
 						flexDirection='row'
 						justify='center'
-						items='flex-end'
-					>
+						items='flex-end'>
 						<Message
 							{...{
 								content: message,
@@ -288,16 +310,11 @@ export default function Page() {
 								send,
 								aiThinking,
 								apiKey: key,
-								isMac,
+								isMac
 							}}
 						/>
 					</View>
-					<View
-						flexDirection='row'
-						justify='flex-end'
-						gap='$2'
-						items='center'
-					>
+					<View flexDirection='row' justify='flex-end' gap='$2' items='center'>
 						<Button
 							chromeless
 							size='$3'
@@ -311,12 +328,14 @@ export default function Page() {
 							}}
 						/>
 						<Tasks />
-						<Send {...{
-							content: message,
-							send,
-							aiThinking,
-							r_tPM: false /* TODO: block when quota exceeded */
-						}} />
+						<Send
+							{...{
+								content: message,
+								send,
+								aiThinking,
+								r_tPM: false /* TODO: block when quota exceeded */
+							}}
+						/>
 					</View>
 				</View>
 				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}

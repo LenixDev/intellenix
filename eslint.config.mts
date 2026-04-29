@@ -38,7 +38,7 @@ export default defineConfig([
 					exceptions: ['_', 't', '$']
 				}
 			],
-			'camelcase': 'off',
+			camelcase: 'off',
 			'@stylistic/array-bracket-newline': 'warn',
 			'@stylistic/array-bracket-spacing': 'warn',
 			'@stylistic/array-element-newline': ['warn', 'consistent'],
@@ -103,7 +103,10 @@ export default defineConfig([
 			'@stylistic/multiline-comment-style': 'warn',
 			'@stylistic/multiline-ternary': ['warn', 'never'],
 			'@stylistic/new-parens': 'warn',
-			'@stylistic/newline-per-chained-call': ['warn', { ignoreChainWithDepth: 3 }],
+			'@stylistic/newline-per-chained-call': [
+				'warn',
+				{ ignoreChainWithDepth: 3 }
+			],
 			'@stylistic/no-confusing-arrow': 'warn',
 			'@stylistic/no-extra-parens': ['warn', 'all', { ignoreJSX: 'all' }],
 			'@stylistic/no-extra-semi': 'warn',

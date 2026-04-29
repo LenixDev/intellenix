@@ -9,7 +9,7 @@ import {
 import { LinearGradient } from 'tamagui/linear-gradient'
 
 // eslint-disable-next-line max-lines-per-function
-export const Selection = <T extends string,>({
+export const Selection = <T extends string>({
 	renderer,
 	listLabel,
 	children,
@@ -27,15 +27,13 @@ export const Selection = <T extends string,>({
 		value={item}
 		onValueChange={setItem}
 		disablePreventBodyScroll
-		renderValue={renderer}
-	>
+		renderValue={renderer}>
 		<Select.Trigger
 			iconAfter={ChevronDown}
 			borderRadius='$4'
 			width='auto'
 			size='$3'
-			{...props}
-		>
+			{...props}>
 			<Select.Value color='$color10' />
 		</Select.Trigger>
 		<Select.Content>
@@ -44,8 +42,7 @@ export const Selection = <T extends string,>({
 				justify='center'
 				position='relative'
 				width='100%'
-				height='$3'
-			>
+				height='$3'>
 				<YStack z={10}>
 					<ChevronUp size={20} />
 				</YStack>
@@ -61,8 +58,7 @@ export const Selection = <T extends string,>({
 				bg='$background'
 				rounded='$4'
 				borderWidth={1}
-				borderColor='$borderColor'
-			>
+				borderColor='$borderColor'>
 				<Select.Group>
 					<Select.Label fontWeight='100'>{listLabel}</Select.Label>
 					{children}
@@ -74,8 +70,7 @@ export const Selection = <T extends string,>({
 					items='center'
 					justify='center'
 					width='$4'
-					pointerEvents='none'
-				>
+					pointerEvents='none'>
 					<ChevronDown size={getFontSize('$true')} />
 				</YStack>
 			</Select.Viewport>
@@ -84,8 +79,7 @@ export const Selection = <T extends string,>({
 				justify='center'
 				position='relative'
 				width='100%'
-				height='$3'
-			>
+				height='$3'>
 				<YStack z={10}>
 					<ChevronDown size={20} />
 				</YStack>
