@@ -4,6 +4,7 @@ import { toast } from '@tamagui/toast/v2'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, Text, View, Button } from 'tamagui'
+import * as Clipboard from 'expo-clipboard'
 
 // eslint-disable-next-line max-lines-per-function
 export const Conversation = ({
@@ -60,7 +61,7 @@ export const Conversation = ({
 									opacity={opacify}
 									size='$2'
 									onPress={() => {
-										navigator.clipboard.writeText($.content)
+										Clipboard.setStringAsync($?.content)
 									}}
 								/>
 								<Text
@@ -102,7 +103,7 @@ export const Conversation = ({
 								opacity={opacify}
 								size='$2'
 								onPress={() => {
-									navigator.clipboard.writeText($.content)
+									Clipboard.setStringAsync($?.content)
 								}}
 							/>
 						</View>

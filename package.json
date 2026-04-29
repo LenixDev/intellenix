@@ -25,6 +25,7 @@
 		"@vercel/analytics": "^2.0.1",
 		"@vercel/speed-insights": "^2.0.0",
 		"expo": "~54.0.33",
+		"expo-clipboard": "^55.0.13",
 		"expo-constants": "~18.0.13",
 		"expo-linking": "~8.0.11",
 		"expo-router": "~6.0.23",
