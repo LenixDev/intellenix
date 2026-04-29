@@ -3,7 +3,6 @@ import {
 	Progress,
 	type ScrollView,
 	Text,
-	Tooltip,
 	useWindowDimensions,
 	View
 } from 'tamagui'
@@ -381,7 +380,8 @@ export default function Page() {
 					setOpen: setSheetOpen,
 					groq,
 					isPortrait,
-					setKey
+					setKey,
+					setModel
 				}}
 			/>
 		</View>

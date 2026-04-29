@@ -15,14 +15,16 @@ import type { Model as GroqModel } from 'groq-sdk/resources'
 
 const setItem = (
 	model: Model,
-	setItemState: React.Dispatch<React.SetStateAction<Model>>,
-	t: i18n['t']
+	setItemState: (model: Model) => void,
+	t: i18n['t'],
+	setModel: (model: Model) => void
 ) =>
 	prefs
 		.setKey(model, 'model')
 		.then(() => {
 			setItemState(model)
 			toast.success(t('model_success'))
+			setModel(model)
 		})
 		.catch(raise)
 
@@ -32,16 +34,18 @@ export const Preferences = ({
 	setOpen,
 	groq,
 	isPortrait,
-	setKey
+	setKey,
+	setModel
 }: {
 	open: boolean
 	setOpen: (open: boolean) => void
 	groq: Groq
 	isPortrait: boolean
 	setKey: (key: string) => void
+	setModel: (model: Model) => void
 }) => {
 	const [items, setItems] = useState<GroqModel[]>([])
-	const [item, setItemState] = useState<typeof defaultModel>(defaultModel)
+	const [item, setItemState] = useState<Model>(defaultModel)
 
 	const { t } = useTranslation()
 
@@ -78,7 +82,7 @@ export const Preferences = ({
 						listLabel={t('models')}
 						{...{
 							item,
-							setItem: (item: Model) => setItem(item, setItemState, t)
+							setItem: (item: Model) => setItem(item, setItemState, t, setModel)
 						}}>
 						{useMemo(
 							() =>
