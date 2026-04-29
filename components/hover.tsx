@@ -1,13 +1,14 @@
-import { Tooltip } from 'tamagui'
+import { Tooltip, TooltipProps } from 'tamagui'
 
 export const Hover = ({
 	children,
-	content
+	content,
+	...props
 }: {
 	children: React.ReactNode
 	content: () => React.ReactNode
-}) => (
-	<Tooltip placement='top'>
+} & TooltipProps) => (
+	<Tooltip {...props}>
 		<Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
 		<Tooltip.Content
 			enterStyle={{ x: 0, y: -5, opacity: 0, scale: 0.9 }}

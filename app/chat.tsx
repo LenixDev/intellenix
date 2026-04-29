@@ -7,7 +7,7 @@ import {
 	useWindowDimensions,
 	View
 } from 'tamagui'
-import { SlidersHorizontal } from '@tamagui/lucide-icons-2'
+import { Plus, SlidersHorizontal } from '@tamagui/lucide-icons-2'
 import { SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import Groq from 'groq-sdk'
 import { raise } from 'lenix'
@@ -26,7 +26,8 @@ import type {
 	DailyQuotaFunction,
 	QuotaFunction,
 	Conversation as IConversation,
-	KeysQuota
+	KeysQuota,
+	Model
 } from '@/types'
 import { i18n } from 'i18next'
 import { supabase } from '@/supabase'
@@ -47,7 +48,8 @@ const sendMessage = async ({
 	groq,
 	conversations,
 	key,
-	setQuota
+	setQuota,
+	model
 }: {
 	message: string
 	setConversations: React.Dispatch<SetStateAction<IConversation[]>>
@@ -58,6 +60,7 @@ const sendMessage = async ({
 	conversations: IConversation[]
 	key: string
 	setQuota: React.Dispatch<SetStateAction<KeysQuota>>
+	model: Model
 }) => {
 	if (!message.trim()) {
 		toast.info(t('not_yet'))
@@ -85,7 +88,7 @@ const sendMessage = async ({
 						content: message
 					}
 				],
-				model: defaultModel
+				model
 				// temperature: null,
 				// search_settings: null,
 				// reasoning_effort: null,
@@ -129,7 +132,7 @@ const sendMessage = async ({
 				body: {
 					type: 'consume',
 					key,
-					model: defaultModel,
+					model,
 					tokens: usage.total_tokens
 				} satisfies QuotaFunction
 			})
@@ -146,7 +149,7 @@ const sendMessage = async ({
 					})
 					return
 				}
-				setQuota({ [key]: { [defaultModel]: data } })
+				setQuota({ [key]: { [model]: data } })
 			})
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (err: any) {
@@ -171,6 +174,7 @@ export default function Page() {
 	const [key, setKey] = useState<string>('')
 	const [keyDialog, setKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
+	const [model, setModel] = useState<Model>(defaultModel)
 	const [quota, setQuota] = useState<KeysQuota>({
 		[key]: {
 			[defaultModel]: {
@@ -216,7 +220,7 @@ export default function Page() {
 						body: {
 							type: 'get',
 							key,
-							model: defaultModel
+							model
 						} satisfies QuotaFunction
 					})
 					.then(({ error, data }) => {
@@ -232,11 +236,21 @@ export default function Page() {
 							})
 							return
 						}
-						setQuota({ [key]: { [defaultModel]: data } })
+						setQuota({ [key]: { [model]: data } })
 					})
 			})
 			.catch(raise)
-	}, [key])
+	}, [key, model])
+
+	useEffect(() => {
+		prefs.getKey('model').then(model => {
+			if (!model) {
+				toast.error(t('get_model_err'))
+				return
+			}
+			setModel(model as Model)
+		}).catch(raise)
+	}, [model])
 
 	if (!key.trim() || keyDialog)
 		return (
@@ -260,7 +274,8 @@ export default function Page() {
 			groq,
 			conversations,
 			key,
-			setQuota
+			setQuota,
+			model
 		})
 
 	return (
@@ -278,14 +293,16 @@ export default function Page() {
 					bg='$color3'
 					rounded='$8'
 					pt='$3'
-					px='$4'
+					px='$2'
 					pb='$2'
 					justify='center'
+					gap='$2'
 					border='1px solid $color6'>
 					<View
 						width='100%'
 						flexDirection='row'
 						justify='center'
+						px='$2'
 						items='flex-end'>
 						<Message
 							{...{
@@ -298,46 +315,62 @@ export default function Page() {
 							}}
 						/>
 					</View>
-					<View flexDirection='row' justify='flex-end' gap='$2' items='center'>
-						<Hover content={() => <Text color='$color4'>{t('used_rpd')}</Text>}>
-							<Progress
-								value={quota[key]?.[defaultModel]?.rpd ?? 0}
-								bg='$color4'
-								width='$true'
-								size='$1'>
-								<Progress.Indicator transition='slowest' />
-							</Progress>
-						</Hover>
-						<Hover content={() => <Text color='$color4'>{t('used_tpd')}</Text>}>
-							<Progress
-								value={quota[key]?.[defaultModel]?.tpd ?? 0}
-								bg='$color4'
-								width='$true'
-								size='$1'>
-								<Progress.Indicator transition='slowest' />
-							</Progress>
-						</Hover>
+					<View flexDirection='row' justify='space-between'>
 						<Button
 							chromeless
+							circular
 							size='$3'
-							icon={SlidersHorizontal}
+							iconSize='$6'
+							icon={Plus}
 							onPress={() => {
-								setSheetOpen(true)
+								toast.info(t('not_yet'))
 							}}
 							hoverStyle={{
 								borderColor: '$color6',
 								bg: '$background08'
 							}}
 						/>
-						<Tasks />
-						<Send
-							{...{
-								content: message,
-								send,
-								aiThinking,
-								r_tPM: false /* TODO: block when quota exceeded */
-							}}
-						/>
+						<View flexDirection='row' justify='flex-end' gap='$2' items='center'>
+							<Hover placement='bottom-end' content={() => <Text color='$color4'>{t('used_rpd')}({quota[key]?.[model]?.rpd.toFixed(2) ?? 0}%)</Text>}>
+								<Progress
+									value={quota[key]?.[model]?.rpd ?? 0}
+									bg='$color4'
+									width='$true'
+									size='$1'>
+									<Progress.Indicator transition='slowest' />
+								</Progress>
+							</Hover>
+							<Hover placement='bottom-start' content={() => <Text color='$color4'>{t('used_tpd')}({quota[key]?.[model]?.tpd.toFixed(2) ?? 0}%)</Text>}>
+								<Progress
+									value={quota[key]?.[model]?.tpd ?? 0}
+									bg='$color4'
+									width='$true'
+									size='$1'>
+									<Progress.Indicator transition='slowest' />
+								</Progress>
+							</Hover>
+							<Button
+								chromeless
+								size='$3'
+								icon={SlidersHorizontal}
+								onPress={() => {
+									setSheetOpen(true)
+								}}
+								hoverStyle={{
+									borderColor: '$color6',
+									bg: '$background08'
+								}}
+							/>
+							<Tasks />
+							<Send
+								{...{
+									content: message,
+									send,
+									aiThinking,
+									r_tPM: false /* TODO: block when quota exceeded */
+								}}
+							/>
+						</View>
 					</View>
 				</View>
 				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
