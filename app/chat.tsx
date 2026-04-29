@@ -1,4 +1,4 @@
-import { Button, Progress, type ScrollView, Text, useWindowDimensions, View } from 'tamagui'
+import { Button, Progress, type ScrollView, Text, Tooltip, useWindowDimensions, View } from 'tamagui'
 import { SlidersHorizontal } from '@tamagui/lucide-icons-2'
 import { SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import Groq from 'groq-sdk'
@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next'
 import type { DailyQuotaFunction, QuotaFunction, Conversation as IConversation, KeysQuota } from '@/types'
 import { i18n } from 'i18next'
 import { supabase } from '@/supabase'
+import { Hover } from '@/components/hover'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -107,15 +108,21 @@ const sendMessage = async ({
 			})
 			return
 		}
-		supabase.functions.invoke('quota', { body: {
+		supabase.functions.invoke<DailyQuotaFunction>('quota', { body: {
 			type: 'consume',
 			key,
 			model: defaultModel,
 			tokens: usage.total_tokens
 		} satisfies QuotaFunction}).then(({ error, data }) => {
-			if (error instanceof Error) {
+			if (error instanceof Error || !data) {
 				toast.error(t('err'), {
 					description: error.message,
+				})
+				return
+			}
+			if ('error' in data) {
+				toast.error(t('err'), {
+					description: data.error,
 				})
 				return
 			}
@@ -201,7 +208,6 @@ export default function Page() {
 					})
 					return
 				}
-				console.debug(data)
 				setQuota({ [key]: { [defaultModel]: data } })
 			})
 		}).catch(raise)
@@ -233,22 +239,32 @@ export default function Page() {
 				gap='$2'
 			>
 				<Conversation {...{ conversations, scrollRef, isPortrait }} />
-				<Text>RPD</Text>
-				<Progress
-					value={quota[key]?.[defaultModel]?.rpd ?? 0}
-					maxW='95%'
-					size='$1'
-				>
-					<Progress.Indicator transition='slowest' />
-				</Progress>
-				<Text>TPD</Text>
-				<Progress
-					value={quota[key]?.[defaultModel]?.tpd ?? 0}
-					maxW='95%'
-					size='$1'
-				>
-					<Progress.Indicator transition='slowest' />
-				</Progress>
+				<Hover content={() =>
+					<Text color='$color4'>
+						{t('used_rpd')}
+					</Text>
+				}>
+					<Progress
+						value={quota[key]?.[defaultModel]?.rpd ?? 0}
+						maxW='95%'
+						size='$1'
+					>
+						<Progress.Indicator transition='slowest' />
+					</Progress>
+				</Hover>
+				<Hover content={() =>
+					<Text color='$color4'>
+						{t('used_tpd')}
+					</Text>
+				}>
+					<Progress
+						value={quota[key]?.[defaultModel]?.tpd ?? 0}
+						maxW='95%'
+						size='$1'
+					>
+						<Progress.Indicator transition='slowest' />
+					</Progress>
+				</Hover>
 				<View
 					width='100%'
 					bg='$color3'

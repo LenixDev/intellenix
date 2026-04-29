@@ -36,5 +36,7 @@
 	"tpd": "Tokens per day",
 	"ash": "Audio seconds per hour",
 	"asd": "Audio seconds per hour",
-	"by": "By"
+	"by": "By",
+	"used_rpd": "Requests consumed today",
+	"used_tpd": "Tokens consumed today"
 }

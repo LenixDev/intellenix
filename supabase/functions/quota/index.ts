@@ -26,7 +26,7 @@ Deno.serve(async req => {
 			.single<DailyQuota>()
 
 		if (error) return new Response(
-			JSON.stringify({ error: error.message }),
+			JSON.stringify({ error: error.message } satisfies DailyQuotaFunction),
 			{ headers: res },
 		)
 
@@ -38,7 +38,7 @@ Deno.serve(async req => {
 			.eq('model', model)
 
 		if (error$) return new Response(
-			JSON.stringify({ error: error$.message }),
+			JSON.stringify({ error: error$.message } satisfies DailyQuotaFunction),
 			{ headers: res },
 		)
 		
@@ -46,7 +46,7 @@ Deno.serve(async req => {
 			JSON.stringify({
 				rpd: (rpd * 100) / LIMITS[model].rpd,
 				tpd: (tpd * 100) / LIMITS[model].tpd
-			}),
+			} satisfies DailyQuotaFunction),
 		 { headers: res },
 		)
 	}
