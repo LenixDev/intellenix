@@ -14,7 +14,7 @@ import { Preferences } from '@/components/chat/preferences'
 import { defaultModel } from '@/constants'
 import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
-import type { DailyQuotaFunction, GetQuota, Conversation as IConversation, KeysQuota } from '@/types'
+import type { DailyQuotaFunction, QuotaFunction, Conversation as IConversation, KeysQuota } from '@/types'
 import { i18n } from 'i18next'
 import { supabase } from '@/supabase'
 
@@ -25,7 +25,15 @@ const composeId = () => {
 }
 
 const sendMessage = async ({
-	message, setConversations, setMessage, t, setAiThinking, groq, conversations
+	message,
+	setConversations,
+	setMessage,
+	t,
+	setAiThinking,
+	groq,
+	conversations,
+	key,
+	setQuota
 }: {
 	message: string
 	setConversations: React.Dispatch<SetStateAction<IConversation[]>>
@@ -34,6 +42,8 @@ const sendMessage = async ({
 	setAiThinking: (aiThinking: boolean) => void
 	groq: Groq
 	conversations: IConversation[]
+	key: string
+	setQuota: React.Dispatch<SetStateAction<KeysQuota>>
 }) => {
 	if (!message.trim()) {
 		toast.info(t('not_yet'))
@@ -91,6 +101,26 @@ const sendMessage = async ({
 				usage
 			}
 		])
+		if (!usage?.total_tokens) {
+			toast.error(t('quota_update_err'), {
+				description: t('total_tokens_undefined')
+			})
+			return
+		}
+		supabase.functions.invoke('quota', { body: {
+			type: 'consume',
+			key,
+			model: defaultModel,
+			tokens: usage.total_tokens
+		} satisfies QuotaFunction}).then(({ error, data }) => {
+			if (error instanceof Error) {
+				toast.error(t('err'), {
+					description: error.message,
+				})
+				return
+			}
+			setQuota({ [key]: { [defaultModel]: data } })
+		})
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (err: any) {
 		setConversations(prev => prev.slice(0, prev.length - 1))
@@ -152,26 +182,27 @@ export default function Page() {
 		prefs.getKey('key').then(key => {
 			if (!key) return setKeyDialog(true)
 			setKey(key)
-			console.debug(key, defaultModel)
-			supabase.functions.invoke<DailyQuotaFunction>('quota', { body: {
-				key,
-				model: defaultModel
-			} satisfies GetQuota}).then(({ error, data }) => {
+			supabase.functions.invoke<DailyQuotaFunction>('quota', {
+				body: {
+					type: 'get',
+					key,
+					model: defaultModel
+				} satisfies QuotaFunction
+			}).then(({ error, data }) => {
 				if (error instanceof Error || !data) {
 					toast.error(t('err'), {
 						description: error?.message,
-						duration: 40_000
 					})
 					return
 				}
 				if ('error' in data) {
 					toast.error(t('err'), {
 						description: data.error,
-						duration: 40_000
 					})
 					return
 				}
-				setQuota({ [key]: { [defaultModel]: { rpd: data.rpd, tpd: data.tpd } } })
+				console.debug(data)
+				setQuota({ [key]: { [defaultModel]: data } })
 			})
 		}).catch(raise)
 	}, [key])
@@ -187,7 +218,9 @@ export default function Page() {
 		/>
 	)
 
-	const send = () => sendMessage({ message, setConversations, setMessage, t, setAiThinking, groq, conversations })
+	const send = () => sendMessage({
+		message, setConversations, setMessage, t, setAiThinking, groq, conversations, key, setQuota
+	})
 
 	return (
 		<View items='center' width='100%' height='100%'>

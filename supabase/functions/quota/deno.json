@@ -1,7 +1,8 @@
 {
   "imports": {
     "@supabase/functions-js": "jsr:@supabase/functions-js@^2",
-		"@types": "../../../types.ts",
-		"init": "../__shared/index.ts"
+		"~types": "../../../types.ts",
+		"~init": "../__shared/index.ts",
+		"~constants": "../../../constants/index.ts"
   }
 }

@@ -46,7 +46,14 @@ export interface DailyQuota {
 	tpd: number
 }
 
-export interface GetQuota {
+interface QuotaBaseFunction {
 	key: string
 	model: Model
 }
+
+export type QuotaFunction = {
+	type: 'get'
+} & QuotaBaseFunction | {
+	type: 'consume'
+	tokens: number
+} & QuotaBaseFunction
