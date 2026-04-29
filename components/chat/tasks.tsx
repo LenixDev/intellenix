@@ -29,7 +29,7 @@ export const Tasks = () => {
 				() => TASK_KEYS.map((key, iter) => (
 					<Select.Item index={iter} key={key} value={key}>
 						<Select.ItemText>{t(key)}</Select.ItemText>
-						<Select.ItemIndicator marginLeft='auto'>
+						<Select.ItemIndicator marginLeft='$4'>
 							<Check size={16} />
 						</Select.ItemIndicator>
 					</Select.Item>
