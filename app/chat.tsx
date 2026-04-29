@@ -208,7 +208,7 @@ export default function Page() {
 	}, [conversations])
 
 	useEffect(() => {
-		if (key.trim()) return
+		if (key.length !== 0) return
 		prefs
 			.getKey('key')
 			.then(key => {
@@ -283,7 +283,7 @@ export default function Page() {
 	return (
 		<View items='center' width='100%' height='100%'>
 			<View
-				width={isPortrait ? '95%' : '50%'}
+				width={isPortrait ? '95%' : '55%'}
 				height='100%'
 				items='center'
 				justify='flex-end'
