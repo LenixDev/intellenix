@@ -1,7 +1,9 @@
 import type { Conversation as IConversation } from '@/types'
+import { Copy, Pencil } from '@tamagui/lucide-icons-2'
+import { toast } from '@tamagui/toast/v2'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, Text, View } from 'tamagui'
+import { ScrollView, Text, View, Button } from 'tamagui'
 
 // eslint-disable-next-line max-lines-per-function
 export const Conversation = ({
@@ -20,7 +22,7 @@ export const Conversation = ({
 		<ScrollView
 			ref={scrollRef}
 			width='100%'
-			mt='$10'
+			pt='$10'
 			px={isPortrait ? '$2' : '$5'}
 			flex={1}
 			onContentSizeChange={() => {
@@ -29,6 +31,7 @@ export const Conversation = ({
 			scrollbarWidth='none'>
 			{/* eslint-disable-next-line max-lines-per-function */}
 			{conversations.map($ => {
+				const opacify = shown[$.date] === true ? 1 : 0
 				if ($.role === 'user')
 					return (
 						<View
@@ -36,26 +39,45 @@ export const Conversation = ({
 							items='flex-end'
 							gap='$4'
 							mb='$5'
-							onMouseEnter={() => {
-								setShown({ [$.date]: true })
-							}}
-							onClick={() => {
-								setShown({ [$.date]: !shown[$.date] })
-							}}
-							onMouseLeave={() => {
-								setShown({ [$.date]: false })
-							}}>
-							<Text
-								py='$2'
-								px='$3'
-								maxW='90%'
-								color='$colorFocus'
-								bg='$color01'
-								rounded='$5'>
-								{$.content}
-							</Text>
+							onMouseEnter={() => setShown({ [$.date]: true })}
+							onClick={() => setShown({ [$.date]: !shown[$.date] })}
+							onMouseLeave={() => setShown({ [$.date]: false })}>
 							<View
-								opacity={shown[$.date] === true ? 1 : 0}
+								flexDirection='row'
+								items='center'
+								gap='$3'>
+								<Button
+									chromeless
+									circular
+									icon={Pencil}
+									opacity={opacify}
+									size='$2'
+									onPress={() => {
+										toast.info(t('not_yet'))
+									}}
+								/>
+								<Button
+									chromeless
+									circular
+									icon={Copy}
+									opacity={opacify}
+									size='$2'
+									onPress={() => {
+										navigator.clipboard.writeText($.content)
+									}}
+								/>
+								<Text
+									py='$2'
+									px='$3'
+									maxW='90%'
+									color='$colorFocus'
+									bg='$color01'
+									rounded='$5'>
+									{$.content}
+								</Text>
+							</View>
+							<View
+								opacity={opacify}
 								gap={0}
 								items='flex-end'>
 								<Text color='$color04' fontSize='$1'>
@@ -72,18 +94,26 @@ export const Conversation = ({
 						key={$.date}
 						gap='$4'
 						mb='$10'
-						onMouseEnter={() => {
-							setShown({ [$.date]: true })
-						}}
-						onClick={() => {
-							setShown({ [$.date]: shown[$.date] === false })
-						}}
-						onMouseLeave={() => {
-							setShown({ [$.date]: false })
-						}}>
-						<Text maxW='90%' self='flex-start' color='$color'>
-							{$.content}
-						</Text>
+						onMouseEnter={() => setShown({ [$.date]: true })}
+						onClick={() => setShown({ [$.date]: shown[$.date] === false })}
+						onMouseLeave={() => setShown({ [$.date]: false })}>
+						<View
+							flexDirection='row'
+							gap='$3'>
+							<Text maxW='90%' self='flex-start' color='$color'>
+								{$.content}
+							</Text>
+							<Button
+								chromeless
+								circular
+								icon={Copy}
+								opacity={opacify}
+								size='$2'
+								onPress={() => {
+									navigator.clipboard.writeText($.content)
+								}}
+							/>
+						</View>
 						<View opacity={shown[$.date] === true ? 1 : 0} gap={0}>
 							<Text color='$color04' fontSize='$1'>
 								{$.date}
