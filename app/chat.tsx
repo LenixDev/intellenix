@@ -208,6 +208,15 @@ export default function Page() {
 	}, [conversations])
 
 	useEffect(() => {
+		prefs
+			.getKey('model')
+			.then(model => {
+				if (model) setModel(model as Model)
+			})
+			.catch(raise)
+	}, [model])
+
+	useEffect(() => {
 		if (key.length !== 0) return
 		prefs
 			.getKey('key')
@@ -240,19 +249,6 @@ export default function Page() {
 			})
 			.catch(raise)
 	}, [key, model])
-
-	useEffect(() => {
-		prefs
-			.getKey('model')
-			.then(model => {
-				if (!model) {
-					toast.error(t('get_model_err'))
-					return
-				}
-				setModel(model as Model)
-			})
-			.catch(raise)
-	}, [model])
 
 	if (!key.trim() || keyDialog)
 		return (
@@ -339,7 +335,7 @@ export default function Page() {
 								placement='bottom-end'
 								content={() => (
 									<Text color='$color4'>
-										{t('used_rpd')}({quota[key]?.[model]?.rpd.toFixed(2) ?? 0}%)
+										{t('used_rpd')}({quota[key]?.[model]?.rpd.toFixed(2) ?? 'ERR'}%)
 									</Text>
 								)}>
 								<Progress
@@ -355,7 +351,7 @@ export default function Page() {
 								placement='bottom-start'
 								content={() => (
 									<Text color='$color4'>
-										{t('used_tpd')}({quota[key]?.[model]?.tpd.toFixed(2) ?? 0}%)
+										{t('used_tpd')}({quota[key]?.[model]?.tpd.toFixed(2) ?? 'ERR'}%)
 									</Text>
 								)}>
 								<Progress
