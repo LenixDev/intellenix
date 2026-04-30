@@ -353,7 +353,7 @@ export default function Page() {
 								placement='bottom-end'
 								content={() => (
 									<Text color='$color4'>
-										{t('used_rpd')}({rpd ?? 'ERR'}%)
+										{t('used_rpd')}({rpd?.toFixed(2) ?? 'ERR'}%)
 									</Text>
 								)}>
 								<Progress
@@ -369,7 +369,7 @@ export default function Page() {
 								placement='bottom-start'
 								content={() => (
 									<Text color='$color4'>
-										{t('used_tpd')}({tpd ?? 'ERR'}%)
+										{t('used_tpd')}({tpd?.toFixed(2) ?? 'ERR'}%)
 									</Text>
 								)}>
 								<Progress
