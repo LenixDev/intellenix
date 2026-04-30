@@ -3,8 +3,40 @@ import { Copy, Pencil } from '@tamagui/lucide-icons-2'
 import { toast } from '@tamagui/toast/v2'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, Text, View, Button } from 'tamagui'
+import { ScrollView, Text, View, Button, VisuallyHidden } from 'tamagui'
 import * as Clipboard from 'expo-clipboard'
+import { i18n } from 'i18next'
+
+const CopyButton = ({ text }: { text: string }) => <Button
+	chromeless
+	circular
+	icon={Copy}
+	size='$2'
+	onPress={() => {
+		Clipboard.setStringAsync(text)
+	}}
+/>
+
+const EditButton = ({ t }: { t: i18n['t'] }) => <Button
+	chromeless
+	circular
+	icon={Pencil}
+	size='$2'
+	onPress={() => {
+		toast.info(t('not_yet'))
+	}}
+/>
+
+const MessageInfo = ({ $, t }: { $: IConversation, t: i18n['t'] }) => (
+	<View gap={0} items='flex-end'>
+		<Text color='$color04' fontSize='$1'>
+			{$.date}
+		</Text>
+		<Text color='$color04' fontStyle='italic' fontSize='$1'>
+			{t('tokens_used')} {($ as any).completion_tokens}
+		</Text>
+	</View>
+)
 
 // eslint-disable-next-line max-lines-per-function
 export const Conversation = ({
@@ -32,7 +64,6 @@ export const Conversation = ({
 			scrollbarWidth='none'>
 			{/* eslint-disable-next-line max-lines-per-function */}
 			{conversations.map($ => {
-				const opacify = shown[$.date] === true ? 1 : 0
 				if ($.role === 'user')
 					return (
 						<View
@@ -40,48 +71,29 @@ export const Conversation = ({
 							items='flex-end'
 							gap='$4'
 							mb='$5'
-							onMouseEnter={() => setShown({ [$.date]: true })}
 							onClick={() => setShown({ [$.date]: !shown[$.date] })}
-							onMouseLeave={() => setShown({ [$.date]: false })}>
+							>
 							<View flexDirection='row' items='center' gap='$3'>
-								<Button
-									chromeless
-									circular
-									icon={Pencil}
-									opacity={opacify}
-									size='$2'
-									onPress={() => {
-										toast.info(t('not_yet'))
-									}}
-								/>
-								<Button
-									chromeless
-									circular
-									icon={Copy}
-									opacity={opacify}
-									size='$2'
-									onPress={() => {
-										Clipboard.setStringAsync($?.content)
-									}}
-								/>
+								{shown[$.date] ? <>
+									<EditButton t={t} />
+									<CopyButton text={$.content} />
+								</> : <VisuallyHidden>
+									<EditButton t={t} />
+									<CopyButton text={$.content} />
+								</VisuallyHidden>}
 								<Text
 									py='$2'
 									px='$3'
-									maxW='90%'
+									maxW='100%'
 									color='$colorFocus'
 									bg='$color01'
 									rounded='$5'>
 									{$.content}
 								</Text>
 							</View>
-							<View opacity={opacify} gap={0} items='flex-end'>
-								<Text color='$color04' fontSize='$1'>
-									{$.date}
-								</Text>
-								<Text color='$color04' fontStyle='italic' fontSize='$1'>
-									{t('tokens_used')} {$.completion_tokens}
-								</Text>
-							</View>
+							{shown[$.date] ? <MessageInfo $={$} t={t} /> : <VisuallyHidden>
+								<MessageInfo $={$} t={t} />
+							</VisuallyHidden>}
 						</View>
 					)
 				return (
@@ -89,23 +101,14 @@ export const Conversation = ({
 						key={$.date}
 						gap='$4'
 						mb='$10'
-						onMouseEnter={() => setShown({ [$.date]: true })}
-						onClick={() => setShown({ [$.date]: shown[$.date] === false })}
-						onMouseLeave={() => setShown({ [$.date]: false })}>
+						onClick={() => setShown({ [$.date]: !shown[$.date] })}>
 						<View flexDirection='row' gap='$3'>
 							<Text maxW='90%' self='flex-start' color='$color'>
 								{$.content}
 							</Text>
-							<Button
-								chromeless
-								circular
-								icon={Copy}
-								opacity={opacify}
-								size='$2'
-								onPress={() => {
-									Clipboard.setStringAsync($?.content)
-								}}
-							/>
+							{shown[$.date] ? <CopyButton text={$.content} /> : <VisuallyHidden>
+								<CopyButton text={$.content} />
+							</VisuallyHidden>}
 						</View>
 						<View opacity={shown[$.date] === true ? 1 : 0} gap={0}>
 							<Text color='$color04' fontSize='$1'>
