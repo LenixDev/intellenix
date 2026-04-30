@@ -18,7 +18,7 @@ import { Message } from '@/components/chat/message'
 import { Send } from '@/components/chat/send'
 import { Kdb } from '@/components/chat/kdb'
 import { Preferences } from '@/components/chat/preferences'
-import { defaultModel } from '@/constants'
+import { defaultModel, LIMITS } from '@/constants'
 import { Tasks } from '@/components/chat/tasks'
 import { useTranslation } from 'react-i18next'
 import type {
@@ -182,6 +182,8 @@ export default function Page() {
 			}
 		}
 	})
+	const rpd = quota[key]?.[model]?.rpd
+	const tpd = quota[key]?.[model]?.tpd
 
 	const scrollRef = useRef<ScrollView>(null)
 
@@ -249,11 +251,27 @@ export default function Page() {
 			})
 			.catch(raise)
 	}, [key, model])
-
+	
+	useEffect(() => {
+		const channel = supabase
+			.channel('quota')
+			.on('postgres_changes', {
+				event: 'UPDATE', schema: 'public', table: 'quota'
+			}, ({ new: { rpd, tpd } }: { new: { rpd: number; tpd: number } }) => {
+				setQuota({[key]: { [model]: {
+					rpd: (rpd * 100) / LIMITS[model].rpd,
+					tpd: (tpd * 100) / LIMITS[model].tpd,
+				}}})
+			})
+			.subscribe()
+	
+		return () => { supabase.removeChannel(channel) }
+	}, [key, model])
+	
 	if (!key.trim() || keyDialog)
 		return (
 			<Api
-				{...{
+			{...{
 					apiKey: key,
 					setKey,
 					keyDialog,
@@ -335,11 +353,11 @@ export default function Page() {
 								placement='bottom-end'
 								content={() => (
 									<Text color='$color4'>
-										{t('used_rpd')}({quota[key]?.[model]?.rpd.toFixed(2) ?? 'ERR'}%)
+										{t('used_rpd')}({rpd ?? 'ERR'}%)
 									</Text>
 								)}>
 								<Progress
-									value={quota[key]?.[model]?.rpd ?? 0}
+									value={rpd ?? 0}
 									bg='$color4'
 									minW={0}
 									maxW='$2'
@@ -351,11 +369,11 @@ export default function Page() {
 								placement='bottom-start'
 								content={() => (
 									<Text color='$color4'>
-										{t('used_tpd')}({quota[key]?.[model]?.tpd.toFixed(2) ?? 'ERR'}%)
+										{t('used_tpd')}({tpd ?? 'ERR'}%)
 									</Text>
 								)}>
 								<Progress
-									value={quota[key]?.[model]?.tpd ?? 0}
+									value={tpd ?? 0}
 									bg='$color4'
 									minW={0}
 									maxW='$2'
