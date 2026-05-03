@@ -98,7 +98,7 @@ export const Api = ({
 						}}>
 						{loading ?
 							<Spinner />
-						:	t('pub_key')}
+							: t('pub_key')}
 					</Button>
 				</Dialog.Content>
 			</Dialog.Portal>
