@@ -23,6 +23,6 @@ Deno.serve(async req => {
 
 	return new Response(
     JSON.stringify(result satisfies GroqFn),
-    { headers: { "Content-Type": "application/json" } },
+    { headers: res },
   )
 })
