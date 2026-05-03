@@ -47,7 +47,6 @@ const sendMessage = async ({
 	groq,
 	conversations,
 	key,
-	setQuota,
 	model
 }: {
 	message: string
@@ -58,7 +57,6 @@ const sendMessage = async ({
 	groq: Groq
 	conversations: IConversation[]
 	key: string
-	setQuota: React.Dispatch<SetStateAction<KeysQuota>>
 	model: Model
 }) => {
 	if (!message.trim()) {
@@ -148,7 +146,6 @@ const sendMessage = async ({
 					})
 					return
 				}
-				setQuota({ [key]: { [model]: data } })
 			})
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (err: any) {
@@ -290,7 +287,6 @@ export default function Page() {
 			groq,
 			conversations,
 			key,
-			setQuota,
 			model
 		})
 
