@@ -1,6 +1,6 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
-import type { GetKey } from '@types'
-import { init } from 'init'
+import type { GetKey } from '../../../types.ts'
+import { init } from '../__shared/index.ts'
 
 Deno.serve(req => {
 	const [success, res] = init(req)

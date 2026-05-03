@@ -1,13 +1,7 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
-import type { QuotaFunction, DailyQuotaFunction, DailyQuota } from '~types'
-import { init } from '~init'
-import { LIMITS } from '~constants'
-import { createClient } from 'jsr:@supabase/supabase-js@2'
-
-const supabase = createClient(
-	Deno.env.get('SUPABASE_URL')!,
-	Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-)
+import type { QuotaFunction, DailyQuotaFunction, DailyQuota } from '../../../types.ts'
+import { init, supabase } from '../__shared/index.ts'
+import { LIMITS } from '../../../constants.ts'
 
 Deno.serve(async req => {
 	const [success, res] = init(req)

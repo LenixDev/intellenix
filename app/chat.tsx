@@ -26,7 +26,9 @@ import type {
 	QuotaFunction,
 	Conversation as IConversation,
 	KeysQuota,
-	Model
+	Model,
+	GroqFn,
+	GroqParams
 } from '@/types'
 import { i18n } from 'i18next'
 import { supabase } from '@/supabase'
@@ -54,7 +56,7 @@ const sendMessage = async ({
 	setMessage: (message: string) => void
 	t: i18n['t']
 	setAiThinking: (aiThinking: boolean) => void
-	groq: Groq
+	groq?: Groq
 	conversations: IConversation[]
 	key: string
 	model: Model
@@ -75,28 +77,44 @@ const sendMessage = async ({
 	setAiThinking(true)
 	try {
 		setMessage('')
-		const { choices, service_tier, usage } = await groq.chat.completions.create(
-			{
-				messages: [
-					// eslint-disable-next-line @stylistic/max-len
-					...conversations.map(({ role, content }) => ({ role, content })),
-					{
-						role: 'user',
-						content: message
-					}
-				],
-				model
-				// temperature: null,
-				// search_settings: null,
-				// reasoning_effort: null,
-				// max_completion_tokens: null,
-				// include_reasoning: null,
-				// documents: null,
-				// compound_custom: null,
-				// tools: null,
-				// user: null
-			}
-		)
+		const params: GroqParams['params'] = {
+			messages: [
+				// eslint-disable-next-line @stylistic/max-len
+				...conversations.map(({ role, content }) => ({ role, content })),
+				{
+					role: 'user',
+					content: message
+				}
+			],
+			model
+			// temperature: null,
+			// search_settings: null,
+			// reasoning_effort: null,
+			// max_completion_tokens: null,
+			// include_reasoning: null,
+			// documents: null,
+			// compound_custom: null,
+			// tools: null,
+			// user: null
+		}
+		const result = await groq?.chat.completions.create(params) ?? await supabase.functions
+			.invoke<GroqFn>('groq', { body: {
+				params,
+				password: '947f6037-fb5d-455c-8f41-38925b6c1725'
+			} satisfies GroqParams })
+			.then(({ error, data }) => {
+				if (error instanceof Error || !data) {
+					toast.error(t('err'), {
+						description: error.message,
+					})
+					return
+				}
+				return data
+			})
+		if (!result) return
+		if ('error' in result) return toast.error(result.error)
+
+		const { choices, service_tier, usage } = result
 		const response = choices[0]?.message.content
 		if (typeof response !== 'string') return toast.error(t('no_res'))
 
@@ -248,7 +266,7 @@ export default function Page() {
 			})
 			.catch(raise)
 	}, [key, model])
-	
+
 	useEffect(() => {
 		const channel = supabase
 			.channel('quota')
@@ -256,20 +274,24 @@ export default function Page() {
 				event: 'UPDATE', schema: 'public', table: 'quota'
 			}, ({ new: { rpd, tpd } }: { new: { rpd: number; tpd: number } }) => {
 				console.debug('quota updated')
-				setQuota({[key]: { [model]: {
-					rpd: (rpd * 100) / LIMITS[model].rpd,
-					tpd: (tpd * 100) / LIMITS[model].tpd,
-				}}})
+				setQuota({
+					[key]: {
+						[model]: {
+							rpd: (rpd * 100) / LIMITS[model].rpd,
+							tpd: (tpd * 100) / LIMITS[model].tpd,
+						}
+					}
+				})
 			})
 			.subscribe()
-	
+
 		return () => { supabase.removeChannel(channel) }
 	}, [key, model])
-	
+
 	if (!key.trim() || keyDialog)
 		return (
 			<Api
-			{...{
+				{...{
 					apiKey: key,
 					setKey,
 					keyDialog,
@@ -285,7 +307,7 @@ export default function Page() {
 			setMessage,
 			t,
 			setAiThinking,
-			groq,
+			// groq,
 			conversations,
 			key,
 			model
