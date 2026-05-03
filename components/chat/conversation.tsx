@@ -3,7 +3,7 @@ import { Copy, Pencil } from '@tamagui/lucide-icons-2'
 import { toast } from '@tamagui/toast/v2'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, Text, View, Button, VisuallyHidden } from 'tamagui'
+import { ScrollView, Text, View, Button } from 'tamagui'
 import * as Clipboard from 'expo-clipboard'
 import { i18n } from 'i18next'
 
@@ -12,8 +12,9 @@ const CopyButton = ({ text }: { text: string }) => <Button
 	circular
 	icon={Copy}
 	size='$2'
-	onPress={() => {
+	onPress={e => {
 		Clipboard.setStringAsync(text)
+		e.stopPropagation()
 	}}
 />
 
@@ -22,8 +23,9 @@ const EditButton = ({ t }: { t: i18n['t'] }) => <Button
 	circular
 	icon={Pencil}
 	size='$2'
-	onPress={() => {
+	onPress={e => {
 		toast.info(t('not_yet'))
+		e.stopPropagation()
 	}}
 />
 
@@ -49,6 +51,7 @@ export const Conversation = ({
 	isPortrait: boolean
 }) => {
 	const [shown, setShown] = useState<Record<string, boolean>>({})
+	const [hover, setHover] = useState<Record<string, boolean>>({})
 	const { t } = useTranslation()
 
 	return (
@@ -64,62 +67,58 @@ export const Conversation = ({
 			scrollbarWidth='none'>
 			{/* eslint-disable-next-line max-lines-per-function */}
 			{conversations.map($ => {
-				if ($.role === 'user')
-					return (
-						<View
-							key={$.date}
-							items='flex-end'
-							gap='$4'
-							mb='$5'
-							onClick={() => setShown({ [$.date]: !shown[$.date] })}
-							>
-							<View flexDirection='row' items='center' gap='$3'>
-								{shown[$.date] ? <>
-									<EditButton t={t} />
-									<CopyButton text={$.content} />
-								</> : <VisuallyHidden>
-									<EditButton t={t} />
-									<CopyButton text={$.content} />
-								</VisuallyHidden>}
-								<Text
-									py='$2'
-									px='$3'
-									maxW='100%'
-									color='$colorFocus'
-									bg='$color01'
-									rounded='$5'>
-									{$.content}
-								</Text>
-							</View>
-							{shown[$.date] ? <MessageInfo $={$} t={t} /> : <VisuallyHidden>
-								<MessageInfo $={$} t={t} />
-							</VisuallyHidden>}
+				if ($.role === 'user') return (
+					<View
+						key={$.date}
+						items='flex-end'
+						gap='$4'
+						mb='$5'
+						onClick={() => setShown({ [$.date]: !shown[$.date] })}
+						onMouseEnter={() => setHover({ [$.date]: true })}
+						onMouseLeave={() => setHover({ [$.date]: false })}>
+						<View flexDirection='row' items='center' gap='$3'>
+							{hover[$.date] && <>
+								<EditButton t={t} />
+								<CopyButton text={$.content} />
+							</>}
+							<Text
+								py='$2'
+								px='$3'
+								maxW='100%'
+								color='$colorFocus'
+								bg='$color01'
+								rounded='$5'>
+								{$.content}
+							</Text>
 						</View>
-					)
-				return (
+						{shown[$.date] && <MessageInfo $={$} t={t} />}
+					</View>
+				) ;return (
 					<View
 						key={$.date}
 						gap='$4'
 						mb='$10'
-						onClick={() => setShown({ [$.date]: !shown[$.date] })}>
+						onClick={() => setShown({ [$.date]: !shown[$.date] })}
+						onMouseEnter={() => setHover({ [$.date]: true })}
+						onMouseLeave={() => setHover({ [$.date]: false })}>
 						<View flexDirection='row' gap='$3'>
 							<Text maxW='90%' self='flex-start' color='$color'>
 								{$.content}
 							</Text>
-							{shown[$.date] ? <CopyButton text={$.content} /> : <VisuallyHidden>
-								<CopyButton text={$.content} />
-							</VisuallyHidden>}
+							{hover[$.date] && <CopyButton text={$.content} />}
 						</View>
-						<View opacity={shown[$.date] === true ? 1 : 0} gap={0}>
-							<Text color='$color04' fontSize='$1'>
-								{$.date}
-							</Text>
-							<Text color='$color04' fontStyle='italic' fontSize='$1'>
-								{t('took')} {$.usage?.queue_time?.toFixed(2)}
-								{t('s')} | {t('tokens_used')} {$.usage?.completion_tokens} |{' '}
-								{t('service_tier')} {$.service_tier}
-							</Text>
-						</View>
+						{shown[$.date] && (
+							<View gap={0}>
+								<Text color='$color04' fontSize='$1'>
+									{$.date}
+								</Text>
+								<Text color='$color04' fontStyle='italic' fontSize='$1'>
+									{t('took')} {$.usage?.queue_time?.toFixed(2)}
+									{t('s')} | {t('tokens_used')} {$.usage?.completion_tokens} |{' '}
+									{t('service_tier')} {$.service_tier}
+								</Text>
+							</View>
+						)}
 					</View>
 				)
 			})}

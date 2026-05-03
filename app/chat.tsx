@@ -255,7 +255,7 @@ export default function Page() {
 			.on('postgres_changes', {
 				event: 'UPDATE', schema: 'public', table: 'quota'
 			}, ({ new: { rpd, tpd } }: { new: { rpd: number; tpd: number } }) => {
-				console.debug({ rpd, tpd })
+				console.debug('quota updated')
 				setQuota({[key]: { [model]: {
 					rpd: (rpd * 100) / LIMITS[model].rpd,
 					tpd: (tpd * 100) / LIMITS[model].tpd,
