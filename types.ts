@@ -1,5 +1,5 @@
 import type { ChatCompletion, ChatCompletionCreateParamsNonStreaming } from 'groq-sdk/resources/chat/completions.mjs'
-import type { CompletionUsage } from 'groq-sdk/resources'
+import type { CompletionUsage, ModelListResponse } from 'groq-sdk/resources'
 import type { LIMITS } from './constants'
 import { PostgrestError } from '@supabase/supabase-js'
 
@@ -10,6 +10,13 @@ export type SupaKeyArgs = {
 } | {
 	type: 'protect'
 	key: string
+}
+
+export interface SupaList {
+	fn: ModelListResponse | { error: PostgrestError['message'] }
+	args: {
+		id: string
+	}
 }
 
 export type SupaProtect = string | { error: PostgrestError['message'] }

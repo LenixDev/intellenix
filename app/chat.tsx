@@ -51,6 +51,7 @@ export default function Page() {
 	const [sheetOpen, setSheetOpen] = useState(false)
 	const [model, setModel] = useState<Model>(defaultModel)
 	const [protection, setProtection] = useState<boolean | null>(null)
+	const [id, setId] = useState<string>()
 	const [quota, setQuota] = useState<KeysQuota>({
 		[key]: {
 			[defaultModel]: {
@@ -69,7 +70,7 @@ export default function Page() {
 	const { t } = useTranslation()
 
 	const groq = useMemo(
-		() => new Groq({ apiKey: key, dangerouslyAllowBrowser: true }),
+		() => protection !== null && !protection ? new Groq({ apiKey: key, dangerouslyAllowBrowser: true }) : null,
 		[key]
 	)
 
@@ -161,8 +162,11 @@ export default function Page() {
 
 	useEffect(() => {
 		(async () => {
-			const protection = await  prefs.getKey('protection')
-			if (protection) setProtection(true)
+			const protection = await prefs.getKey('protection')
+			if (protection) {
+				setProtection(true)
+				setId(protection)
+			}
 		})()
 	}, [])
 
@@ -211,7 +215,7 @@ export default function Page() {
 				// tools: null,
 				// user: null
 			}
-			const result = await groq.chat.completions.create(params) ?? await supabase.functions.invoke<GroqFn>('groq', {
+			const result = await groq?.chat.completions.create(params) ?? await supabase.functions.invoke<GroqFn>('groq', {
 				body: { params, password: '947f6037-fb5d-455c-8f41-38925b6c1725' } satisfies GroqParams
 			}).then(({ error, data }) => {
 				if (error instanceof Error || !data) {
@@ -226,7 +230,7 @@ export default function Page() {
 				}
 				return data
 			})
-
+			if (!result) return
 			const { choices, service_tier, usage } = result
 
 			const response = choices[0]?.message.content
@@ -412,6 +416,7 @@ export default function Page() {
 						{...{
 							groq,
 							apiKey: key,
+							id,
 							setKey,
 							setModel
 						}}

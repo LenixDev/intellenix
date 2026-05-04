@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "@supabase/functions-js": "jsr:@supabase/functions-js@^2",
+    "groq-sdk": "npm:groq-sdk@^1.1.2"
+  }
+}

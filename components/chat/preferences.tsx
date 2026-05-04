@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Button, Dialog, Input, Label, Select, Spinner, Text, View } from 'tamagui'
 import { Selection } from '../selection'
 import { useTranslation } from 'react-i18next'
-import { Model, SupaProtect } from '@/types'
+import { Model, SupaList, SupaProtect } from '@/types'
 import { prefs } from '@/storage'
 import { toast } from '@tamagui/toast/v2'
 import { i18n } from 'i18next'
@@ -27,11 +27,13 @@ const setItem = async (
 
 export const Preferences = ({
 	groq,
+	id,
 	apiKey: key,
 	setKey,
 	setModel
 }: {
-	groq: Groq
+	groq: Groq | null
+	id: string | undefined
 	apiKey: string
 	setKey: (key: string) => void
 	setModel: (model: Model) => void
@@ -50,8 +52,32 @@ export const Preferences = ({
 			const key = await prefs.getKey('protection')
 			if (key) setProtected(true)
 			if (items.length > 0) return
-			const { data } = await groq.models.list()
-			setItems(data)
+			if (!groq && !id) {
+				toast.error(t('err'))
+				return
+			}
+			const res = await groq?.models.list() ?? await supabase.functions.invoke<SupaList['fn']>('list', {
+				body: {
+					id: id!
+				} satisfies SupaList['args']
+			})
+				.then(({ error, data }) => {
+					if (error instanceof Error || !data) {
+						toast.error(t('err'), {
+							description: error.message
+						})
+						return
+					}
+					if ('error' in data) {
+						toast.error(t('err'), {
+							description: data.error
+						})
+						return
+					}
+					return data
+				})
+			if (!res) return
+			setItems(res.data)
 		})()
 	}, [])
 
