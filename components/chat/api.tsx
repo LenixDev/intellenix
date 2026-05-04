@@ -2,7 +2,6 @@ import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
 import type { GetKey, SupaKeyArgs } from '@/types'
 import { toast } from '@tamagui/toast/v2'
-import { raise } from 'lenix'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {

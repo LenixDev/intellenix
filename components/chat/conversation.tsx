@@ -1,44 +1,8 @@
 import type { Conversation as IConversation } from '@/types'
-import { Copy, Pencil } from '@tamagui/lucide-icons-2'
-import { toast } from '@tamagui/toast/v2'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, Text, View, Button } from 'tamagui'
-import * as Clipboard from 'expo-clipboard'
-import { i18n } from 'i18next'
-
-const CopyButton = ({ text }: { text: string }) => <Button
-	chromeless
-	circular
-	icon={Copy}
-	size='$2'
-	onPress={e => {
-		Clipboard.setStringAsync(text)
-		e.stopPropagation()
-	}}
-/>
-
-const EditButton = ({ t }: { t: i18n['t'] }) => <Button
-	chromeless
-	circular
-	icon={Pencil}
-	size='$2'
-	onPress={e => {
-		toast.info(t('not_yet'))
-		e.stopPropagation()
-	}}
-/>
-
-const MessageInfo = ({ $, t }: { $: IConversation, t: i18n['t'] }) => (
-	<View gap={0} items='flex-end'>
-		<Text color='$color04' fontSize='$1'>
-			{$.date}
-		</Text>
-		<Text color='$color04' fontStyle='italic' fontSize='$1'>
-			{t('tokens_used')} {($ as any).completion_tokens}
-		</Text>
-	</View>
-)
+import { Copy } from './copy'
 
 export const Conversation = ({
 	conversations,
@@ -77,8 +41,17 @@ export const Conversation = ({
 						onMouseLeave={() => setHover({ [$.date]: false })}>
 						<View flexDirection='row' items='center' gap='$3'>
 							{hover[$.date] && <>
-								<EditButton t={t} />
-								<CopyButton text={$.content} />
+								<Button
+									chromeless
+									circular
+									icon={Pencil}
+									size='$2'
+									onPress={e => {
+										toast.info(t('not_yet'))
+										e.stopPropagation()
+									}}
+								/>
+								<Copy text={$.content} />
 							</>}
 							<Text
 								py='$2'
@@ -90,9 +63,16 @@ export const Conversation = ({
 								{$.content}
 							</Text>
 						</View>
-						{shown[$.date] && <MessageInfo $={$} t={t} />}
+						{shown[$.date] && <View gap={0} items='flex-end'>
+							<Text color='$color04' fontSize='$1'>
+								{$.date}
+							</Text>
+							<Text color='$color04' fontStyle='italic' fontSize='$1'>
+								{t('tokens_used')} {($ as any).completion_tokens}
+							</Text>
+						</View>}
 					</View>
-				) ;return (
+				); return (
 					<View
 						key={$.date}
 						gap='$4'
@@ -104,7 +84,7 @@ export const Conversation = ({
 							<Text maxW='90%' self='flex-start' color='$color'>
 								{$.content}
 							</Text>
-							{hover[$.date] && <CopyButton text={$.content} />}
+							{hover[$.date] && <Copy text={$.content} />}
 						</View>
 						{shown[$.date] && (
 							<View gap={0}>
