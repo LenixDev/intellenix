@@ -82,7 +82,6 @@ const sendMessage = async ({
 		setMessage('')
 		const params: GroqParams['params'] = {
 			messages: [
-				// eslint-disable-next-line @stylistic/max-len
 				...conversations.map(({ role, content }) => ({ role, content })),
 				{
 					role: 'user',
@@ -168,7 +167,6 @@ const sendMessage = async ({
 					return
 				}
 			})
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (err: any) {
 		setConversations(prev => prev.slice(0, prev.length - 1))
 		toast.error(t('conn_err'), {
@@ -183,7 +181,6 @@ const sendMessage = async ({
 	return undefined
 }
 
-// eslint-disable-next-line max-lines-per-function, max-statements
 export default function Page() {
 	const [conversations, setConversations] = useState<IConversation[]>([])
 	const [message, setMessage] = useState('')
@@ -239,7 +236,6 @@ export default function Page() {
 
 	useEffect(() => {
 		if (key.length !== 0) return
-		if (protection === null) return
 		(async () => {
 			let key = await prefs.getKey('key')
 			if (!key && !protection) return setKeyDialog(true)
@@ -314,17 +310,14 @@ export default function Page() {
 		})
 	}, [])
 
-	if (!key.trim() || keyDialog)
-		return (
-			<Api
-				{...{
-					apiKey: key,
-					setKey,
-					keyDialog,
-					setKeyDialog
-				}}
-			/>
-		)
+	if (key.length === 0 || keyDialog) return <Api
+		{...{
+			apiKey: key,
+			setKey,
+			keyDialog,
+			setKeyDialog
+		}}
+	/>
 
 	const send = () =>
 		sendMessage({

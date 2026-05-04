@@ -17,7 +17,6 @@ import {
 } from 'tamagui'
 import { Prompt } from '../prompt'
 
-// eslint-disable-next-line max-lines-per-function
 export const Api = ({
 	apiKey,
 	setKey,
@@ -32,13 +31,10 @@ export const Api = ({
 	const [loading, setLoading] = useState(false)
 	const { t } = useTranslation()
 	return (
-		<Prompt
-		open={keyDialog}
-		onOpenChange={open => {
+		<Prompt gap='$6' open={keyDialog} onOpenChange={open => {
 			if (!open) return
 			setKeyDialog(open)
-		}}
-		gap='$6'>
+		}}>
 			<View>
 				<Dialog.Title>{t('enter_key')}</Dialog.Title>
 				<Dialog.Description>{t('fill_key')}</Dialog.Description>
@@ -49,17 +45,12 @@ export const Api = ({
 				value={apiKey}
 				onChangeText={setKey}
 			/>
-			<Button
-				disabled={apiKey.length === 0}
-				onPress={() => {
+			<Button disabled={apiKey.length === 0}
+				onPress={async () => {
 					if (typeof apiKey === 'string' && apiKey.length === 0) return
-					prefs
-						.setKey(apiKey, 'key')
-						.then(() => {
-							setKeyDialog(false)
-							window.location.reload()
-						})
-						.catch(raise)
+					await prefs.setKey(apiKey, 'key')
+					setKeyDialog(false)
+					window.location.reload()
 				}}>
 				{t('submit')}
 			</Button>
@@ -73,29 +64,23 @@ export const Api = ({
 			<Button
 				theme='surface1'
 				disabled={loading}
-				onPress={() => {
+				onPress={async () => {
 					setLoading(true)
-					// eslint-disable-next-line @stylistic/max-len
-					supabase.functions
-						.invoke<GetKey>('get-key', { body: {
-							type: 'get'
-						} satisfies SupaKeyArgs})
-						.then(({ data, error }) => {
-							if (error instanceof Error || !data || typeof data !== 'string' && 'error' in data) {
-								toast.error(t('key_err'))
-								setLoading(false)
-								return
-							}
-							prefs
-								.setKey(data, 'key')
-								.then(() => {
-									setKeyDialog(false)
-									setLoading(false)
-									window.location.reload()
-								})
-								.catch(raise)
-						})
-						.catch(raise)
+					
+					const { data, error } = await supabase.functions.invoke<GetKey>('get-key', { body: {
+						type: 'get'
+					} satisfies SupaKeyArgs})
+
+					if (error instanceof Error || !data || typeof data !== 'string' && 'error' in data) {
+						toast.error(t('key_err'))
+						setLoading(false)
+						return
+					}
+
+					await prefs.setKey(data, 'key')
+					setKeyDialog(false)
+					setLoading(false)
+					window.location.reload()
 				}}>
 				{loading ?
 					<Spinner />
