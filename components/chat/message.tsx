@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { TextArea } from 'tamagui'
 
-// eslint-disable-next-line max-lines-per-function
 export const Message = ({
 	content,
 	setContent,

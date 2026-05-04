@@ -40,7 +40,6 @@ const MessageInfo = ({ $, t }: { $: IConversation, t: i18n['t'] }) => (
 	</View>
 )
 
-// eslint-disable-next-line max-lines-per-function
 export const Conversation = ({
 	conversations,
 	scrollRef,

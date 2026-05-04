@@ -32,7 +32,6 @@ export default defineConfig([
 				tsconfigRootDir: import.meta.dirname
 			}
 		},
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		rules: {
 			...(es as unknown as Linter.RulesRecord),
 			...(typescript as unknown as Linter.RulesRecord),

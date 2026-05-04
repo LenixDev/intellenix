@@ -11,7 +11,6 @@ import {
 	XStack
 } from 'tamagui'
 
-// eslint-disable-next-line max-lines-per-function
 export default function Page() {
 	const { t } = useTranslation()
 	return (
