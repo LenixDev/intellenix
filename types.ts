@@ -3,9 +3,16 @@ import type { CompletionUsage } from 'groq-sdk/resources'
 import type { LIMITS } from './constants'
 import { PostgrestError } from '@supabase/supabase-js'
 
-export interface GetKey {
+export type GetKey = string | { error: string }
+
+export type SupaKeyArgs = {
+	type: 'get'
+} | {
+	type: 'protect'
 	key: string
 }
+
+export type SupaProtect = string | { error: PostgrestError['message'] }
 
 export type Conversation =
 	| {
@@ -36,7 +43,7 @@ export type Quota = Record<Model, DailyQuota>
 
 export type KeysQuota = Record<string, Partial<Quota>>
 
-export type Key = 'key' | 'model'
+export type Key = 'key' | 'model' | 'protection'
 export type Task = 'programming' | 'health'
 
 export type DailyQuotaFunction =

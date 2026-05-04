@@ -2,6 +2,7 @@ import {
 	Button,
 	Progress,
 	type ScrollView,
+	Sheet,
 	Text,
 	useWindowDimensions,
 	View
@@ -28,7 +29,9 @@ import type {
 	KeysQuota,
 	Model,
 	GroqFn,
-	GroqParams
+	GroqParams,
+	SupaProtect,
+	SupaKeyArgs
 } from '@/types'
 import { i18n } from 'i18next'
 import { supabase } from '@/supabase'
@@ -189,6 +192,7 @@ export default function Page() {
 	const [keyDialog, setKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
 	const [model, setModel] = useState<Model>(defaultModel)
+	const [protection, setProtection] = useState<boolean | null>(null)
 	const [quota, setQuota] = useState<KeysQuota>({
 		[key]: {
 			[defaultModel]: {
@@ -235,37 +239,53 @@ export default function Page() {
 
 	useEffect(() => {
 		if (key.length !== 0) return
-		prefs
-			.getKey('key')
-			.then(key => {
-				if (!key) return setKeyDialog(true)
-				setKey(key)
-				supabase.functions
-					.invoke<DailyQuotaFunction>('quota', {
-						body: {
-							type: 'get',
-							key,
-							model
-						} satisfies QuotaFunction
+		if (protection === null) return
+		(async () => {
+			let key = await prefs.getKey('key')
+			if (!key && !protection) return setKeyDialog(true)
+			if (!key) {
+				const { error, data } = await supabase.functions.invoke<SupaProtect>('get-key', {
+					body: {
+						type: 'get'
+					} satisfies SupaKeyArgs
+				})
+				if (error instanceof Error || !data) {
+					toast.error(t('err'), {
+						description: error?.message
 					})
-					.then(({ error, data }) => {
-						if (error instanceof Error || !data) {
-							toast.error(t('err'), {
-								description: error?.message
-							})
-							return
-						}
-						if ('error' in data) {
-							toast.error(t('err'), {
-								description: data.error
-							})
-							return
-						}
-						setQuota({ [key]: { [model]: data } })
+					return
+				}
+				if (typeof data !== 'string' && 'error' in data) {
+					toast.error(t('err'), {
+						description: data.error
 					})
+					return
+				}
+				key = data
+			}
+			setKey(key)
+			const { error, data } = await supabase.functions.invoke<DailyQuotaFunction>('quota', {
+				body: {
+					type: 'get',
+					key,
+					model
+				} satisfies QuotaFunction
 			})
-			.catch(raise)
-	}, [key, model])
+			if (error instanceof Error || !data) {
+				toast.error(t('err'), {
+					description: error?.message
+				})
+				return
+			}
+			if ('error' in data) {
+				toast.error(t('err'), {
+					description: data.error
+				})
+				return
+			}
+			setQuota({ [key]: { [model]: data } })
+		})()
+	}, [key, model, protection])
 
 	useEffect(() => {
 		const channel = supabase
@@ -287,6 +307,12 @@ export default function Page() {
 
 		return () => { supabase.removeChannel(channel) }
 	}, [key, model])
+
+	useEffect(() => {
+		prefs.getKey('protection').then(protection => {
+			if (protection) setProtection(true)
+		})
+	}, [])
 
 	if (!key.trim() || keyDialog)
 		return (
@@ -426,16 +452,30 @@ export default function Page() {
 				</View>
 				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
 			</View>
-			<Preferences
-				{...{
-					open: sheetOpen,
-					setOpen: setSheetOpen,
-					groq,
-					isPortrait,
-					setKey,
-					setModel
-				}}
-			/>
+			<Sheet
+				dismissOnSnapToBottom
+				transition='superLazy'
+				modal
+				open={sheetOpen}
+				onOpenChange={setSheetOpen}
+				snapPoints={[50, 10]}>
+				<Sheet.Overlay transition='quick' bg='$color02' />
+				<Sheet.Handle />
+				<Sheet.Frame
+					bg='$color2'
+					items='center'
+					justify='space-evenly'
+					flexDirection={isPortrait ? 'column' : 'row'}>
+					<Preferences
+						{...{
+							groq,
+							apiKey: key,
+							setKey,
+							setModel
+						}}
+					/>
+				</Sheet.Frame>
+			</Sheet>
 		</View>
 	)
 }
