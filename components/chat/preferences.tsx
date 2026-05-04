@@ -3,15 +3,16 @@ import { Check } from '@tamagui/lucide-icons-2'
 import type Groq from 'groq-sdk'
 import { raise } from 'lenix'
 import { useEffect, useMemo, useState } from 'react'
-import { Label, Select, Sheet, View } from 'tamagui'
+import { Button, Dialog, Input, Label, Select, Sheet, Spinner, Text, View } from 'tamagui'
 import { Selection } from '../selection'
 import { useTranslation } from 'react-i18next'
-import { ApiInput } from './api-input'
-import { Model } from '@/types'
+import { Model, SupaKeyArgs, SupaProtect } from '@/types'
 import { prefs } from '@/storage'
 import { toast } from '@tamagui/toast/v2'
 import { i18n } from 'i18next'
 import type { Model as GroqModel } from 'groq-sdk/resources'
+import { Prompt } from '../prompt'
+import { supabase } from '@/supabase'
 
 const setItem = (
 	model: Model,
@@ -30,26 +31,29 @@ const setItem = (
 
 // eslint-disable-next-line max-lines-per-function
 export const Preferences = ({
-	open,
-	setOpen,
 	groq,
-	isPortrait,
+	apiKey: key,
 	setKey,
 	setModel
 }: {
-	open: boolean
-	setOpen: (open: boolean) => void
 	groq: Groq
-	isPortrait: boolean
+	apiKey: string
 	setKey: (key: string) => void
 	setModel: (model: Model) => void
 }) => {
 	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<Model>(defaultModel)
+	const [stateKey, setStateKey] = useState(key)
+	const [Protected, setProtected] = useState(false)
+	const [protectionDialog, setProtectionDialog] = useState(false)
+	const [loading, setLoading] = useState(false)
 
 	const { t } = useTranslation()
 
 	useEffect(() => {
+		prefs.getKey('protection').then(key => {
+			if (key) setProtected(true)
+		})
 		if (items.length > 0) return
 		groq.models
 			.list()
@@ -59,81 +63,137 @@ export const Preferences = ({
 			.catch(raise)
 	}, [])
 
+	const renderedItems = useMemo(
+		() =>
+			items.map((item, iter) => (
+				<Select.Item index={iter} key={item.id} value={item.id}>
+					<View>
+						<Select.ItemText>{item.id}</Select.ItemText>
+						<View flexDirection='row'>
+							<Select.ItemText color='$color7' fontSize='$2'>
+								{t('by')} {item.owned_by}&nbsp;
+							</Select.ItemText>
+							<Select.ItemText color='$color7' fontSize='$2'>
+								{t('on')}{' '}
+								{new Date(item.created * 1000).toLocaleDateString(
+									undefined,
+									{
+										year: 'numeric',
+										month: 'short'
+									}
+								)}
+							</Select.ItemText>
+						</View>
+						<Select.ItemText color='$color7' fontSize='$2'>
+							{t('rpm')}: {LIMITS[item.id as Model].rpm}
+						</Select.ItemText>
+						<Select.ItemText color='$color7' fontSize='$2'>
+							{t('tpm')}: {LIMITS[item.id as Model].tpm}
+						</Select.ItemText>
+						<Select.ItemText color='$color7' fontSize='$2'>
+							{t('rpd')}: {LIMITS[item.id as Model].rpd}
+						</Select.ItemText>
+						<Select.ItemText color='$color7' fontSize='$2'>
+							{t('tpd')}: {LIMITS[item.id as Model].tpd}
+						</Select.ItemText>
+						<Select.ItemText color='$color7' fontSize='$2'>
+							{t('ash')}: {LIMITS[item.id as Model].ash}
+						</Select.ItemText>
+						<Select.ItemText color='$color7' fontSize='$2'>
+							{t('asd')}: {LIMITS[item.id as Model].asd}
+						</Select.ItemText>
+					</View>
+					<Select.ItemIndicator marginLeft='auto'>
+						<Check size={16} />
+					</Select.ItemIndicator>
+				</Select.Item>
+			)),
+		[items]
+	)
+
+	if (protectionDialog) return (
+		<Prompt
+			open={protectionDialog}
+			onOpenChange={setProtectionDialog}
+			width='33%'
+			gap='$3'
+		>
+			<Dialog.Title>{t('key_protection')}</Dialog.Title>
+			<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
+			<Button onPress={async () => {
+				setLoading(true)
+				const { error, data } = await supabase.functions.invoke<SupaProtect>('get-key', {
+					body: {
+						type: 'protect',
+						key
+					} satisfies SupaKeyArgs
+				})
+				if (error instanceof Error || !data) {
+					toast.error(t('err'), {
+						description: error.message
+					})
+					setLoading(false)
+					return
+				}
+				if (typeof data !== 'string' && 'error' in data) {
+					toast.error(data.error)
+					setLoading(false)
+					return
+				}
+
+				await prefs.destroy('key')
+				await prefs.setKey(data, 'protection')
+				setLoading(false)
+				setProtectionDialog(false)
+			}}>{loading ? <Spinner /> : t('confirm')}</Button>
+		</Prompt>
+	)
+
 	return (
-		<Sheet
-			dismissOnSnapToBottom
-			transition='superLazy'
-			modal
-			open={open}
-			onOpenChange={setOpen}
-			snapPoints={[50, 10]}>
-			<Sheet.Overlay transition='quick' bg='$color02' />
-			<Sheet.Handle />
-			<Sheet.Frame
-				bg='$color2'
-				items='center'
-				justify='space-evenly'
-				flexDirection={isPortrait ? 'column' : 'row'}>
-				<ApiInput {...{ setKey }} />
+		<>
+			<View gap='$4'>
 				<View>
-					<Label>{t('models')}</Label>
-					<Selection
-						renderer={value => items.find(item => item.id === value)?.id}
-						listLabel={t('models')}
-						{...{
-							item,
-							setItem: (item: Model) => setItem(item, setItemState, t, setModel)
-						}}>
-						{useMemo(
-							() =>
-								items.map((item, iter) => (
-									<Select.Item index={iter} key={item.id} value={item.id}>
-										<View>
-											<Select.ItemText>{item.id}</Select.ItemText>
-											<View flexDirection='row'>
-												<Select.ItemText color='$color7' fontSize='$2'>
-													{t('by')} {item.owned_by}&nbsp;
-												</Select.ItemText>
-												<Select.ItemText color='$color7' fontSize='$2'>
-													{t('on')}{' '}
-													{new Date(item.created * 1000).toLocaleDateString(
-														undefined,
-														{
-															year: 'numeric',
-															month: 'short'
-														}
-													)}
-												</Select.ItemText>
-											</View>
-											<Select.ItemText color='$color7' fontSize='$2'>
-												{t('rpm')}: {LIMITS[item.id as Model].rpm}
-											</Select.ItemText>
-											<Select.ItemText color='$color7' fontSize='$2'>
-												{t('tpm')}: {LIMITS[item.id as Model].tpm}
-											</Select.ItemText>
-											<Select.ItemText color='$color7' fontSize='$2'>
-												{t('rpd')}: {LIMITS[item.id as Model].rpd}
-											</Select.ItemText>
-											<Select.ItemText color='$color7' fontSize='$2'>
-												{t('tpd')}: {LIMITS[item.id as Model].tpd}
-											</Select.ItemText>
-											<Select.ItemText color='$color7' fontSize='$2'>
-												{t('ash')}: {LIMITS[item.id as Model].ash}
-											</Select.ItemText>
-											<Select.ItemText color='$color7' fontSize='$2'>
-												{t('asd')}: {LIMITS[item.id as Model].asd}
-											</Select.ItemText>
-										</View>
-										<Select.ItemIndicator marginLeft='auto'>
-											<Check size={16} />
-										</Select.ItemIndicator>
-									</Select.Item>
-								)),
-							[items]
-						)}
-					</Selection>
+					<Label htmlFor='key'>{t('api_key')}</Label>
+					<Input
+						id='key'
+						value={stateKey}
+						onChangeText={setStateKey}
+						type='password'
+						secureTextEntry
+					/>
 				</View>
-			</Sheet.Frame>
-		</Sheet>
+				<Button
+					onPress={() => {
+						prefs
+							.setKey(stateKey, 'key')
+							.then(() => {
+								toast.success(t('api_success'))
+								setStateKey('')
+								setKey(stateKey)
+							})
+							.catch(raise)
+					}}>
+					{t('save')}
+				</Button>
+				<Button
+					onPress={() => {
+						setProtectionDialog(true)
+					}}>
+					{Protected ? t('unprotect_key') : t('protect_key')}
+				</Button>
+			</View>
+			<View>
+				<Label>{t('models')}</Label>
+				<Selection
+					renderer={value => items.find(item => item.id === value)?.id}
+					listLabel={t('models')}
+					{...{
+						item,
+						setItem: (item: Model) => setItem(item, setItemState, t, setModel)
+					}}>
+					{renderedItems}
+				</Selection>
+			</View>
+		</>
 	)
 }
