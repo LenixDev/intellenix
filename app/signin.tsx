@@ -21,16 +21,12 @@ export default function Page() {
 			justify='center'
 			items='center'>
 			<View width='$20' height='50%' justify='space-evenly' items='stretch'>
-				<Paragraph width='100%' text='center' marginBlock='$2' size='$13'>
-					{t('signin')}
-				</Paragraph>
+				<Paragraph width='100%' text='center' marginBlock='$2' size='$13'>{t('signin')}</Paragraph>
 				<View>
 					<Button
 						theme='accent'
 						width='100%'
-						onPress={() => {
-							toast.error(t('not_yet'))
-						}}>
+						onPress={() => toast.error(t('not_yet'))}>
 						{t('continue_google')}
 					</Button>
 					<XStack width='100%' items='center' marginBlock='$4'>
@@ -40,9 +36,7 @@ export default function Page() {
 					</XStack>
 					<Button
 						width='100%'
-						onPress={() => {
-							router.replace('/chat')
-						}}>
+						onPress={() => router.replace('/chat')}>
 						{t('continue_guest')}
 					</Button>
 				</View>
