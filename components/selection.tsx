@@ -8,7 +8,6 @@ import {
 } from 'tamagui'
 import { LinearGradient } from 'tamagui/linear-gradient'
 
-// eslint-disable-next-line max-lines-per-function
 export const Selection = <T extends string>({
 	renderer,
 	listLabel,
@@ -43,9 +42,7 @@ export const Selection = <T extends string>({
 				position='relative'
 				width='100%'
 				height='$3'>
-				<YStack z={10}>
-					<ChevronUp size={20} />
-				</YStack>
+				<YStack z={10}><ChevronUp size={20} /></YStack>
 				<LinearGradient
 					start={[0, 0]}
 					end={[0, 1]}
@@ -80,9 +77,7 @@ export const Selection = <T extends string>({
 				position='relative'
 				width='100%'
 				height='$3'>
-				<YStack z={10}>
-					<ChevronDown size={20} />
-				</YStack>
+				<YStack z={10}><ChevronDown size={20} /></YStack>
 				<LinearGradient
 					start={[0, 0]}
 					end={[0, 1]}
