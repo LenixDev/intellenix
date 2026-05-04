@@ -8,9 +8,12 @@ export const prefs = {
 		Platform.OS === 'web' ?
 			localStorage.getItem(key)
 		:	SecureStore.getItemAsync(key),
-	setKey: async (val: string, key: Key): Promise<void> => {
+	setKey: async (val: string, key: Key) => {
 		if (Platform.OS !== 'web') return SecureStore.setItemAsync(key, val)
 		localStorage.setItem(key, val)
-		return undefined
+	},
+	destroy: async (key: Key) => {
+		if (Platform.OS !== 'web') return SecureStore.deleteItemAsync(key)
+		localStorage.removeItem(key)
 	}
 }
