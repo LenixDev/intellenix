@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, Text, View, Button } from 'tamagui'
 import { Copy } from './copy'
+import { toast } from '@tamagui/toast/v2'
 
 export const Conversation = ({
 	conversations,
@@ -24,11 +25,8 @@ export const Conversation = ({
 			pt='$10'
 			px={isPortrait ? '$2' : '$5'}
 			flex={1}
-			onContentSizeChange={() => {
-				scrollRef.current?.scrollToEnd({ animated: true })
-			}}
+			onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
 			scrollbarWidth='none'>
-			{/* eslint-disable-next-line max-lines-per-function */}
 			{conversations.map($ => {
 				if ($.role === 'user') return (
 					<View
@@ -64,9 +62,7 @@ export const Conversation = ({
 							</Text>
 						</View>
 						{shown[$.date] && <View gap={0} items='flex-end'>
-							<Text color='$color04' fontSize='$1'>
-								{$.date}
-							</Text>
+							<Text color='$color04' fontSize='$1'>{$.date}</Text>
 							<Text color='$color04' fontStyle='italic' fontSize='$1'>
 								{t('tokens_used')} {($ as any).completion_tokens}
 							</Text>
@@ -81,16 +77,12 @@ export const Conversation = ({
 						onMouseEnter={() => setHover({ [$.date]: true })}
 						onMouseLeave={() => setHover({ [$.date]: false })}>
 						<View flexDirection='row' gap='$3'>
-							<Text maxW='90%' self='flex-start' color='$color'>
-								{$.content}
-							</Text>
+							<Text maxW='90%' self='flex-start' color='$color'>{$.content}</Text>
 							{hover[$.date] && <Copy text={$.content} />}
 						</View>
 						{shown[$.date] && (
 							<View gap={0}>
-								<Text color='$color04' fontSize='$1'>
-									{$.date}
-								</Text>
+								<Text color='$color04' fontSize='$1'>{$.date}</Text>
 								<Text color='$color04' fontStyle='italic' fontSize='$1'>
 									{t('took')} {$.usage?.queue_time?.toFixed(2)}
 									{t('s')} | {t('tokens_used')} {$.usage?.completion_tokens} |{' '}
