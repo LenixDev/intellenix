@@ -45,5 +45,7 @@
 	"protect_key": "Enable API Key Protection",
 	"unprotect_key": "Disable API Key Protection",
 	"enable": "Enable",
-	"disable": "Disable"
+	"disable": "Disable",
+	"calc": "calculating...",
+	"failed": "failed!"
 }

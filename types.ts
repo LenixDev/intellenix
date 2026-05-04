@@ -31,10 +31,7 @@ export type Conversation =
 		date: string
 		role: 'user'
 		content: string
-		completion_tokens:
-		| 'calculating...'
-		| CompletionUsage['completion_tokens']
-		| 'failed!'
+		completion_tokens: string | CompletionUsage['completion_tokens']
 	}
 
 export type Model = keyof typeof LIMITS
