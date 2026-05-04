@@ -19,7 +19,7 @@ export const Tasks = () => {
 				toast.info(t('not_yet'))
 				setItem($)
 			}}
-			renderer={$ => t($)}
+			renderer={t}
 			listLabel={t('tasks')}
 			bg='transparent'
 			borderColor='transparent'
