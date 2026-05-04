@@ -34,9 +34,7 @@ export const Message = ({
 				borderColor: 'transparent',
 				outlineWidth: 0
 			}}
-			onBlur={() => {
-				window.scrollTo({ top: 0, behavior: 'smooth' })
-			}}
+			onBlur={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
 			outlineWidth={0}
 			borderWidth={1}
 			borderColor='transparent'
