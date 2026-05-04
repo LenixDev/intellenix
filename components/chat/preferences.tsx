@@ -1,12 +1,11 @@
 import { defaultModel, LIMITS } from '@/constants'
 import { Check } from '@tamagui/lucide-icons-2'
 import type Groq from 'groq-sdk'
-import { raise } from 'lenix'
 import { useEffect, useMemo, useState } from 'react'
-import { Button, Dialog, Input, Label, Select, Sheet, Spinner, Text, View } from 'tamagui'
+import { Button, Dialog, Input, Label, Select, Spinner, Text, View } from 'tamagui'
 import { Selection } from '../selection'
 import { useTranslation } from 'react-i18next'
-import { Model, SupaKeyArgs, SupaProtect } from '@/types'
+import { Model, SupaProtect } from '@/types'
 import { prefs } from '@/storage'
 import { toast } from '@tamagui/toast/v2'
 import { i18n } from 'i18next'
@@ -14,22 +13,18 @@ import type { Model as GroqModel } from 'groq-sdk/resources'
 import { Prompt } from '../prompt'
 import { supabase } from '@/supabase'
 
-const setItem = (
+const setItem = async (
 	model: Model,
 	setItemState: (model: Model) => void,
 	t: i18n['t'],
 	setModel: (model: Model) => void
-) =>
-	prefs
-		.setKey(model, 'model')
-		.then(() => {
-			setItemState(model)
-			toast.success(t('model_success'))
-			setModel(model)
-		})
-		.catch(raise)
+) => {
+	await prefs.setKey(model, 'model')
+	setItemState(model)
+	toast.success(t('model_success'))
+	setModel(model)
+}
 
-// eslint-disable-next-line max-lines-per-function
 export const Preferences = ({
 	groq,
 	apiKey: key,
@@ -51,16 +46,13 @@ export const Preferences = ({
 	const { t } = useTranslation()
 
 	useEffect(() => {
-		prefs.getKey('protection').then(key => {
+		(async () => {
+			const key = await prefs.getKey('protection')
 			if (key) setProtected(true)
-		})
-		if (items.length > 0) return
-		groq.models
-			.list()
-			.then(({ data }) => {
-				setItems(data)
-			})
-			.catch(raise)
+			if (items.length > 0) return
+			const { data } = await groq.models.list()
+			setItems(data)
+		})()
 	}, [])
 
 	const renderedItems = useMemo(
@@ -112,25 +104,20 @@ export const Preferences = ({
 	)
 
 	if (protectionDialog) return (
-		<Prompt
-			open={protectionDialog}
-			onOpenChange={setProtectionDialog}
-			width='25%'
-			gap='$5'
-		>
+		<Prompt width='25%' gap='$5' open={protectionDialog} onOpenChange={setProtectionDialog}>
 			<Dialog.Title>{t('key_protection')}</Dialog.Title>
 			<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
 			<Button onPress={async () => {
 				setLoading(true)
-				const body: { body: SupaKeyArgs } = {
+
+				const { error, data } = await supabase.functions.invoke<SupaProtect>('get-key', {
 					body: Protected ? {
 						type: 'get',
 					} : {
 						type: 'protect',
 						key
 					}
-				}
-				const { error, data } = await supabase.functions.invoke<SupaProtect>('get-key', body)
+				})
 				if (error instanceof Error || !data) {
 					toast.error(t('err'), {
 						description: error.message
@@ -167,22 +154,16 @@ export const Preferences = ({
 					/>
 				</View>
 				<Button
-					onPress={() => {
-						prefs
-							.setKey(stateKey, 'key')
-							.then(() => {
-								toast.success(t('api_success'))
-								setStateKey('')
-								setKey(stateKey)
-							})
-							.catch(raise)
+					onPress={async () => {
+						await prefs.setKey(stateKey, 'key')
+						toast.success(t('api_success'))
+						setStateKey('')
+						setKey(stateKey)
 					}}>
 					{t('save')}
 				</Button>
 				<Button
-					onPress={() => {
-						setProtectionDialog(true)
-					}}>
+					onPress={() => setProtectionDialog(true)}>
 					{Protected ? t('unprotect_key') : t('protect_key')}
 				</Button>
 			</View>
