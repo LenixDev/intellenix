@@ -40,9 +40,10 @@
 	"used_rpd": "Requests consumed today",
 	"used_tpd": "Tokens consumed today",
 	"protection_details": "Your API key will be stored securely on our servers instead of in your browser. Responses may be slightly slower as a result.",
-	"unprotection_details": "Your API key will be saved directly in your browser for faster responses, but anyone with access to this browser could read it.",
+	"unprotection_details": "Your API key will be saved directly in your browser for faster responses, however, anyone with access to this browser could read it.",
 	"key_protection": "API Key Protection",
-	"confirm": "Confirm",
 	"protect_key": "Enable API Key Protection",
-	"unprotect_key": "Disable API Key Protection"
+	"unprotect_key": "Disable API Key Protection",
+	"enable": "Enable",
+	"disable": "Disable"
 }

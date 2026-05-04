@@ -115,19 +115,22 @@ export const Preferences = ({
 		<Prompt
 			open={protectionDialog}
 			onOpenChange={setProtectionDialog}
-			width='33%'
-			gap='$3'
+			width='25%'
+			gap='$5'
 		>
 			<Dialog.Title>{t('key_protection')}</Dialog.Title>
 			<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
 			<Button onPress={async () => {
 				setLoading(true)
-				const { error, data } = await supabase.functions.invoke<SupaProtect>('get-key', {
-					body: {
+				const body: { body: SupaKeyArgs } = {
+					body: Protected ? {
+						type: 'get',
+					} : {
 						type: 'protect',
 						key
-					} satisfies SupaKeyArgs
-				})
+					}
+				}
+				const { error, data } = await supabase.functions.invoke<SupaProtect>('get-key', body)
 				if (error instanceof Error || !data) {
 					toast.error(t('err'), {
 						description: error.message
@@ -141,11 +144,12 @@ export const Preferences = ({
 					return
 				}
 
-				await prefs.destroy('key')
-				await prefs.setKey(data, 'protection')
+				await prefs.destroy(Protected ? 'protection' : 'key')
+				await prefs.setKey(data, Protected ? 'key' : 'protection')
 				setLoading(false)
 				setProtectionDialog(false)
-			}}>{loading ? <Spinner /> : t('confirm')}</Button>
+				setProtected(!Protected)
+			}}>{loading ? <Spinner /> : Protected ? t('disable') : t('enable')}</Button>
 		</Prompt>
 	)
 
