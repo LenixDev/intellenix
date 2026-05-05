@@ -101,18 +101,12 @@ export default function Page() {
 						type: 'get'
 					} satisfies SupaKeyArgs
 				})
-				if (error instanceof Error || !data) {
-					toast.error(t('err'), {
-						description: error?.message
-					})
-					return
-				}
-				if (typeof data !== 'string' && 'error' in data) {
-					toast.error(t('err'), {
-						description: data.error
-					})
-					return
-				}
+				if (error instanceof Error || !data) return toast.error(t('err'), {
+					description: error?.message
+				})
+				if (typeof data !== 'string' && 'error' in data) return toast.error(t('err'), {
+					description: data.error
+				})
 				key = data
 			}
 			setKey(key)
@@ -123,18 +117,12 @@ export default function Page() {
 					model
 				} satisfies QuotaFunction
 			})
-			if (error instanceof Error || !data) {
-				toast.error(t('err'), {
-					description: error?.message
-				})
-				return
-			}
-			if ('error' in data) {
-				toast.error(t('err'), {
-					description: data.error
-				})
-				return
-			}
+			if (error instanceof Error || !data) return toast.error(t('err'), {
+				description: error?.message
+			})
+			if ('error' in data) return toast.error(t('err'), {
+				description: data.error
+			})
 			setQuota({ [key]: { [model]: data } })
 		})()
 	}, [key, model, protection])
@@ -180,10 +168,7 @@ export default function Page() {
 	/>
 
 	const send = async () => {
-		if (!message.trim()) {
-			toast.info(t('not_yet'))
-			return
-		}
+		if (!message.trim()) return toast.info(t('not_yet'))
 		setConversations(prev => [
 			...prev,
 			{
@@ -255,12 +240,9 @@ export default function Page() {
 				}
 			])
 
-			if (!usage?.total_tokens) {
-				toast.error(t('quota_update_err'), {
-					description: t('total_tokens_undefined')
-				})
-				return
-			}
+			if (!usage?.total_tokens) return toast.error(t('quota_update_err'), {
+				description: t('total_tokens_undefined')
+			})
 
 			const { error, data } = await supabase.functions.invoke<DailyQuotaFunction>('quota', {
 				body: {
@@ -270,18 +252,12 @@ export default function Page() {
 					tokens: usage.total_tokens
 				} satisfies QuotaFunction
 			})
-			if (error instanceof Error || !data) {
-				toast.error(t('err'), {
-					description: error.message
-				})
-				return
-			}
-			if ('error' in data) {
-				toast.error(t('err'), {
-					description: data.error
-				})
-				return
-			}
+			if (error instanceof Error || !data) return toast.error(t('err'), {
+				description: error.message
+			})
+			if ('error' in data) return toast.error(t('err'), {
+				description: data.error
+			})
 		} catch (err: any) {
 			setConversations(prev => prev.slice(0, prev.length - 1))
 			toast.error(t('conn_err'), {
