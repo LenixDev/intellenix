@@ -19,7 +19,7 @@ Deno.serve(async req => {
 	)
 
 	const groq = new Groq({ apiKey: data[0].api_key })
-	const result = await groq?.chat.completions.create(arg.params)
+	const result = await groq?.chat.completions.create(arg.params).withResponse()
 
 	return new Response(
     JSON.stringify(result satisfies GroqFn),

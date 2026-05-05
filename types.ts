@@ -2,6 +2,7 @@ import type { ChatCompletion, ChatCompletionCreateParamsNonStreaming } from 'gro
 import type { CompletionUsage, ModelListResponse } from 'groq-sdk/resources'
 import type { LIMITS } from './constants'
 import { PostgrestError } from '@supabase/supabase-js'
+import { APIPromise } from 'groq-sdk';
 
 export type GetKey = string | { error: string }
 
@@ -75,7 +76,9 @@ export type QuotaFunction =
 		tokens: number
 	} & QuotaBaseFunction)
 
-export type GroqFn = ChatCompletion | { error: string }
+export type GroqFn = Awaited<ReturnType<
+	APIPromise<ChatCompletion>['withResponse']
+>> | { error: PostgrestError['message'] }
 export interface GroqParams {
 	params: ChatCompletionCreateParamsNonStreaming
 	password: string

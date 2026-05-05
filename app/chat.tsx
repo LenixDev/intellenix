@@ -200,7 +200,7 @@ export default function Page() {
 				// tools: null,
 				// user: null
 			}
-			const result = await groq?.chat.completions.create(params) ?? await supabase.functions.invoke<GroqFn>('groq', {
+			const result = await groq?.chat.completions.create(params).withResponse() ?? await supabase.functions.invoke<GroqFn>('groq', {
 				body: { params, password: '947f6037-fb5d-455c-8f41-38925b6c1725' } satisfies GroqParams
 			}).then(({ error, data }) => {
 				if (error instanceof Error || !data) {
@@ -216,7 +216,7 @@ export default function Page() {
 				return data
 			})
 			if (!result) return
-			const { choices, service_tier, usage } = result
+			const { choices, service_tier, usage } = result.data
 
 			const response = choices[0]?.message.content
 			if (typeof response !== 'string') return toast.error(t('no_res'))
