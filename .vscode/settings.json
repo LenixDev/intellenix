@@ -2,7 +2,9 @@
 	"[typescript]": {
 		"editor.defaultFormatter": "denoland.vscode-deno"
 	},
-	"deno.enablePaths": ["supabase/functions"],
+	"deno.enablePaths": [
+		"supabase/functions"
+	],
 	"deno.lint": true,
 	"deno.unstable": [
 		"bare-node-builtins",
@@ -21,6 +23,9 @@
 	],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
-	"i18n-ally.localesPaths": ["locales"],
-	"deno.enable": true
+	"i18n-ally.localesPaths": [
+		"locales"
+	],
+	"deno.enable": true,
+	"i18n-ally.keystyle": "nested"
 }

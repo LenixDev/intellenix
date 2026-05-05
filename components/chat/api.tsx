@@ -66,7 +66,7 @@ export const Api = ({
 				onPress={async () => {
 					setLoading(true)
 					
-					const { data, error } = await supabase.functions.invoke<GetKey>('get-key', { body: {
+					const { data, error } = await supabase.functions.invoke<GetKey>('key', { body: {
 						type: 'get'
 					} satisfies SupaKeyArgs})
 

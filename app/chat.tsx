@@ -96,7 +96,7 @@ export default function Page() {
 			let key = await prefs.getKey('key')
 			if (!key && !protection) return setKeyDialog(true)
 			if (!key) {
-				const { error, data } = await supabase.functions.invoke<SupaProtect>('get-key', {
+				const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
 					body: {
 						type: 'get'
 					} satisfies SupaKeyArgs
@@ -270,6 +270,8 @@ export default function Page() {
 			setAiThinking(false)
 		}
 	}
+	
+	console.debug(groq, id, 'e')
 
 	return (
 		<View items='center' width='100%' height='100%'>

@@ -53,6 +53,7 @@ export const Preferences = ({
 			if (key) setProtected(true)
 			if (items.length > 0) return
 			if (!groq && !id) {
+				console.debug(groq, id)
 				toast.error(t('err'))
 				return
 			}
@@ -136,7 +137,7 @@ export const Preferences = ({
 			<Button onPress={async () => {
 				setLoading(true)
 
-				const { error, data } = await supabase.functions.invoke<SupaProtect>('get-key', {
+				const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
 					body: Protected ? {
 						type: 'get',
 					} : {

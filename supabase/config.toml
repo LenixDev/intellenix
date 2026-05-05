@@ -1,15 +1,4 @@
 
-[functions.get-key]
-enabled = true
-verify_jwt = false
-import_map = "./functions/get-key/deno.json"
-# Uncomment to specify a custom file path to the entrypoint.
-# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
-entrypoint = "./functions/get-key/index.ts"
-# Specifies static files to be bundled with the function. Supports glob patterns.
-# For example, if you want to serve static HTML pages in your function:
-# static_files = [ "./functions/get-key/*.html" ]
-
 [functions.quota]
 enabled = true
 verify_jwt = false
@@ -42,3 +31,14 @@ entrypoint = "./functions/list/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/list/*.html" ]
+
+[functions.key]
+enabled = true
+verify_jwt = false
+import_map = "./functions/key/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/key/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/key/*.html" ]

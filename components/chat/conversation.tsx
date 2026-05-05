@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, Text, View, Button } from 'tamagui'
 import { Copy } from './copy'
 import { toast } from '@tamagui/toast/v2'
+import { Pencil } from '@tamagui/lucide-icons-2';
 
 export const Conversation = ({
 	conversations,
