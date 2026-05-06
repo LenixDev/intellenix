@@ -1,8 +1,8 @@
 import { defaultModel, LIMITS } from '@/constants'
-import { Check } from '@tamagui/lucide-icons-2'
+import { Check, Info } from '@tamagui/lucide-icons-2'
 import type Groq from 'groq-sdk'
 import { useEffect, useMemo, useState } from 'react'
-import { Button, Dialog, Input, Label, Select, Spinner, Text, View } from 'tamagui'
+import { Button, Checkbox, Dialog, Input, Label, Popover, Select, Spinner, Switch, Text, View, XStack } from 'tamagui'
 import { Selection } from '../selection'
 import { useTranslation } from 'react-i18next'
 import { Model, SupaList, SupaProtect } from '@/types'
@@ -12,6 +12,7 @@ import { i18n } from 'i18next'
 import type { Model as GroqModel } from 'groq-sdk/resources'
 import { Prompt } from '../prompt'
 import { supabase } from '@/supabase'
+import { Over } from '@/components/over'
 
 const setItem = async (
 	model: Model,
@@ -132,7 +133,6 @@ export const Preferences = ({
 	if (protectionDialog) return (
 		<Prompt width='25%' gap='$5' open={protectionDialog} onOpenChange={setProtectionDialog}>
 			<Dialog.Title>{t('key_protection')}</Dialog.Title>
-			<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
 			<Button onPress={async () => {
 				setLoading(true)
 
@@ -188,11 +188,28 @@ export const Preferences = ({
 					}}>
 					{t('save')}
 				</Button>
-				<Button
-					onPress={() => setProtectionDialog(true)}>
-					{Protected ? t('unprotect_key') : t('protect_key')}
-				</Button>
 			</View>
+			<XStack gap='$2' items="center" justify='center'>
+				<Checkbox id='protection' onCheckedChange={bool => {
+					if (typeof bool !== 'boolean') return
+					setProtectionDialog(bool)
+				}}>
+					<Checkbox.Indicator>
+						<Check />
+					</Checkbox.Indicator>
+				</Checkbox>
+				<Label htmlFor='protection'>{t('protect_key')}</Label>
+				<Over content={
+					<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
+				}>
+					<Button
+						chromeless
+						circular
+						size='$2'
+						icon={Info}
+					/>
+				</Over>
+			</XStack>
 			<View>
 				<Label>{t('models')}</Label>
 				<Selection
