@@ -31,13 +31,17 @@ export const Preferences = ({
 	id,
 	apiKey: key,
 	setKey,
-	setModel
+	setModel,
+	quotaDisplayed,
+	setQuotaDisplayed
 }: {
 	groq: Groq | null
 	id: string | undefined | null
 	apiKey: string
 	setKey: (key: string) => void
 	setModel: (model: Model) => void
+	quotaDisplayed: boolean | undefined
+	setQuotaDisplayed: (quotaDisplayed: boolean | undefined) => void
 }) => {
 	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<Model>(defaultModel)
@@ -47,7 +51,6 @@ export const Preferences = ({
 		protection: false,
 		quota: false
 	})
-	const [quotaEnabled, setQuotaDisplayed] = useState(false)
 
 	const { t } = useTranslation()
 
@@ -212,7 +215,7 @@ export const Preferences = ({
 					</Over>
 				</XStack>
 				<XStack gap='$2' items='center' justify='flex-start'>
-					<Checkbox checked={quotaEnabled || loading.quota} id='quota' onCheckedChange={async bool => {
+					<Checkbox checked={quotaDisplayed || loading.quota} id='quota' onCheckedChange={async bool => {
 						if (typeof bool !== 'boolean') return
 						
 						setLoading(prev => ({ ...prev, quota: true }))
@@ -220,6 +223,7 @@ export const Preferences = ({
 
 						setLoading(prev => ({ ...prev, quota: false }))
 						setQuotaDisplayed(bool)
+
 					}}>
 						<Checkbox.Indicator>
 							{loading.quota ? <Spinner /> : <Check />}

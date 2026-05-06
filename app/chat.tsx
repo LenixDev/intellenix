@@ -1,40 +1,38 @@
 import {
-	Button,
-	Progress,
-	type ScrollView,
-	Sheet,
-	Text,
-	useWindowDimensions,
-	View
-} from 'tamagui'
-import { Plus, SlidersHorizontal } from '@tamagui/lucide-icons-2'
-import { SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
-import Groq from 'groq-sdk'
-import { raise } from 'lenix'
-import { toast } from '@tamagui/toast/v2'
-import { prefs } from '@/storage'
-import { Conversation } from '@/components/chat/conversation'
-import { Api } from '@/components/chat/api'
-import { Message } from '@/components/chat/message'
-import { Send } from '@/components/chat/send'
-import { Kdb } from '@/components/chat/kdb'
-import { Preferences } from '@/components/chat/preferences'
-import { defaultModel, LIMITS } from '@/constants'
-import { Tasks } from '@/components/chat/tasks'
-import { useTranslation } from 'react-i18next'
+    Button,
+    Progress,
+    type ScrollView,
+    Sheet,
+    Text,
+    useWindowDimensions,
+    View
+} from 'tamagui';
+import { Plus, SlidersHorizontal } from '@tamagui/lucide-icons-2';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Groq from 'groq-sdk';
+import { raise } from 'lenix';
+import { toast } from '@tamagui/toast/v2';
+import { prefs } from '@/storage';
+import { Conversation } from '@/components/chat/conversation';
+import { Api } from '@/components/chat/api';
+import { Message } from '@/components/chat/message';
+import { Send } from '@/components/chat/send';
+import { Kdb } from '@/components/chat/kdb';
+import { Preferences } from '@/components/chat/preferences';
+import { defaultModel } from '@/constants';
+import { Tasks } from '@/components/chat/tasks';
+import { useTranslation } from 'react-i18next';
 import type {
-	DailyQuotaFunction,
-	QuotaFunction,
-	Conversation as IConversation,
-	KeysQuota,
-	Model,
-	GroqFn,
-	GroqParams,
-	SupaProtect,
-	SupaKeyArgs
-} from '@/types'
-import { supabase } from '@/supabase'
-import { Hover } from '@/components/hover'
+    Conversation as IConversation,
+    KeysQuota,
+    Model,
+    GroqFn,
+    GroqParams,
+    SupaProtect,
+    SupaKeyArgs
+} from '@/types';
+import { supabase } from '@/supabase';
+import { Hover } from '@/components/hover';
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -353,7 +351,9 @@ export default function Page() {
 							apiKey: key,
 							id,
 							setKey,
-							setModel
+							setModel,
+							quotaDisplayed,
+							setQuotaDisplayed
 						}}
 					/>
 				</Sheet.Frame>
