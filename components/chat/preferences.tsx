@@ -43,7 +43,6 @@ export const Preferences = ({
 	const [item, setItemState] = useState<Model>(defaultModel)
 	const [stateKey, setStateKey] = useState('')
 	const [Protected, setProtected] = useState(false)
-	const [protectionDialog, setProtectionDialog] = useState(false)
 	const [loading, setLoading] = useState(false)
 
 	const { t } = useTranslation()
@@ -130,42 +129,6 @@ export const Preferences = ({
 		[items]
 	)
 
-	if (protectionDialog) return (
-		<Prompt width='25%' gap='$5' open={protectionDialog} onOpenChange={setProtectionDialog}>
-			<Dialog.Title>{t('key_protection')}</Dialog.Title>
-			<Button onPress={async () => {
-				setLoading(true)
-
-				const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
-					body: Protected ? {
-						type: 'get',
-					} : {
-						type: 'protect',
-						key
-					}
-				})
-				if (error instanceof Error || !data) {
-					toast.error(t('err'), {
-						description: error.message
-					})
-					setLoading(false)
-					return
-				}
-				if (typeof data !== 'string' && 'error' in data) {
-					toast.error(data.error)
-					setLoading(false)
-					return
-				}
-
-				await prefs.destroy(Protected ? 'id' : 'key')
-				await prefs.setKey(data, Protected ? 'key' : 'id')
-				setLoading(false)
-				setProtectionDialog(false)
-				setProtected(!Protected)
-			}}>{loading ? <Spinner /> : Protected ? t('disable') : t('enable')}</Button>
-		</Prompt>
-	)
-
 	return (
 		<>
 			<View gap='$4'>
@@ -190,12 +153,38 @@ export const Preferences = ({
 				</Button>
 			</View>
 			<XStack gap='$2' items="center" justify='center'>
-				<Checkbox id='protection' onCheckedChange={bool => {
+				<Checkbox checked={Protected} id='protection' onCheckedChange={async bool => {
 					if (typeof bool !== 'boolean') return
-					setProtectionDialog(bool)
+					setLoading(true)
+
+					const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
+						body: Protected ? {
+							type: 'get',
+						} : {
+							type: 'protect',
+							key
+						}
+					})
+					if (error instanceof Error || !data) {
+						toast.error(t('err'), {
+							description: error.message
+						})
+						setLoading(false)
+						return
+					}
+					if (typeof data !== 'string' && 'error' in data) {
+						toast.error(data.error)
+						setLoading(false)
+						return
+					}
+
+					await prefs.destroy(Protected ? 'id' : 'key')
+					await prefs.setKey(data, Protected ? 'key' : 'id')
+					setLoading(false)
+					setProtected(!Protected)
 				}}>
 					<Checkbox.Indicator>
-						<Check />
+						{loading ? <Spinner /> : <Check />}
 					</Checkbox.Indicator>
 				</Checkbox>
 				<Label htmlFor='protection'>{t('protect_key')}</Label>
