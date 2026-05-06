@@ -33,7 +33,7 @@ export const Preferences = ({
 	setModel
 }: {
 	groq: Groq | null
-	id: string | undefined
+	id: string | undefined | null
 	apiKey: string
 	setKey: (key: string) => void
 	setModel: (model: Model) => void
@@ -49,7 +49,7 @@ export const Preferences = ({
 
 	useEffect(() => {
 		(async () => {
-			const key = await prefs.getKey('protection')
+			const key = await prefs.getKey('id')
 			if (key) setProtected(true)
 			if (items.length > 0) return
 			if (!groq && !id) {
@@ -157,8 +157,8 @@ export const Preferences = ({
 					return
 				}
 
-				await prefs.destroy(Protected ? 'protection' : 'key')
-				await prefs.setKey(data, Protected ? 'key' : 'protection')
+				await prefs.destroy(Protected ? 'id' : 'key')
+				await prefs.setKey(data, Protected ? 'key' : 'id')
 				setLoading(false)
 				setProtectionDialog(false)
 				setProtected(!Protected)

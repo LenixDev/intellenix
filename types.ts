@@ -48,7 +48,7 @@ export type Quota = Record<Model, DailyQuota>
 
 export type KeysQuota = Record<string, Partial<Quota>>
 
-export type Key = 'key' | 'model' | 'protection'
+export type Key = 'key' | 'model' | 'id'
 export type Task = 'programming' | 'health'
 
 export type DailyQuotaFunction =
@@ -90,5 +90,5 @@ export type GroqFn = {
 } | { error: PostgrestError['message'] }
 export interface GroqParams {
 	params: ChatCompletionCreateParamsNonStreaming
-	password: string
+	id: string
 }

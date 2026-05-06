@@ -50,8 +50,7 @@ export default function Page() {
 	const [keyDialog, setKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
 	const [model, setModel] = useState<Model>(defaultModel)
-	const [protection, setProtection] = useState<boolean | null>(null)
-	const [id, setId] = useState<string>()
+	const [id, setId] = useState<string | null>()
 	const [quota, setQuota] = useState<KeysQuota>({
 		[key]: {
 			[defaultModel]: {
@@ -91,10 +90,10 @@ export default function Page() {
 	}, [model])
 
 	useEffect(() => {
-		if (key.length !== 0 || protection === null) return
+		if (key.length !== 0 || id === undefined) return
 		(async () => {
 			let key = await prefs.getKey('key')
-			if (!key && !protection) return setKeyDialog(true)
+			if (!key && !id) return setKeyDialog(true)
 			if (!key) {
 				const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
 					body: {
@@ -125,7 +124,7 @@ export default function Page() {
 			})
 			setQuota({ [key]: { [model]: data } })
 		})()
-	}, [key, model, protection])
+	}, [key, model, id])
 
 	useEffect(() => {
 		const channel = supabase
@@ -150,12 +149,9 @@ export default function Page() {
 
 	useEffect(() => {
 		(async () => {
-			const protection = await prefs.getKey('protection')
-			if (protection) {
-				setProtection(true)
-				setId(protection)
-			}
-			else setProtection(false)
+			const id = await prefs.getKey('id')
+			if (id) setId(id)
+			else setId(null)
 		})()
 	}, [])
 
@@ -202,7 +198,7 @@ export default function Page() {
 				// user: null
 			}
 			const result = await groq?.chat.completions.create(params).withResponse() ?? await supabase.functions.invoke<GroqFn>('groq', {
-				body: { params, password: '947f6037-fb5d-455c-8f41-38925b6c1725' } satisfies GroqParams
+				body: { params, id: id! } satisfies GroqParams
 			}).then(({ error, data }) => {
 				if (error instanceof Error || !data) {
 					toast.error(t('err'), {
@@ -328,7 +324,7 @@ export default function Page() {
 							justify='flex-end'
 							gap='$2'
 							items='center'>
-							{protection && <>
+							{id && <>
 								<Hover
 									placement='bottom-end'
 									content={() => <Text color='$color4'>{t('used_rpd')}({rpd?.toFixed(2) ?? 'ERR'}%)</Text>}>

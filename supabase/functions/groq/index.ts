@@ -12,7 +12,7 @@ Deno.serve(async req => {
 	const { error, data } = await supabase
 		.from('quota')
 		.select('api_key')
-		.eq('id', arg.password)
+		.eq('id', arg.id)
 	if (error) return new Response(
 		JSON.stringify({ error: error.message } satisfies GroqFn),
 		{ headers: res }
