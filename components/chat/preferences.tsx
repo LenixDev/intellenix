@@ -210,7 +210,7 @@ export const Preferences = ({
 						/>
 					</Over>
 				</XStack>
-				<XStack gap='$2' items="center" justify='center'>
+				<XStack gap='$2' items='center' justify='flex-start'>
 					<Checkbox checked={quotaEnabled || loading.quota} id='quota' onCheckedChange={async bool => {
 						if (typeof bool !== 'boolean') return
 						

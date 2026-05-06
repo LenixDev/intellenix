@@ -384,7 +384,7 @@ export default function Page() {
 				<Sheet.Overlay transition='quick' bg='$color02' />
 				<Sheet.Handle />
 				<Sheet.Frame
-					bg='$color2'
+					bg='$color1'
 					items='center'
 					justify='space-evenly'
 					flexDirection={isPortrait ? 'column' : 'row'}>
