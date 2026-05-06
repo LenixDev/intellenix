@@ -19,10 +19,21 @@ Deno.serve(async req => {
 	)
 
 	const groq = new Groq({ apiKey: data[0].api_key })
-	const result = await groq?.chat.completions.create(arg.params).withResponse()
+	const { response, ...result } = await groq.chat.completions.create(arg.params).withResponse()
+
+	const get = response.headers.get
+	const rateLimits = {
+		retry_after: get('retry-after'),
+		limit_requests: get('x-ratelimit-limit-requests'),
+		limit_tokens: get('x-ratelimit-limit-tokens'),
+		remaining_requests: get('x-ratelimit-remaining-requests'),
+		remaining_tokens: get('x-ratelimit-remaining-tokens'),
+		reset_requests: get('x-ratelimit-reset-requests'),
+		reset_tokens: get('x-ratelimit-reset-tokens'),
+	}
 
 	return new Response(
-    JSON.stringify(result satisfies GroqFn),
+    JSON.stringify({ data: result.data, rateLimits } satisfies GroqFn),
     { headers: res },
   )
 })

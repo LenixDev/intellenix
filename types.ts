@@ -4,7 +4,7 @@ import type { LIMITS } from './constants'
 import { PostgrestError } from '@supabase/supabase-js'
 import { APIPromise } from 'groq-sdk';
 
-export type GetKey = string | { error: string }
+export type GetKey = string | { error: PostgrestError['message'] }
 
 export type SupaKeyArgs = {
 	type: 'get'
@@ -76,9 +76,18 @@ export type QuotaFunction =
 		tokens: number
 	} & QuotaBaseFunction)
 
-export type GroqFn = Awaited<ReturnType<
-	APIPromise<ChatCompletion>['withResponse']
->> | { error: PostgrestError['message'] }
+export type GroqFn = {
+	data: ChatCompletion
+	rateLimits: {
+		retry_after: string | null
+		limit_requests: string | null
+		limit_tokens: string | null
+		remaining_requests: string | null
+		remaining_tokens: string | null
+		reset_requests: string | null
+		reset_tokens: string | null
+	}
+} | { error: PostgrestError['message'] }
 export interface GroqParams {
 	params: ChatCompletionCreateParamsNonStreaming
 	password: string
