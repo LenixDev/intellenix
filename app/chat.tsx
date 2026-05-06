@@ -51,6 +51,7 @@ export default function Page() {
 	const [sheetOpen, setSheetOpen] = useState(false)
 	const [model, setModel] = useState<Model>(defaultModel)
 	const [id, setId] = useState<string | null>()
+	const [quotaDisplayed, setQuotaDisplayed] = useState<boolean>()
 	const [quota, setQuota] = useState<KeysQuota>({
 		[key]: {
 			[defaultModel]: {
@@ -117,6 +118,9 @@ export default function Page() {
 			const id = await prefs.getKey('id')
 			if (id) setId(id)
 			else setId(null)
+			const quota = await prefs.getKey('quota')
+			if (quota === '1') setQuotaDisplayed(true)
+			else if (quota === '0') setQuotaDisplayed(false)
 		})()
 	}, [])
 
@@ -162,14 +166,16 @@ export default function Page() {
 				// tools: null,
 				// user: null
 			}
-			const result = await groq?.chat.completions.create(params).withResponse() ?? await supabase.functions.invoke<GroqFn>('groq', {
+			let result
+			if (groq) result = await groq?.chat.completions.create(params).withResponse()
+			else result = await supabase.functions.invoke<GroqFn>('groq', {
 				body: { params, id: id! } satisfies GroqParams
 			}).then(({ error, data }) => {
 				if (error instanceof Error || !data) {
 					toast.error(t('err'), {
 						description: error.message,
 					})
-					return
+					return null
 				}
 				if ('error' in data) {
 					toast.error(data.error)
@@ -179,7 +185,14 @@ export default function Page() {
 			})
 			if (!result) return
 			const { choices, service_tier, usage } = result.data
-			// console.debug(result.rateLimits)
+			if ('rateLimits' in result) setQuota({
+				[key]: {
+					[model]: {
+						rpd: result.rateLimits.remaining_requests,
+						tpd: result.rateLimits.remaining_tokens
+					}
+				}
+			})
 
 			const response = choices[0]?.message.content
 			if (typeof response !== 'string') return toast.error(t('no_res'))
@@ -270,7 +283,7 @@ export default function Page() {
 							justify='flex-end'
 							gap='$2'
 							items='center'>
-							{id && <>
+							{quotaDisplayed && <>
 								<Hover
 									placement='bottom-end'
 									content={() => <Text color='$color4'>{t('used_rpd')}({rpd?.toFixed(2) ?? 'ERR'}%)</Text>}>

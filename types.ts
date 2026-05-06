@@ -88,6 +88,7 @@ export type GroqFn = {
 		reset_tokens: string | null
 	}
 } | { error: PostgrestError['message'] }
+
 export interface GroqParams {
 	params: ChatCompletionCreateParamsNonStreaming
 	id: string
