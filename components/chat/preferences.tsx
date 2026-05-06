@@ -57,7 +57,7 @@ export const Preferences = ({
 			if (key) setProtected(true)
 
 			const displayed = await prefs.getKey('quota')
-			if (displayed) setQuotaDisplayed(true)
+			if (displayed === '1') setQuotaDisplayed(true)
 
 		})()
 		;(async () => {
