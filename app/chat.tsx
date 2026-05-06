@@ -70,7 +70,7 @@ export default function Page() {
 	const { t } = useTranslation()
 
 	const groq = useMemo(
-		() => protection !== null && !protection ? new Groq({ apiKey: key, dangerouslyAllowBrowser: true }) : null,
+		() => protection === null && !protection ? new Groq({ apiKey: key, dangerouslyAllowBrowser: true }) : null,
 		[key]
 	)
 
@@ -271,8 +271,6 @@ export default function Page() {
 		}
 	}
 	
-	console.debug(groq, id, 'e')
-
 	return (
 		<View items='center' width='100%' height='100%'>
 			<View
