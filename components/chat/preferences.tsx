@@ -53,7 +53,6 @@ export const Preferences = ({
 			if (key) setProtected(true)
 			if (items.length > 0) return
 			if (!groq && !id) {
-				console.debug(groq, id)
 				toast.error(t('err'))
 				return
 			}

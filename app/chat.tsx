@@ -70,7 +70,7 @@ export default function Page() {
 	const { t } = useTranslation()
 
 	const groq = useMemo(
-		() => protection === null && !protection ? new Groq({ apiKey: key, dangerouslyAllowBrowser: true }) : null,
+		() => key ? new Groq({ apiKey: key, dangerouslyAllowBrowser: true }) : null,
 		[key]
 	)
 
@@ -327,30 +327,32 @@ export default function Page() {
 							justify='flex-end'
 							gap='$2'
 							items='center'>
-							<Hover
-								placement='bottom-end'
-								content={() => <Text color='$color4'>{t('used_rpd')}({rpd?.toFixed(2) ?? 'ERR'}%)</Text>}>
-								<Progress
-									value={rpd ?? 0}
-									bg='$color4'
-									minW={0}
-									maxW='$2'
-									size='$1'>
-									<Progress.Indicator transition='slowest' />
-								</Progress>
-							</Hover>
-							<Hover
-								placement='bottom-start'
-								content={() => <Text color='$color4'>{t('used_tpd')}({tpd?.toFixed(2) ?? 'ERR'}%)</Text>}>
-								<Progress
-									value={tpd ?? 0}
-									bg='$color4'
-									minW={0}
-									maxW='$2'
-									size='$1'>
-									<Progress.Indicator transition='slowest' />
-								</Progress>
-							</Hover>
+							{protection && <>
+								<Hover
+									placement='bottom-end'
+									content={() => <Text color='$color4'>{t('used_rpd')}({rpd?.toFixed(2) ?? 'ERR'}%)</Text>}>
+									<Progress
+										value={rpd ?? 0}
+										bg='$color4'
+										minW={0}
+										maxW='$2'
+										size='$1'>
+										<Progress.Indicator transition='slowest' />
+									</Progress>
+								</Hover>
+								<Hover
+									placement='bottom-start'
+									content={() => <Text color='$color4'>{t('used_tpd')}({tpd?.toFixed(2) ?? 'ERR'}%)</Text>}>
+									<Progress
+										value={tpd ?? 0}
+										bg='$color4'
+										minW={0}
+										maxW='$2'
+										size='$1'>
+										<Progress.Indicator transition='slowest' />
+									</Progress>
+								</Hover>
+							</>}
 							<Button
 								chromeless
 								size='$3'
