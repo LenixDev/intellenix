@@ -153,6 +153,7 @@ export const Preferences = ({
 					/>
 				</View>
 				<Button
+					disabled={stateKey === ''}
 					onPress={async () => {
 						await prefs.setKey(stateKey, 'key')
 						toast.success(t('api_success'))
