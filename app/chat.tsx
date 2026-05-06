@@ -218,6 +218,7 @@ export default function Page() {
 			})
 			if (!result) return
 			const { choices, service_tier, usage } = result.data
+			// console.debug(result.rateLimits)
 
 			const response = choices[0]?.message.content
 			if (typeof response !== 'string') return toast.error(t('no_res'))
