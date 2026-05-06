@@ -109,43 +109,8 @@ export default function Page() {
 				key = data
 			}
 			setKey(key)
-			const { error, data } = await supabase.functions.invoke<DailyQuotaFunction>('quota', {
-				body: {
-					type: 'get',
-					key,
-					model
-				} satisfies QuotaFunction
-			})
-			if (error instanceof Error || !data) return toast.error(t('err'), {
-				description: error?.message
-			})
-			if ('error' in data) return toast.error(t('err'), {
-				description: data.error
-			})
-			setQuota({ [key]: { [model]: data } })
 		})()
 	}, [key, model, id])
-
-	useEffect(() => {
-		const channel = supabase
-			.channel('quota')
-			.on('postgres_changes', {
-				event: 'UPDATE', schema: 'public', table: 'quota'
-			}, ({ new: { rpd, tpd } }: { new: { rpd: number; tpd: number } }) => {
-				console.debug('quota updated')
-				setQuota({
-					[key]: {
-						[model]: {
-							rpd: (rpd * 100) / LIMITS[model].rpd,
-							tpd: (tpd * 100) / LIMITS[model].tpd,
-						}
-					}
-				})
-			})
-			.subscribe()
-
-		return () => { supabase.removeChannel(channel) }
-	}, [key, model])
 
 	useEffect(() => {
 		(async () => {
@@ -237,25 +202,6 @@ export default function Page() {
 					usage
 				}
 			])
-
-			if (!usage?.total_tokens) return toast.error(t('quota_update_err'), {
-				description: t('total_tokens_undefined')
-			})
-
-			const { error, data } = await supabase.functions.invoke<DailyQuotaFunction>('quota', {
-				body: {
-					type: 'consume',
-					key,
-					model,
-					tokens: usage.total_tokens
-				} satisfies QuotaFunction
-			})
-			if (error instanceof Error || !data) return toast.error(t('err'), {
-				description: error.message
-			})
-			if ('error' in data) return toast.error(t('err'), {
-				description: data.error
-			})
 		} catch (err: any) {
 			setConversations(prev => prev.slice(0, prev.length - 1))
 			toast.error(t('conn_err'), {
