@@ -91,7 +91,7 @@ export default function Page() {
 	}, [model])
 
 	useEffect(() => {
-		if (key.length !== 0) return
+		if (key.length !== 0 || protection === null) return
 		(async () => {
 			let key = await prefs.getKey('key')
 			if (!key && !protection) return setKeyDialog(true)
@@ -155,6 +155,7 @@ export default function Page() {
 				setProtection(true)
 				setId(protection)
 			}
+			else setProtection(false)
 		})()
 	}, [])
 
