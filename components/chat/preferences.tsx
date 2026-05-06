@@ -2,7 +2,7 @@ import { defaultModel, LIMITS } from '@/constants'
 import { Check, Info } from '@tamagui/lucide-icons-2'
 import type Groq from 'groq-sdk'
 import { useEffect, useMemo, useState } from 'react'
-import { Button, Checkbox, Dialog, Input, Label, Popover, Select, Spinner, Switch, Text, View, XStack } from 'tamagui'
+import { Button, Checkbox, Dialog, Input, Label, Popover, Select, Spinner, Switch, Text, View, XStack, YStack } from 'tamagui'
 import { Selection } from '../selection'
 import { useTranslation } from 'react-i18next'
 import { Model, SupaList, SupaProtect } from '@/types'
@@ -43,7 +43,11 @@ export const Preferences = ({
 	const [item, setItemState] = useState<Model>(defaultModel)
 	const [stateKey, setStateKey] = useState('')
 	const [Protected, setProtected] = useState(false)
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState({
+		protection: false,
+		quota: false
+	})
+	const [quotaEnabled, setQuotaDisplayed] = useState(false)
 
 	const { t } = useTranslation()
 
@@ -51,6 +55,12 @@ export const Preferences = ({
 		(async () => {
 			const key = await prefs.getKey('id')
 			if (key) setProtected(true)
+
+			const displayed = await prefs.getKey('quota')
+			if (displayed) setQuotaDisplayed(true)
+
+		})()
+		;(async () => {
 			if (items.length > 0) return
 			if (!groq && !id) {
 				toast.error(t('err'))
@@ -152,53 +162,81 @@ export const Preferences = ({
 					{t('save')}
 				</Button>
 			</View>
-			<XStack gap='$2' items="center" justify='center'>
-				<Checkbox checked={Protected} id='protection' onCheckedChange={async bool => {
-					if (typeof bool !== 'boolean') return
-					setLoading(true)
+			<YStack>
+				<XStack gap='$2' items="center" justify='center'>
+					<Checkbox checked={Protected || loading.protection} id='protection' onCheckedChange={async bool => {
+						if (typeof bool !== 'boolean') return
+						setLoading(prev => ({ ...prev, protection: true }))
 
-					const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
-						body: Protected ? {
-							type: 'get',
-						} : {
-							type: 'protect',
-							key
-						}
-					})
-					if (error instanceof Error || !data) {
-						toast.error(t('err'), {
-							description: error.message
+						const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
+							body: Protected ? {
+								type: 'get',
+							} : {
+								type: 'protect',
+								key
+							}
 						})
-						setLoading(false)
-						return
-					}
-					if (typeof data !== 'string' && 'error' in data) {
-						toast.error(data.error)
-						setLoading(false)
-						return
-					}
+						if (error instanceof Error || !data) {
+							toast.error(t('err'), {
+								description: error.message
+							})
+							setLoading(prev => ({ ...prev, protection: false }))
+							return
+						}
+						if (typeof data !== 'string' && 'error' in data) {
+							toast.error(data.error)
+							setLoading(prev => ({ ...prev, protection: false }))
+							return
+						}
 
-					await prefs.destroy(Protected ? 'id' : 'key')
-					await prefs.setKey(data, Protected ? 'key' : 'id')
-					setLoading(false)
-					setProtected(!Protected)
-				}}>
-					<Checkbox.Indicator>
-						{loading ? <Spinner /> : <Check />}
-					</Checkbox.Indicator>
-				</Checkbox>
-				<Label htmlFor='protection'>{t('protect_key')}</Label>
-				<Over content={
-					<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
-				}>
-					<Button
-						chromeless
-						circular
-						size='$2'
-						icon={Info}
-					/>
-				</Over>
-			</XStack>
+						await prefs.destroy(Protected ? 'id' : 'key')
+						await prefs.setKey(data, Protected ? 'key' : 'id')
+						setLoading(prev => ({ ...prev, protection: false }))
+						setProtected(!Protected)
+					}}>
+						<Checkbox.Indicator>
+							{loading.protection ? <Spinner /> : <Check />}
+						</Checkbox.Indicator>
+					</Checkbox>
+					<Label htmlFor='protection'>{t('protect_key')}</Label>
+					<Over content={
+						<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
+					}>
+						<Button
+							chromeless
+							circular
+							size='$2'
+							icon={Info}
+						/>
+					</Over>
+				</XStack>
+				<XStack gap='$2' items="center" justify='center'>
+					<Checkbox checked={quotaEnabled || loading.quota} id='quota' onCheckedChange={async bool => {
+						if (typeof bool !== 'boolean') return
+						
+						setLoading(prev => ({ ...prev, quota: true }))
+						await prefs.setKey(bool ? '1' : '0', 'quota')
+
+						setLoading(prev => ({ ...prev, quota: false }))
+						setQuotaDisplayed(bool)
+					}}>
+						<Checkbox.Indicator>
+							{loading.quota ? <Spinner /> : <Check />}
+						</Checkbox.Indicator>
+					</Checkbox>
+					<Label htmlFor='quota'>{t('enable_quota')}</Label>
+					<Over content={
+						<Text>{t('quota_details')}</Text>
+					}>
+						<Button
+							chromeless
+							circular
+							size='$2'
+							icon={Info}
+						/>
+					</Over>
+				</XStack>
+			</YStack>
 			<View>
 				<Label>{t('models')}</Label>
 				<Selection

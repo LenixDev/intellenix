@@ -48,7 +48,7 @@ export type Quota = Record<Model, DailyQuota>
 
 export type KeysQuota = Record<string, Partial<Quota>>
 
-export type Key = 'key' | 'model' | 'id'
+export type Key = 'key' | 'model' | 'id' | 'quota'
 export type Task = 'programming' | 'health'
 
 export type DailyQuotaFunction =

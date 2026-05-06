@@ -45,5 +45,7 @@
 	"enable": "Enable",
 	"disable": "Disable",
 	"calc": "calculating...",
-	"failed": "failed!"
+	"failed": "failed!",
+	"enable_quota": "Enable Quota Display",
+	"quota_details": "Enabling the quota display will..."
 }
