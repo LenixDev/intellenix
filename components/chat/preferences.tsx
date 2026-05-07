@@ -1,18 +1,17 @@
-import { defaultModel, LIMITS } from '@/constants'
-import { Check, Info } from '@tamagui/lucide-icons-2'
-import type Groq from 'groq-sdk'
-import { useEffect, useMemo, useState } from 'react'
-import { Button, Checkbox, Dialog, Input, Label, Popover, Select, Spinner, Switch, Text, View, XStack, YStack } from 'tamagui'
-import { Selection } from '../selection'
-import { useTranslation } from 'react-i18next'
-import { Model, SupaList, SupaProtect } from '@/types'
-import { prefs } from '@/storage'
-import { toast } from '@tamagui/toast/v2'
-import { i18n } from 'i18next'
-import type { Model as GroqModel } from 'groq-sdk/resources'
-import { Prompt } from '../prompt'
-import { supabase } from '@/supabase'
-import { Over } from '@/components/over'
+import { defaultModel } from '@/constants';
+import { Check, Info } from '@tamagui/lucide-icons-2';
+import type Groq from 'groq-sdk';
+import { useEffect, useMemo, useState } from 'react';
+import { Button, Checkbox, Input, Label, Select, Spinner, Text, View, XStack, YStack } from 'tamagui';
+import { Selection } from '../selection';
+import { useTranslation } from 'react-i18next';
+import { Model, SupaList, SupaProtect } from '@/types';
+import { prefs } from '@/storage';
+import { toast } from '@tamagui/toast/v2';
+import { i18n } from 'i18next';
+import type { Model as GroqModel } from 'groq-sdk/resources';
+import { supabase } from '@/supabase';
+import { Over } from '@/components/over';
 
 const setItem = async (
 	model: Model,
@@ -115,24 +114,6 @@ export const Preferences = ({
 								)}
 							</Select.ItemText>
 						</View>
-						<Select.ItemText color='$color7' fontSize='$2'>
-							{t('rpm')}: {LIMITS[item.id as Model].rpm}
-						</Select.ItemText>
-						<Select.ItemText color='$color7' fontSize='$2'>
-							{t('tpm')}: {LIMITS[item.id as Model].tpm}
-						</Select.ItemText>
-						<Select.ItemText color='$color7' fontSize='$2'>
-							{t('rpd')}: {LIMITS[item.id as Model].rpd}
-						</Select.ItemText>
-						<Select.ItemText color='$color7' fontSize='$2'>
-							{t('tpd')}: {LIMITS[item.id as Model].tpd}
-						</Select.ItemText>
-						<Select.ItemText color='$color7' fontSize='$2'>
-							{t('ash')}: {LIMITS[item.id as Model].ash}
-						</Select.ItemText>
-						<Select.ItemText color='$color7' fontSize='$2'>
-							{t('asd')}: {LIMITS[item.id as Model].asd}
-						</Select.ItemText>
 					</View>
 					<Select.ItemIndicator marginLeft='auto'>
 						<Check size={16} />

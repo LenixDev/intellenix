@@ -1,8 +1,6 @@
 import type { ChatCompletion, ChatCompletionCreateParamsNonStreaming } from 'groq-sdk/resources/chat/completions.mjs'
 import type { CompletionUsage, ModelListResponse } from 'groq-sdk/resources'
-import type { LIMITS } from './constants'
 import { PostgrestError } from '@supabase/supabase-js'
-import { APIPromise } from 'groq-sdk';
 
 export type GetKey = string | { error: PostgrestError['message'] }
 
@@ -42,39 +40,19 @@ export type Conversation =
 		completion_tokens: string | CompletionUsage['completion_tokens']
 	}
 
-export type Model = keyof typeof LIMITS
+export type Model = string
 
-export type Quota = Record<Model, DailyQuota>
+export type Quota = Record<Model, {
+	rpd: number
+	tpm: number
+	r_limits: number
+	t_limits: number
+}>
 
-export type KeysQuota = Record<string, Partial<Quota>>
+export type KeysQuota = Record<string, Quota>
 
 export type Key = 'key' | 'model' | 'id' | 'quota'
 export type Task = 'programming' | 'health'
-
-export type DailyQuotaFunction =
-	| DailyQuota
-	| {
-		error: PostgrestError['message']
-	}
-
-export interface DailyQuota {
-	rpd: number
-	tpm: number
-}
-
-interface QuotaBaseFunction {
-	key: string
-	model: Model
-}
-
-export type QuotaFunction =
-	| ({
-		type: 'get'
-	} & QuotaBaseFunction)
-	| ({
-		type: 'consume'
-		tokens: number
-	} & QuotaBaseFunction)
 
 export type GroqFn = {
 	data: ChatCompletion

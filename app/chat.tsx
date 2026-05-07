@@ -19,7 +19,7 @@ import { Message } from '@/components/chat/message';
 import { Send } from '@/components/chat/send';
 import { Kdb } from '@/components/chat/kdb';
 import { Preferences } from '@/components/chat/preferences';
-import { defaultModel, LIMITS } from '@/constants';
+import { defaultModel } from '@/constants';
 import { Tasks } from '@/components/chat/tasks';
 import { useTranslation } from 'react-i18next';
 import type {
@@ -54,12 +54,16 @@ export default function Page() {
 		[key]: {
 			[defaultModel]: {
 				rpd: 0,
-				tpm: 0
+				tpm: 0,
+				r_limits: 0,
+				t_limits: 0
 			}
 		}
 	})
 	const rpd = quota[key]?.[model]?.rpd
 	const tpm = quota[key]?.[model]?.tpm
+	const r_limits = quota[key]?.[model]?.r_limits
+	const t_limits = quota[key]?.[model]?.t_limits
 
 	const scrollRef = useRef<ScrollView>(null)
 
@@ -191,7 +195,9 @@ export default function Page() {
 				[key]: {
 					[model]: {
 						rpd: result.rateLimits.remaining_requests,
-						tpm: result.rateLimits.remaining_tokens
+						tpm: result.rateLimits.remaining_tokens,
+						r_limits: result.rateLimits.limit_requests,
+						t_limits: result.rateLimits.limit_tokens
 					}
 				}
 			})
@@ -230,8 +236,6 @@ export default function Page() {
 		}
 	}
 
-	console.debug(rpd, tpm)
-	
 	return (
 		<View items='center' width='100%' height='100%'>
 			<View
@@ -291,11 +295,11 @@ export default function Page() {
 								<Hover
 									placement='bottom-end'
 									content={() => <Text color='$color4'>{t('requests_consumed')} ({
-										!Number.isNaN(Number(rpd)) ? (100 - ((Number(rpd) / LIMITS[model].rpd) * 100)).toFixed(2) : 'ERR'
+										!Number.isNaN(Number(rpd)) ? (100 - ((Number(rpd) / r_limits!) * 100)).toFixed(2) : 'ERR'
 									}%)</Text>}>
 									<Progress
 										value={
-											!Number.isNaN(Number(rpd)) ? Number((100 - ((Number(rpd) / LIMITS[model].rpd) * 100)).toFixed(2)) : 0
+											!Number.isNaN(Number(rpd)) ? Number((100 - ((Number(rpd) / r_limits!) * 100)).toFixed(2)) : 0
 										}
 										bg='$color4'
 										minW={0}
@@ -307,11 +311,11 @@ export default function Page() {
 								<Hover
 									placement='bottom-start'
 									content={() => <Text color='$color4'>{t('tokens_consumed')} ({
-										!Number.isNaN(Number(tpm)) ? (100 - ((Number(tpm) / LIMITS[model].tpm) * 100)).toFixed(2) : 'ERR'
+										!Number.isNaN(Number(tpm)) ? (100 - ((Number(tpm) / t_limits!) * 100)).toFixed(2) : 'ERR'
 										}%)</Text>}>
 									<Progress
 										value={
-											!Number.isNaN(Number(tpm)) ? Number((100 - ((Number(tpm) / LIMITS[model].tpm) * 100)).toFixed(2)) : 0
+											!Number.isNaN(Number(tpm)) ? Number((100 - ((Number(tpm) / t_limits!) * 100)).toFixed(2)) : 0
 										}
 										bg='$color4'
 										minW={0}
