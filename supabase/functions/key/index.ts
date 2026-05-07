@@ -32,7 +32,7 @@ Deno.serve(async req => {
 			{ headers: res }
 		)
 
-		if (Data.key === key) {
+		if (Data.key !== key) {
 			const { error } = await supabase
 				.from('quota')
 				.delete()
