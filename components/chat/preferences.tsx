@@ -148,7 +148,8 @@ export const Preferences = ({
 							body: {
 								type: 'new',
 								key: stateKey,
-								model: item
+								model: item,
+								id: id!
 							} satisfies SupaKeyArgs})
 							if (error instanceof Error || !data) {
 								toast.error(t('err'), {

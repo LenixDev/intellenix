@@ -14,6 +14,7 @@ export type SupaKeyArgs = {
 	type: 'new'
 	key: string
 	model: string
+	id: string
 }
 
 export interface SupaList {
