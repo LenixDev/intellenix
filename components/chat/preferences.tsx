@@ -136,7 +136,6 @@ export const Preferences = ({
 						onChangeText={setStateKey}
 						type='password'
 						secureTextEntry
-						disabled
 					/>
 				</View>
 				<Button
@@ -163,6 +162,7 @@ export const Preferences = ({
 							}
 							await prefs.setKey(data, 'id')
 							setId(data)
+							return
 						}
 						await prefs.setKey(stateKey, 'key')
 						toast.success(t('api_success'))
