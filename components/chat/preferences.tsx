@@ -50,7 +50,8 @@ export const Preferences = ({
 	const [Protected, setProtected] = useState(false)
 	const [loading, setLoading] = useState({
 		protection: false,
-		quota: false
+		quota: false,
+		key: false
 	})
 
 	const { t } = useTranslation()
@@ -139,8 +140,9 @@ export const Preferences = ({
 					/>
 				</View>
 				<Button
-					disabled={stateKey === ''}
+					disabled={stateKey === '' || loading.key}
 					onPress={async () => {
+						setLoading(prev => ({ ...prev, key: true }))
 						if (Protected) {
 							const { error, data } = await supabase.functions.invoke<GetKey>('key', {
 							body: {
@@ -152,24 +154,28 @@ export const Preferences = ({
 								toast.error(t('err'), {
 									description: error.message
 								})
+								setLoading(prev => ({ ...prev, key: false }))
 								return
 							}
 							if (typeof data !== 'string' && 'error' in data) {
 								toast.error(t('err'), {
 									description: data.error
 								})
+								setLoading(prev => ({ ...prev, key: false }))
 								return
 							}
 							await prefs.setKey(data, 'id')
 							setId(data)
+							setLoading(prev => ({ ...prev, key: false }))
 							return
 						}
 						await prefs.setKey(stateKey, 'key')
 						toast.success(t('api_success'))
 						setStateKey('')
 						setKey(stateKey)
+						setLoading(prev => ({ ...prev, key: false }))
 					}}>
-					{t('save')}
+					{loading.key ? <Spinner /> : t('save')}
 				</Button>
 			</View>
 			<YStack>
