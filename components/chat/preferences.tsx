@@ -211,6 +211,7 @@ export const Preferences = ({
 						await prefs.setKey(data, Protected ? 'key' : 'id')
 						setLoading(prev => ({ ...prev, protection: false }))
 						setProtected(!Protected)
+						!Protected && setId(data)
 					}}>
 						<Checkbox.Indicator>
 							{loading.protection ? <Spinner /> : <Check />}
