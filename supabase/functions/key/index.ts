@@ -7,8 +7,8 @@ Deno.serve(async req => {
 	if (!success) return res
 
 	const Data = await req.json() as SupaKeyArgs
+	const key = Deno.env.get('API_KEY')
 	if (Data.type === 'get') {
-		const key = Deno.env.get('API_KEY')
 		if (typeof key !== 'string') return new Response(JSON.stringify({ error: 'missing key'} satisfies GetKey), {
 			headers: res
 		})
@@ -31,6 +31,17 @@ Deno.serve(async req => {
 			JSON.stringify({ error: error.message } satisfies GetKey),
 			{ headers: res }
 		)
+
+		if (Data.key === key) {
+			const { error } = await supabase
+				.from('quota')
+				.delete()
+				.eq('api_key', Data.key)
+			if (error) return new Response(
+				JSON.stringify({ error: error.message } satisfies GetKey),
+				{ headers: res }
+			)
+		}
 
 		return new Response(
 			JSON.stringify(data.id satisfies GetKey),
