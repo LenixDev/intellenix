@@ -165,9 +165,13 @@ export default function Page() {
 				// user: null
 			}
 			let result
-			if (groq) result = await groq?.chat.completions.create(params).withResponse()
+			if (groq && !quotaDisplayed) result = await groq?.chat.completions.create(params).withResponse()
 			else result = await supabase.functions.invoke<GroqFn>('groq', {
-				body: { params, id: id! } satisfies GroqParams
+				body: {
+					params,
+					id: id!,
+					key
+				} satisfies GroqParams
 			}).then(({ error, data }) => {
 				if (error instanceof Error || !data) {
 					toast.error(t('err'), {
@@ -225,6 +229,8 @@ export default function Page() {
 			setAiThinking(false)
 		}
 	}
+
+	console.debug(rpd, tpd)
 	
 	return (
 		<View items='center' width='100%' height='100%'>

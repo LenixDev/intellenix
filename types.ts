@@ -92,4 +92,5 @@ export type GroqFn = {
 export interface GroqParams {
 	params: ChatCompletionCreateParamsNonStreaming
 	id: string
+	key?: string
 }

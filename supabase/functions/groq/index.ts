@@ -7,19 +7,26 @@ Deno.serve(async req => {
 	const [success, res] = init(req)
 	if (!success) return res
 
-	const arg = await req.json() as GroqParams
+	const { key, id, params} = await req.json() as GroqParams
 
-	const { error, data } = await supabase
-		.from('quota')
-		.select('api_key')
-		.eq('id', arg.id)
-	if (error) return new Response(
-		JSON.stringify({ error: error.message } satisfies GroqFn),
-		{ headers: res }
-	)
+	let apiKey = key
+	if (!key) {
+		const { error, data } = await supabase
+			.from('quota')
+			.select('api_key')
+			.eq('id', id)
+			.limit(1)
+			.single<{ api_key: string }>()
+		if (error) return new Response(
+			JSON.stringify({ error: error.message } satisfies GroqFn),
+			{ headers: res }
+		)
 
-	const groq = new Groq({ apiKey: data[0].api_key })
-	const { response, ...result } = await groq.chat.completions.create(arg.params).withResponse()
+		apiKey = data.api_key
+	}
+
+	const groq = new Groq({ apiKey })
+	const { response, ...result } = await groq.chat.completions.create(params).withResponse()
 
 	const rateLimits = {
 		retry_after: response.headers.get('retry-after'),
