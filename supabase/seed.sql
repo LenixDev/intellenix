@@ -1,1 +1,1 @@
-insert into quota (api_key, model, tokens, requests) values ('seeding-groq-api-key', 'groq/compound', 0, 0);
+insert into quota (api_key, model) values ('seeding-groq-api-key', 'groq/compound');

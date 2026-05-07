@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, Checkbox, Input, Label, Select, Spinner, Text, View, XStack, YStack } from 'tamagui';
 import { Selection } from '../selection';
 import { useTranslation } from 'react-i18next';
-import { Model, SupaList, SupaProtect } from '@/types';
+import { GetKey, Model, SupaKeyArgs, SupaList, SupaProtect } from '@/types';
 import { prefs } from '@/storage';
 import { toast } from '@tamagui/toast/v2';
 import { i18n } from 'i18next';
@@ -28,6 +28,7 @@ const setItem = async (
 export const Preferences = ({
 	groq,
 	id,
+	setId,
 	apiKey: key,
 	setKey,
 	setModel,
@@ -36,6 +37,7 @@ export const Preferences = ({
 }: {
 	groq: Groq | null
 	id: string | undefined | null
+	setId: (id: string | undefined | null) => void
 	apiKey: string
 	setKey: (key: string) => void
 	setModel: (model: Model) => void
@@ -134,11 +136,34 @@ export const Preferences = ({
 						onChangeText={setStateKey}
 						type='password'
 						secureTextEntry
+						disabled
 					/>
 				</View>
 				<Button
 					disabled={stateKey === ''}
 					onPress={async () => {
+						if (Protected) {
+							const { error, data } = await supabase.functions.invoke<GetKey>('key', {
+							body: {
+								type: 'new',
+								key: stateKey,
+								model: item
+							} satisfies SupaKeyArgs})
+							if (error instanceof Error || !data) {
+								toast.error(t('err'), {
+									description: error.message
+								})
+								return
+							}
+							if (typeof data !== 'string' && 'error' in data) {
+								toast.error(t('err'), {
+									description: data.error
+								})
+								return
+							}
+							await prefs.setKey(data, 'id')
+							setId(data)
+						}
 						await prefs.setKey(stateKey, 'key')
 						toast.success(t('api_success'))
 						setStateKey('')

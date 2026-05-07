@@ -9,6 +9,10 @@ export type SupaKeyArgs = {
 } | {
 	type: 'protect'
 	key: string
+} | {
+	type: 'new'
+	key: string
+	model: string
 }
 
 export interface SupaList {
@@ -43,10 +47,10 @@ export type Conversation =
 export type Model = string
 
 export type Quota = Record<Model, {
-	rpd: number
-	tpm: number
-	r_limits: number
-	t_limits: number
+	rpd: string
+	tpm: string
+	r_limits: string
+	t_limits: string
 }>
 
 export type KeysQuota = Record<string, Quota>

@@ -17,6 +17,26 @@ Deno.serve(async req => {
 			headers: res
 		})
 	}
+
+	if (Data.type === 'new') {
+		const { error, data } = await supabase.from('quota')
+			.insert({
+				api_key: Data.key,
+				model: Data.model
+			})
+			.select('id')
+			.single<{ id: string }>()
+			
+		if (error) return new Response(
+			JSON.stringify({ error: error.message } satisfies GetKey),
+			{ headers: res }
+		)
+
+		return new Response(
+			JSON.stringify(data.id satisfies GetKey),
+			{ headers: res }
+		)
+	}
 	
 	const { error, data } = await supabase
 		.from('quota')
@@ -24,7 +44,6 @@ Deno.serve(async req => {
 		.eq('api_key', Data.key)
 		.limit(1)
 		.single<{ id: string }>()
-		console.log(data, error)
 	if (error) return new Response(
 		JSON.stringify({ error: error.message } satisfies SupaProtect),
 		{ headers: res }

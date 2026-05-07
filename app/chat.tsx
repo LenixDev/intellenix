@@ -50,20 +50,12 @@ export default function Page() {
 	const [model, setModel] = useState<Model>(defaultModel)
 	const [id, setId] = useState<string | null>()
 	const [quotaDisplayed, setQuotaDisplayed] = useState<boolean>()
-	const [quota, setQuota] = useState<KeysQuota>({
-		[key]: {
-			[defaultModel]: {
-				rpd: 0,
-				tpm: 0,
-				r_limits: 0,
-				t_limits: 0
-			}
-		}
-	})
-	const rpd = quota[key]?.[model]?.rpd
-	const tpm = quota[key]?.[model]?.tpm
-	const r_limits = quota[key]?.[model]?.r_limits
-	const t_limits = quota[key]?.[model]?.t_limits
+	const [quota, setQuota] = useState<KeysQuota>({})
+
+	const rpd = quota[key]?.[model]?.rpd ?? '0'
+	const tpm = quota[key]?.[model]?.tpm ?? '0'
+	const r_limits = quota[key]?.[model]?.r_limits ?? '0'
+	const t_limits = quota[key]?.[model]?.t_limits ?? '0'
 
 	const scrollRef = useRef<ScrollView>(null)
 
@@ -194,10 +186,10 @@ export default function Page() {
 			if ('rateLimits' in result) setQuota({
 				[key]: {
 					[model]: {
-						rpd: result.rateLimits.remaining_requests,
-						tpm: result.rateLimits.remaining_tokens,
-						r_limits: result.rateLimits.limit_requests,
-						t_limits: result.rateLimits.limit_tokens
+						rpd: result.rateLimits.remaining_requests ?? '0',
+						tpm: result.rateLimits.remaining_tokens ?? '0',
+						r_limits: result.rateLimits.limit_requests ?? '0',
+						t_limits: result.rateLimits.limit_tokens ?? '0'
 					}
 				}
 			})
@@ -295,11 +287,11 @@ export default function Page() {
 								<Hover
 									placement='bottom-end'
 									content={() => <Text color='$color4'>{t('requests_consumed')} ({
-										!Number.isNaN(Number(rpd)) ? (100 - ((Number(rpd) / r_limits!) * 100)).toFixed(2) : 'ERR'
+										!Number.isNaN(Number(rpd)) ? (100 - ((Number(rpd) / Number(r_limits)) * 100)).toFixed(2) : 'ERR'
 									}%)</Text>}>
 									<Progress
 										value={
-											!Number.isNaN(Number(rpd)) ? Number((100 - ((Number(rpd) / r_limits!) * 100)).toFixed(2)) : 0
+											!Number.isNaN(Number(rpd)) ? Number((100 - ((Number(rpd) / Number(r_limits)) * 100)).toFixed(2)) : 0
 										}
 										bg='$color4'
 										minW={0}
@@ -311,11 +303,11 @@ export default function Page() {
 								<Hover
 									placement='bottom-start'
 									content={() => <Text color='$color4'>{t('tokens_consumed')} ({
-										!Number.isNaN(Number(tpm)) ? (100 - ((Number(tpm) / t_limits!) * 100)).toFixed(2) : 'ERR'
+										!Number.isNaN(Number(tpm)) ? (100 - ((Number(tpm) / Number(t_limits)) * 100)).toFixed(2) : 'ERR'
 										}%)</Text>}>
 									<Progress
 										value={
-											!Number.isNaN(Number(tpm)) ? Number((100 - ((Number(tpm) / t_limits!) * 100)).toFixed(2)) : 0
+											!Number.isNaN(Number(tpm)) ? Number((100 - ((Number(tpm) / Number(t_limits)) * 100)).toFixed(2)) : 0
 										}
 										bg='$color4'
 										minW={0}
@@ -368,6 +360,7 @@ export default function Page() {
 							groq,
 							apiKey: key,
 							id,
+							setId,
 							setKey,
 							setModel,
 							quotaDisplayed,
