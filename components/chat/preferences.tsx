@@ -47,11 +47,12 @@ export const Preferences = ({
 	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<Model>(defaultModel)
 	const [stateKey, setStateKey] = useState('')
-	const [Protected, setProtected] = useState(false)
+	const [Protected, setProtected] = useState<string>()
 	const [loading, setLoading] = useState({
 		protection: false,
 		quota: false,
-		key: false
+		key: false,
+		public: false
 	})
 
 	const { t } = useTranslation()
@@ -59,7 +60,7 @@ export const Preferences = ({
 	useEffect(() => {
 		(async () => {
 			const key = await prefs.getKey('id')
-			if (key) setProtected(true)
+			if (key) setProtected(key)
 
 			const displayed = await prefs.getKey('quota')
 			if (displayed === '1') setQuotaDisplayed(true)
@@ -178,10 +179,23 @@ export const Preferences = ({
 					}}>
 					{loading.key ? <Spinner /> : t('save')}
 				</Button>
+				<Button
+					disabled={loading.public}
+					onPress={async () => {
+						setLoading(prev => ({ ...prev, public: true }))
+						const { error } = await supabase.functions.invoke('key', {
+							body: {
+								type: 'public',
+								id
+							} satisfies SupaKeyArgs
+						})
+						setLoading(prev => ({ ...prev, public: false }))
+					}}
+				>{loading.public ? <Spinner /> : t('public_key')}</Button>
 			</View>
 			<YStack>
 				<XStack gap='$2' items="center" justify='center'>
-					<Checkbox checked={Protected || loading.protection} id='protection' onCheckedChange={async bool => {
+					<Checkbox checked={!!Protected || loading.protection} id='protection' onCheckedChange={async bool => {
 						if (typeof bool !== 'boolean') return
 						setLoading(prev => ({ ...prev, protection: true }))
 
@@ -210,7 +224,7 @@ export const Preferences = ({
 						await prefs.destroy(Protected ? 'id' : 'key')
 						await prefs.setKey(data, Protected ? 'key' : 'id')
 						setLoading(prev => ({ ...prev, protection: false }))
-						setProtected(!Protected)
+						setProtected(Protected ? undefined : data)
 						!Protected && setId(data)
 					}}>
 						<Checkbox.Indicator>

@@ -15,7 +15,12 @@ export type SupaKeyArgs = {
 	key: string
 	model: string
 	id: string
+} | {
+	type: 'public'
+	id: string | undefined | null
 }
+
+export type SupaPublic = string | { error: PostgrestError['message'] }
 
 export interface SupaList {
 	fn: ModelListResponse | { error: PostgrestError['message'] }

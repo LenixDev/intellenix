@@ -1,5 +1,5 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
-import type { GetKey, SupaKeyArgs, SupaProtect } from '../../../types.ts'
+import type { GetKey, SupaKeyArgs, SupaProtect, SupaPublic } from '../../../types.ts'
 import { init, supabase } from '../__shared/index.ts'
 
 Deno.serve(async req => {
@@ -8,10 +8,12 @@ Deno.serve(async req => {
 
 	const Data = await req.json() as SupaKeyArgs
 	const key = Deno.env.get('API_KEY')
+
 	if (Data.type === 'get') {
-		if (typeof key !== 'string') return new Response(JSON.stringify({ error: 'missing key'} satisfies GetKey), {
-			headers: res
-		})
+		if (typeof key !== 'string') return new Response(
+			JSON.stringify({ error: 'missing key'} satisfies GetKey),
+			{ headers: res }
+		)
 
 		return new Response(JSON.stringify(key satisfies GetKey), {
 			headers: res
@@ -57,6 +59,31 @@ Deno.serve(async req => {
 
 		return new Response(
 			JSON.stringify(data$.id satisfies GetKey),
+			{ headers: res }
+		)
+	}
+
+	if (Data.type === 'public') {
+		if (Data.id) {
+			const { error } = await supabase
+				.from('quota')
+				.update({
+					api_key: key
+				})
+				.eq('id', Data.id)
+
+			if (error) return new Response(
+				JSON.stringify({ error: error.message } satisfies SupaPublic),
+				{ headers: res }
+			)
+		}
+
+		if (typeof key !== 'string') return new Response(
+			JSON.stringify({ error: 'missing key'} satisfies SupaPublic),
+			{ headers: res }
+		)
+		return new Response(
+			JSON.stringify(key satisfies SupaPublic),
 			{ headers: res }
 		)
 	}

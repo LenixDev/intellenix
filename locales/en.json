@@ -47,5 +47,6 @@
 	"calc": "calculating...",
 	"failed": "failed!",
 	"enable_quota": "Enable Quota Display",
-	"quota_details": "Enabling the quota display will..."
+	"quota_details": "Enabling the quota display will...",
+	"public_key": "Use Public Key"
 }

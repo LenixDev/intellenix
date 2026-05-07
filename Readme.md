@@ -12,3 +12,4 @@
 - [ ] interupt the ai
 - [ ] loading state
 - [ ] rephrase sent messages
+- [ ] add a use public key and remerge user to the public insttead of inserting new row
