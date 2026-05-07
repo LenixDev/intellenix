@@ -183,7 +183,8 @@ export const Preferences = ({
 								type: 'get',
 							} : {
 								type: 'protect',
-								key
+								key,
+								model: item
 							}
 						})
 						if (error instanceof Error || !data) {

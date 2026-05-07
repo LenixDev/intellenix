@@ -9,6 +9,7 @@ export type SupaKeyArgs = {
 } | {
 	type: 'protect'
 	key: string
+	model: string
 } | {
 	type: 'new'
 	key: string

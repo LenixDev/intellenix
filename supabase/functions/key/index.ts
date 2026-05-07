@@ -55,10 +55,33 @@ Deno.serve(async req => {
 		.eq('api_key', Data.key)
 		.limit(1)
 		.single<{ id: string }>()
-	if (error) return new Response(
-		JSON.stringify({ error: error.message } satisfies SupaProtect),
-		{ headers: res }
-	)
+	
+	if (error) {
+		if (error.code === 'PGRST116') {
+			const { error, data } = await supabase
+				.from('quota')
+				.insert({
+					api_key: Data.key,
+					model: Data.model
+				})
+				.select('id')
+				.single<{ id: string }>()
+
+			if (error) return new Response(
+				JSON.stringify({ error: error.message } satisfies SupaProtect),
+				{ headers: res }
+			)
+
+			return new Response(
+				JSON.stringify(data.id satisfies SupaProtect),
+				{ headers: res }
+			)
+		}
+		return new Response(
+			JSON.stringify({ error: error.message } satisfies SupaProtect),
+			{ headers: res }
+		)
+	}
 
 	return new Response(JSON.stringify(data.id satisfies SupaProtect), {
 		headers: res
