@@ -59,7 +59,7 @@ export type DailyQuotaFunction =
 
 export interface DailyQuota {
 	rpd: number
-	tpd: number
+	tpm: number
 }
 
 interface QuotaBaseFunction {
