@@ -15,52 +15,43 @@ Deno.serve(async req => {
 			{ headers: res }
 		)
 
-		return new Response(JSON.stringify(key satisfies GetKey), {
+		if (Data.id) {
+			const { error } = await supabase
+				.from('quota')
+				.delete()
+				.eq('id', Data.id)
+			if (error) return new Response(
+				JSON.stringify({ error: error.message }),
+				{
+					headers: res,
+					status: 400
+				}
+			)
+		}
+
+		return new Response(
+			JSON.stringify(key satisfies GetKey), {
 			headers: res
 		})
 	}
 
-	if (Data.type === 'new') {
-		const { error, data } = await supabase
+	if (Data.type === 'update') {
+		const { error } = await supabase
 			.from('quota')
-			.select('api_key')
-			.eq('id', Data.id)
-			.limit(1)
-			.single<{ api_key: string }>()
-		if (error) return new Response(
-			JSON.stringify({ error: error.message } satisfies GetKey),
-			{ headers: res }
-		)
-
-		if (data.api_key !== key) {
-			const { error } = await supabase
-				.from('quota')
-				.delete()
-				.eq('api_key', data.api_key)
-			if (error) return new Response(
-				JSON.stringify({ error: error.message } satisfies GetKey),
-				{ headers: res }
-			)
-		}
-
-		const { error: error$, data: data$ } = await supabase
-			.from('quota')
-			.insert({
+			.update({
 				api_key: Data.key,
-				model: Data.model
 			})
-			.select('id')
-			.single<{ id: string }>()
+			.eq('id', Data.id)
 
-		if (error$) return new Response(
-			JSON.stringify({ error: error$.message } satisfies GetKey),
-			{ headers: res }
+		if (error) return new Response(
+			JSON.stringify({ error: error.message }),
+			{ 
+				headers: res,
+				status: 400
+			}
 		)
 
-		return new Response(
-			JSON.stringify(data$.id satisfies GetKey),
-			{ headers: res }
-		)
+		return new Response(null, { headers: res })
 	}
 
 	if (Data.type === 'public') {
@@ -73,14 +64,20 @@ Deno.serve(async req => {
 				.eq('id', Data.id)
 
 			if (error) return new Response(
-				JSON.stringify({ error: error.message } satisfies SupaPublic),
-				{ headers: res }
+				JSON.stringify({ error: error.message }),
+				{
+					headers: res,
+					status: 400
+				}
 			)
 		}
 
 		if (typeof key !== 'string') return new Response(
-			JSON.stringify({ error: 'missing key'} satisfies SupaPublic),
-			{ headers: res }
+			JSON.stringify({ error: 'missing key'}),
+			{
+				headers: res,
+				status: 400
+			}
 		)
 		return new Response(
 			JSON.stringify(key satisfies SupaPublic),

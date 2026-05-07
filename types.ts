@@ -6,21 +6,21 @@ export type GetKey = string | { error: PostgrestError['message'] }
 
 export type SupaKeyArgs = {
 	type: 'get'
+	id?: string
 } | {
 	type: 'protect'
 	key: string
 	model: string
 } | {
-	type: 'new'
+	type: 'update'
 	key: string
-	model: string
 	id: string
 } | {
 	type: 'public'
 	id: string | undefined | null
 }
 
-export type SupaPublic = string | { error: PostgrestError['message'] }
+export type SupaPublic = string
 
 export interface SupaList {
 	fn: ModelListResponse | { error: PostgrestError['message'] }

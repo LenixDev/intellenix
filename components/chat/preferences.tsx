@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, Checkbox, Input, Label, Select, Spinner, Text, View, XStack, YStack } from 'tamagui';
 import { Selection } from '../selection';
 import { useTranslation } from 'react-i18next';
-import { GetKey, Model, SupaKeyArgs, SupaList, SupaProtect } from '@/types';
+import { GetKey, Model, SupaKeyArgs, SupaList, SupaProtect, SupaPublic } from '@/types';
 import { prefs } from '@/storage';
 import { toast } from '@tamagui/toast/v2';
 import { i18n } from 'i18next';
@@ -145,29 +145,19 @@ export const Preferences = ({
 					onPress={async () => {
 						setLoading(prev => ({ ...prev, key: true }))
 						if (Protected) {
-							const { error, data } = await supabase.functions.invoke<GetKey>('key', {
+							const { error } = await supabase.functions.invoke('key', {
 							body: {
-								type: 'new',
+								type: 'update',
 								key: stateKey,
-								model: item,
 								id: id!
 							} satisfies SupaKeyArgs})
-							if (error instanceof Error || !data) {
+							if (error instanceof Error) {
 								toast.error(t('err'), {
 									description: error.message
 								})
 								setLoading(prev => ({ ...prev, key: false }))
 								return
 							}
-							if (typeof data !== 'string' && 'error' in data) {
-								toast.error(t('err'), {
-									description: data.error
-								})
-								setLoading(prev => ({ ...prev, key: false }))
-								return
-							}
-							await prefs.setKey(data, 'id')
-							setId(data)
 							setLoading(prev => ({ ...prev, key: false }))
 							return
 						}
@@ -183,12 +173,22 @@ export const Preferences = ({
 					disabled={loading.public}
 					onPress={async () => {
 						setLoading(prev => ({ ...prev, public: true }))
-						const { error } = await supabase.functions.invoke('key', {
+						const { error, data } = await supabase.functions.invoke<SupaPublic>('key', {
 							body: {
 								type: 'public',
 								id
 							} satisfies SupaKeyArgs
 						})
+						if (error instanceof Error || !data) {
+							toast.error(t('err'), {
+								description: error.message
+							})
+							setLoading(prev => ({ ...prev, public: false }))
+							return
+						}
+
+						await prefs.setKey(data, 'key')
+						setKey(data)
 						setLoading(prev => ({ ...prev, public: false }))
 					}}
 				>{loading.public ? <Spinner /> : t('public_key')}</Button>
@@ -202,11 +202,12 @@ export const Preferences = ({
 						const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
 							body: Protected ? {
 								type: 'get',
-							} : {
+								id: id!,
+							} satisfies SupaKeyArgs : {
 								type: 'protect',
 								key,
 								model: item
-							}
+							} satisfies SupaKeyArgs
 						})
 						if (error instanceof Error || !data) {
 							toast.error(t('err'), {
@@ -248,7 +249,7 @@ export const Preferences = ({
 						if (typeof bool !== 'boolean') return
 						
 						setLoading(prev => ({ ...prev, quota: true }))
-						await prefs.setKey(bool ? '1' : '0', 'quota')
+						bool ? await prefs.setKey('1', 'quota') : await prefs.destroy('quota')
 
 						setLoading(prev => ({ ...prev, quota: false }))
 						setQuotaDisplayed(bool)

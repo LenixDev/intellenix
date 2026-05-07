@@ -114,7 +114,7 @@ export default function Page() {
 			else setId(null)
 			const quota = await prefs.getKey('quota')
 			if (quota === '1') setQuotaDisplayed(true)
-			else if (quota === '0') setQuotaDisplayed(false)
+			else setQuotaDisplayed(false)
 		})()
 	}, [])
 
