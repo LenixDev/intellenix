@@ -187,8 +187,10 @@ export const Preferences = ({
 							return
 						}
 
-						await prefs.setKey(data, 'key')
-						setKey(data)
+						if (!Protected) {
+							await prefs.setKey(data, 'key')
+							setKey(data)
+						}
 						setLoading(prev => ({ ...prev, public: false }))
 					}}
 				>{loading.public ? <Spinner /> : t('public_key')}</Button>
@@ -206,7 +208,6 @@ export const Preferences = ({
 							} satisfies SupaKeyArgs : {
 								type: 'protect',
 								key,
-								model: item
 							} satisfies SupaKeyArgs
 						})
 						if (error instanceof Error || !data) {

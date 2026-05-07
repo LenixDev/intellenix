@@ -38,14 +38,12 @@ Deno.serve(async req => {
 	if (Data.type === 'update') {
 		const { error } = await supabase
 			.from('quota')
-			.update({
-				api_key: Data.key,
-			})
+			.update({ api_key: Data.key })
 			.eq('id', Data.id)
 
 		if (error) return new Response(
 			JSON.stringify({ error: error.message }),
-			{ 
+			{
 				headers: res,
 				status: 400
 			}
@@ -58,9 +56,7 @@ Deno.serve(async req => {
 		if (Data.id) {
 			const { error } = await supabase
 				.from('quota')
-				.update({
-					api_key: key
-				})
+				.update({ api_key: key })
 				.eq('id', Data.id)
 
 			if (error) return new Response(
@@ -91,15 +87,12 @@ Deno.serve(async req => {
 		.eq('api_key', Data.key)
 		.limit(1)
 		.single<{ id: string }>()
-	
+
 	if (error) {
 		if (error.code === 'PGRST116') {
 			const { error, data } = await supabase
 				.from('quota')
-				.insert({
-					api_key: Data.key,
-					model: Data.model
-				})
+				.insert({ api_key: Data.key })
 				.select('id')
 				.single<{ id: string }>()
 
