@@ -41,17 +41,18 @@ const composeId = () => {
 }
 
 export default function Page() {
+	const [id, setId] = useState<string | null>()
+	const [model, setModel] = useState<Model>(defaultModel)
 	const [conversations, setConversations] = useState<IConversation[]>([])
+	const [quota, setQuota] = useState<KeysQuota>({})
 	const [message, setMessage] = useState('')
+	const [key, setKey] = useState('')
 	const [aiThinking, setAiThinking] = useState(false)
-	const [key, setKey] = useState<string>('')
 	const [keyDialog, setKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
-	const [model, setModel] = useState<Model>(defaultModel)
-	const [id, setId] = useState<string | null>()
 	const [quotaDisplayed, setQuotaDisplayed] = useState<boolean>()
-	const [quota, setQuota] = useState<KeysQuota>({})
 	const [autoComplete, setAutoComplete] = useState<boolean>()
+	const [autoCorrect, setAutoCorrect] = useState<boolean>()
 
 	const scrollRef = useRef<ScrollView>(null)
 
@@ -114,6 +115,9 @@ export default function Page() {
 
 			const autoComplete = await prefs.getKey('auto-complete')
 			if (autoComplete === '1') setAutoComplete(true)
+
+			const autoCorrect = await prefs.getKey('auto-correct')
+			if (autoCorrect === '1') setAutoCorrect(true)
 		})()
 	}, [])
 
@@ -255,7 +259,8 @@ export default function Page() {
 							aiThinking,
 							apiKey: key,
 							isMac,
-							autoComplete
+							autoComplete,
+							autoCorrect
 						}}
 					/>
 					<View flexDirection='row' justify='space-between'>
@@ -316,7 +321,9 @@ export default function Page() {
 					sheetOpen,
 					setSheetOpen,
 					autoComplete,
-					setAutoComplete
+					setAutoComplete,
+					autoCorrect,
+					setAutoCorrect
 				}}
 			/>
 		</View>

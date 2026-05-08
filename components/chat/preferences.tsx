@@ -38,7 +38,9 @@ export const Preferences = ({
 	sheetOpen,
 	setSheetOpen,
 	autoComplete,
-	setAutoComplete
+	setAutoComplete,
+	autoCorrect,
+	setAutoCorrect
 }: {
 	groq: Groq | null
 	id: string | undefined | null
@@ -53,6 +55,8 @@ export const Preferences = ({
 	setSheetOpen: (sheetOpen: boolean) => void
 	autoComplete: boolean | undefined
 	setAutoComplete: (autoComplete: boolean | undefined) => void
+	autoCorrect: boolean | undefined
+	setAutoCorrect: (autoCorrect: boolean | undefined) => void
 }) => {
 	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<Model>(defaultModel)
@@ -232,6 +236,13 @@ export const Preferences = ({
 		setAutoComplete(state ? true : undefined)
 	}
 
+	const handleAutoCorrect = async (state: boolean) => {
+		if (typeof state !== 'boolean') return
+
+		state ? await prefs.setKey('1', 'auto-correct') : await prefs.destroy('auto-correct')
+		setAutoCorrect(state ? true : undefined)
+	}
+
 	return (
 		<Sheet
 			dismissOnSnapToBottom
@@ -305,7 +316,7 @@ export const Preferences = ({
 					</XStack>
 					<XStack gap='$2' items='center' justify='flex-start'>
 						<Checkbox
-							checked={autoComplete}
+							checked={autoComplete ? true : false}
 							id='autoComplete'
 							onCheckedChange={handleAutoComplete}>
 							<Checkbox.Indicator>
@@ -313,6 +324,17 @@ export const Preferences = ({
 							</Checkbox.Indicator>
 						</Checkbox>
 						<Label htmlFor='autoComplete'>{t('auto_complete')}</Label>
+					</XStack>
+					<XStack gap='$2' items='center' justify='flex-start'>
+						<Checkbox
+							checked={autoCorrect ? true : false}
+							id='autoCorrect'
+							onCheckedChange={handleAutoCorrect}>
+							<Checkbox.Indicator>
+								<Check />
+							</Checkbox.Indicator>
+						</Checkbox>
+						<Label htmlFor='autoCorrect'>{t('auto_correct')}</Label>
 					</XStack>
 				</YStack>
 				<View>
