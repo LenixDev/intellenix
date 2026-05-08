@@ -2,7 +2,7 @@ import { defaultModel } from '@/constants';
 import { Check, Info } from '@tamagui/lucide-icons-2';
 import type Groq from 'groq-sdk';
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Input, Label, Select, Spinner, Text, View, XStack, YStack } from 'tamagui';
+import { Button, Checkbox, Input, Label, Select, Sheet, Spinner, Text, View, XStack, YStack } from 'tamagui';
 import { Selection } from '../selection';
 import { useTranslation } from 'react-i18next';
 import { GetKey, Model, SupaKeyArgs, SupaList, SupaProtect, SupaPublic } from '@/types';
@@ -33,7 +33,10 @@ export const Preferences = ({
 	setKey,
 	setModel,
 	quotaDisplayed,
-	setQuotaDisplayed
+	setQuotaDisplayed,
+	isPortrait,
+	sheetOpen,
+	setSheetOpen
 }: {
 	groq: Groq | null
 	id: string | undefined | null
@@ -43,6 +46,9 @@ export const Preferences = ({
 	setModel: (model: Model) => void
 	quotaDisplayed: boolean | undefined
 	setQuotaDisplayed: (quotaDisplayed: boolean | undefined) => void
+	isPortrait: boolean
+	sheetOpen: boolean
+	setSheetOpen: (sheetOpen: boolean) => void
 }) => {
 	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<Model>(defaultModel)
@@ -176,8 +182,8 @@ export const Preferences = ({
 		setLoading(prev => ({ ...prev, public: false }))
 	}
 
-	const handleProtection = async (bool: boolean) => {
-		if (typeof bool !== 'boolean') return
+	const handleProtection = async (state: boolean) => {
+		if (typeof state !== 'boolean') return
 		setLoading(prev => ({ ...prev, protection: true }))
 
 		const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
@@ -209,87 +215,102 @@ export const Preferences = ({
 		!Protected && setId(data)
 	}
 
-	const handleQuota = async (bool: boolean) => {
-		if (typeof bool !== 'boolean') return
+	const handleQuota = async (state: boolean) => {
+		if (typeof state !== 'boolean') return
 		
 		setLoading(prev => ({ ...prev, quota: true }))
-		bool ? await prefs.setKey('1', 'quota') : await prefs.destroy('quota')
+		state ? await prefs.setKey('1', 'quota') : await prefs.destroy('quota')
 
 		setLoading(prev => ({ ...prev, quota: false }))
-		setQuotaDisplayed(bool)
+		setQuotaDisplayed(state)
 	}
 
 	return (
-		<>
-			<View gap='$4'>
-				<View>
-					<Label htmlFor='key'>{t('api_key')}</Label>
-					<Input
-						id='key'
-						value={stateKey}
-						onChangeText={setStateKey}
-						type='password'
-						secureTextEntry
-					/>
+		<Sheet
+			dismissOnSnapToBottom
+			transition='superLazy'
+			modal
+			open={sheetOpen}
+			onOpenChange={setSheetOpen}
+			snapPoints={[50, 10]}>
+			<Sheet.Overlay transition='quick' bg='$color02' />
+			<Sheet.Handle />
+			<Sheet.Frame
+				bg='$color1'
+				items='center'
+				justify='space-evenly'
+				flexDirection={isPortrait ? 'column' : 'row'}
+			>
+				<View gap='$4'>
+					<View>
+						<Label htmlFor='key'>{t('api_key')}</Label>
+						<Input
+							id='key'
+							value={stateKey}
+							onChangeText={setStateKey}
+							type='password'
+							secureTextEntry
+						/>
+					</View>
+					<Button
+						disabled={stateKey === '' || loading.key}
+						onPress={handleKey}>
+						{loading.key ? <Spinner /> : t('save')}
+					</Button>
+					<Button
+						disabled={loading.public}
+						onPress={handlePublic}
+					>{loading.public ? <Spinner /> : t('public_key')}</Button>
 				</View>
-				<Button
-					disabled={stateKey === '' || loading.key}
-					onPress={handleKey}>
-					{loading.key ? <Spinner /> : t('save')}
-				</Button>
-				<Button
-					disabled={loading.public}
-					onPress={handlePublic}
-				>{loading.public ? <Spinner /> : t('public_key')}</Button>
-			</View>
-			<YStack>
-				<XStack gap='$2' items="center" justify='center'>
-					<Checkbox
-						disabled={loading.protection}
-						checked={!!Protected || loading.protection}
-						id='protection'
-						onCheckedChange={handleProtection}>
-						<Checkbox.Indicator>z
-							{loading.protection ? <Spinner /> : <Check />}
-						</Checkbox.Indicator>
-					</Checkbox>
-					<Label htmlFor='protection'>{t('protect_key')}</Label>
-					<Over content={
-						<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
-					}>
-						<Button chromeless circular size='$2' icon={Info} />
-					</Over>
-				</XStack>
-				<XStack gap='$2' items='center' justify='flex-start'>
-					<Checkbox
-						disabled={loading.quota}
-						checked={quotaDisplayed || loading.quota}
-						id='quota'
-						onCheckedChange={handleQuota}>
-						<Checkbox.Indicator>
-							{loading.quota ? <Spinner /> : <Check />}
-						</Checkbox.Indicator>
-					</Checkbox>
-					<Label htmlFor='quota'>{t('enable_quota')}</Label>
-					<Over content={
-						<Text>{t('quota_details')}</Text>
-					}>
-						<Button chromeless circular size='$2' icon={Info} />
-					</Over>
-				</XStack>
-			</YStack>
-			<View>
-				<Label>{t('models')}</Label>
-				<Selection
-					renderer={value => items.find(item => item.id === value)?.id}
-					listLabel={t('models')}
-					{...{
-						item,
-						setItem: (item: Model) => setItem(item, setItemState, t, setModel)
-					}}>
-					{renderedItems}
-				</Selection>
-			</View>
-		</>
+				<YStack>
+					<XStack gap='$2' items="center" justify='center'>
+						<Checkbox
+							disabled={loading.protection}
+							checked={!!Protected || loading.protection}
+							id='protection'
+							onCheckedChange={handleProtection}>
+							<Checkbox.Indicator>
+								{loading.protection ? <Spinner /> : <Check />}
+							</Checkbox.Indicator>
+						</Checkbox>
+						<Label htmlFor='protection'>{t('protect_key')}</Label>
+						<Over content={
+							<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
+						}>
+							<Button chromeless circular size='$2' icon={Info} />
+						</Over>
+					</XStack>
+					<XStack gap='$2' items='center' justify='flex-start'>
+						<Checkbox
+							disabled={loading.quota}
+							checked={quotaDisplayed || loading.quota}
+							id='quota'
+							onCheckedChange={handleQuota}>
+							<Checkbox.Indicator>
+								{loading.quota ? <Spinner /> : <Check />}
+							</Checkbox.Indicator>
+						</Checkbox>
+						<Label htmlFor='quota'>{t('enable_quota')}</Label>
+						<Over content={
+							<Text>{t('quota_details')}</Text>
+						}>
+							<Button chromeless circular size='$2' icon={Info} />
+						</Over>
+					</XStack>
+				</YStack>
+				<View>
+					<Label>{t('models')}</Label>
+					<Selection
+						renderer={value => items.find(item => item.id === value)?.id}
+						listLabel={t('models')}
+						{...{
+							item,
+							setItem: (item: Model) => setItem(item, setItemState, t, setModel)
+						}}>
+						{renderedItems}
+					</Selection>
+				</View>
+			</Sheet.Frame>
+		</Sheet>
 	)
 }

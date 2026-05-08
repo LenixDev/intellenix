@@ -271,7 +271,8 @@ export default function Page() {
 							flexDirection='row'
 							justify='flex-end'
 							gap='$2'
-							items='center'>
+							items='center'
+						>
 							{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
 							<Button
 								chromeless
@@ -297,34 +298,21 @@ export default function Page() {
 				</View>
 				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
 			</View>
-			<Sheet
-				dismissOnSnapToBottom
-				transition='superLazy'
-				modal
-				open={sheetOpen}
-				onOpenChange={setSheetOpen}
-				snapPoints={[50, 10]}>
-				<Sheet.Overlay transition='quick' bg='$color02' />
-				<Sheet.Handle />
-				<Sheet.Frame
-					bg='$color1'
-					items='center'
-					justify='space-evenly'
-					flexDirection={isPortrait ? 'column' : 'row'}>
-					<Preferences
-						{...{
-							groq,
-							apiKey: key,
-							id,
-							setId,
-							setKey,
-							setModel,
-							quotaDisplayed,
-							setQuotaDisplayed
-						}}
-					/>
-				</Sheet.Frame>
-			</Sheet>
+			<Preferences
+				{...{
+					groq,
+					apiKey: key,
+					id,
+					setId,
+					setKey,
+					setModel,
+					quotaDisplayed,
+					setQuotaDisplayed,
+					isPortrait,
+					sheetOpen,
+					setSheetOpen
+				}}
+			/>
 		</View>
 	)
 }
