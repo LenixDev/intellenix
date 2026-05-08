@@ -39,6 +39,15 @@ const composeId = () => {
 	const $ = new Date()
 	return `${$.getFullYear()}-${String($.getMonth() + 1).padStart(2, '0')}-${String($.getDate()).padStart(2, '0')} ${String($.getHours()).padStart(2, '0')}:${String($.getMinutes()).padStart(2, '0')}:${String($.getSeconds()).padStart(2, '0')}.${String($.getMilliseconds()).padStart(3, '0')}`
 }
+const calculatePercentage = (value: number | string, limit: number | string, fallback: number | string = 0) => {
+  const v = Number(value)
+  const l = Number(limit)
+  
+  if (Number.isNaN(v)) return Number(fallback)
+  
+  const ratio = l === 0 ? 0 : v / l
+  return Number(Number((100 - ratio * 100).toFixed(2)))
+}
 
 export default function Page() {
 	const [conversations, setConversations] = useState<IConversation[]>([])
@@ -228,6 +237,8 @@ export default function Page() {
 		}
 	}
 
+	console.debug(Number(tpm) , Number(t_limits))
+
 	return (
 		<View items='center' width='100%' height='100%'>
 			<View
@@ -286,13 +297,9 @@ export default function Page() {
 							{quotaDisplayed && <>
 								<Hover
 									placement='bottom-end'
-									content={() => <Text color='$color4'>{t('requests_consumed')} ({
-										!Number.isNaN(Number(rpd)) ? (100 - ((Number(rpd) / Number(r_limits)) * 100)).toFixed(2) : 'ERR'
-									}%)</Text>}>
+									content={() => <Text color='$color4'>{t('requests_consumed')} ({calculatePercentage(rpd, r_limits, 'ERR')}%)</Text>}>
 									<Progress
-										value={
-											!Number.isNaN(Number(rpd)) ? Number((100 - ((Number(rpd) / Number(r_limits)) * 100)).toFixed(2)) : 0
-										}
+										value={calculatePercentage(rpd, r_limits, 0)}
 										bg='$color4'
 										minW={0}
 										maxW='$2'
@@ -302,13 +309,9 @@ export default function Page() {
 								</Hover>
 								<Hover
 									placement='bottom-start'
-									content={() => <Text color='$color4'>{t('tokens_consumed')} ({
-										!Number.isNaN(Number(tpm)) ? (100 - ((Number(tpm) / Number(t_limits)) * 100)).toFixed(2) : 'ERR'
-										}%)</Text>}>
+									content={() => <Text color='$color4'>{t('tokens_consumed')} ({calculatePercentage(tpm, t_limits, 'ERR')}%)</Text>}>
 									<Progress
-										value={
-											!Number.isNaN(Number(tpm)) ? Number((100 - ((Number(tpm) / Number(t_limits)) * 100)).toFixed(2)) : 0
-										}
+										value={calculatePercentage(tpm, t_limits, 0)}
 										bg='$color4'
 										minW={0}
 										maxW='$2'

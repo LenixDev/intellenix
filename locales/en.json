@@ -47,6 +47,6 @@
 	"calc": "calculating...",
 	"failed": "failed!",
 	"enable_quota": "Enable Quota Display",
-	"quota_details": "Enabling the quota display will...",
+	"quota_details": "Will show you how much you have consumed of your API Key.\nYou may notice some delay if the protection isn't enabled.",
 	"public_key": "Use Public Key"
 }

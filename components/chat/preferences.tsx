@@ -197,7 +197,11 @@ export const Preferences = ({
 			</View>
 			<YStack>
 				<XStack gap='$2' items="center" justify='center'>
-					<Checkbox checked={!!Protected || loading.protection} id='protection' onCheckedChange={async bool => {
+					<Checkbox
+						disabled={loading.protection}
+						checked={!!Protected || loading.protection}
+						id='protection'
+						onCheckedChange={async bool => {
 						if (typeof bool !== 'boolean') return
 						setLoading(prev => ({ ...prev, protection: true }))
 
@@ -246,7 +250,11 @@ export const Preferences = ({
 					</Over>
 				</XStack>
 				<XStack gap='$2' items='center' justify='flex-start'>
-					<Checkbox checked={quotaDisplayed || loading.quota} id='quota' onCheckedChange={async bool => {
+					<Checkbox
+						disabled={loading.quota}
+						checked={quotaDisplayed || loading.quota}
+						id='quota'
+						onCheckedChange={async bool => {
 						if (typeof bool !== 'boolean') return
 						
 						setLoading(prev => ({ ...prev, quota: true }))
