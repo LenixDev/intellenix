@@ -1,5 +1,5 @@
 import type { Conversation as IConversation } from '@/types'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, Text, View, Button } from 'tamagui'
 import { Copy } from './copy'
@@ -8,16 +8,19 @@ import { Pencil } from '@tamagui/lucide-icons-2';
 
 export const Conversation = ({
 	conversations,
-	scrollRef,
-	isPortrait
+	isPortrait,
+	shouldScroll
 }: {
 	conversations: IConversation[]
-	scrollRef: React.RefObject<ScrollView | null>
 	isPortrait: boolean
+	shouldScroll: React.RefObject<boolean>
 }) => {
 	const [shown, setShown] = useState<Record<string, boolean>>({})
 	const [hover, setHover] = useState<Record<string, boolean>>({})
+	
 	const { t } = useTranslation()
+
+	const scrollRef = useRef<ScrollView>(null)
 
 	return (
 		<ScrollView
@@ -26,7 +29,11 @@ export const Conversation = ({
 			pt='$10'
 			px={isPortrait ? '$2' : '$5'}
 			flex={1}
-			onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
+			onContentSizeChange={() => {
+				if (!shouldScroll.current) return
+				scrollRef.current?.scrollToEnd({ animated: true })
+				shouldScroll.current = false
+			}}
 			scrollbarWidth='none'>
 			{conversations.map($ => {
 				if ($.role === 'user') return (

@@ -54,7 +54,7 @@ export default function Page() {
 	const [autoComplete, setAutoComplete] = useState<boolean>()
 	const [autoCorrect, setAutoCorrect] = useState<boolean>()
 
-	const scrollRef = useRef<ScrollView>(null)
+	const shouldScroll = useRef(false)
 
 	const { width, height } = useWindowDimensions()
 	const isPortrait = height > width
@@ -132,6 +132,7 @@ export default function Page() {
 
 	const send = async () => {
 		if (!message.trim()) return toast.info(t('not_yet'))
+		shouldScroll.current = true
 		setConversations(prev => [
 			...prev,
 			{
@@ -240,7 +241,7 @@ export default function Page() {
 				justify='flex-end'
 				pb='$5'
 				gap='$2'>
-				<Conversation {...{ conversations, scrollRef, isPortrait }} />
+				<Conversation {...{ conversations, shouldScroll, isPortrait }} />
 				<View
 					width='100%'
 					bg='$color3'

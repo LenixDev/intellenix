@@ -27,7 +27,9 @@ export const Message = ({
 		if (content !== '') return
 		const element = document.querySelector('textarea')
 		if (!element) return
-		element.style.height = 'auto'
+		requestAnimationFrame(() => {
+			element.style.height = 'auto'
+		})
 	}, [content])
 
 	return (
