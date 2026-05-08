@@ -36,7 +36,9 @@ export const Preferences = ({
 	setQuotaDisplayed,
 	isPortrait,
 	sheetOpen,
-	setSheetOpen
+	setSheetOpen,
+	autoComplete,
+	setAutoComplete
 }: {
 	groq: Groq | null
 	id: string | undefined | null
@@ -49,6 +51,8 @@ export const Preferences = ({
 	isPortrait: boolean
 	sheetOpen: boolean
 	setSheetOpen: (sheetOpen: boolean) => void
+	autoComplete: boolean | undefined
+	setAutoComplete: (autoComplete: boolean | undefined) => void
 }) => {
 	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<Model>(defaultModel)
@@ -56,7 +60,6 @@ export const Preferences = ({
 	const [Protected, setProtected] = useState<string>()
 	const [loading, setLoading] = useState({
 		protection: false,
-		quota: false,
 		key: false,
 		public: false
 	})
@@ -217,12 +220,16 @@ export const Preferences = ({
 
 	const handleQuota = async (state: boolean) => {
 		if (typeof state !== 'boolean') return
-		
-		setLoading(prev => ({ ...prev, quota: true }))
-		state ? await prefs.setKey('1', 'quota') : await prefs.destroy('quota')
 
-		setLoading(prev => ({ ...prev, quota: false }))
+		state ? await prefs.setKey('1', 'quota') : await prefs.destroy('quota')
 		setQuotaDisplayed(state)
+	}
+
+	const handleAutoComplete = async (state: boolean) => {
+		if (typeof state !== 'boolean') return
+
+		state ? await prefs.setKey('1', 'auto-complete') : await prefs.destroy('auto-complete')
+		setAutoComplete(state ? true : undefined)
 	}
 
 	return (
@@ -282,12 +289,11 @@ export const Preferences = ({
 					</XStack>
 					<XStack gap='$2' items='center' justify='flex-start'>
 						<Checkbox
-							disabled={loading.quota}
-							checked={quotaDisplayed || loading.quota}
+							checked={quotaDisplayed}
 							id='quota'
 							onCheckedChange={handleQuota}>
 							<Checkbox.Indicator>
-								{loading.quota ? <Spinner /> : <Check />}
+								<Check />
 							</Checkbox.Indicator>
 						</Checkbox>
 						<Label htmlFor='quota'>{t('enable_quota')}</Label>
@@ -296,6 +302,17 @@ export const Preferences = ({
 						}>
 							<Button chromeless circular size='$2' icon={Info} />
 						</Over>
+					</XStack>
+					<XStack gap='$2' items='center' justify='flex-start'>
+						<Checkbox
+							checked={autoComplete}
+							id='autoComplete'
+							onCheckedChange={handleAutoComplete}>
+							<Checkbox.Indicator>
+								<Check />
+							</Checkbox.Indicator>
+						</Checkbox>
+						<Label htmlFor='autoComplete'>{t('auto_complete')}</Label>
 					</XStack>
 				</YStack>
 				<View>

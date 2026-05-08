@@ -7,7 +7,8 @@ export const Message = ({
 	send,
 	aiThinking,
 	apiKey,
-	isMac
+	isMac,
+	autoComplete
 }: {
 	content: string
 	setContent: (content: string) => void
@@ -15,6 +16,7 @@ export const Message = ({
 	aiThinking: boolean
 	apiKey: string
 	isMac: boolean
+	autoComplete: boolean | undefined
 }) => {
 	const { t } = useTranslation()
 	return (
@@ -49,7 +51,7 @@ export const Message = ({
 				px='$2'
 				flex={1}
 				bg='transparent'
-				autoComplete='on' /* TODO: add to config */
+				autoComplete={autoComplete ? 'on' : 'off'}
 				autoCorrect /* TODO: add to config */
 				placeholder={t('chat_intell')}
 				value={content}

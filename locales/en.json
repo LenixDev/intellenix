@@ -49,5 +49,6 @@
 	"enable_quota": "Quota Display",
 	"quota_details": "Will show you how much you have consumed of your API Key.\nYou may notice some delay if the protection isn't enabled.",
 	"public_key": "Use Public Key",
-	"messages_missing": "Please talk to Intellenix first!"
+	"messages_missing": "Please talk to Intellenix first!",
+	"auto_complete": "Auto Complete"
 }

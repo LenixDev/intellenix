@@ -32,7 +32,6 @@ import type {
     SupaKeyArgs
 } from '@/types';
 import { supabase } from '@/supabase';
-import { Hover } from '@/components/hover';
 import { Quota } from '@/components/chat/quota';
 
 const isMac = navigator.userAgent.includes('Mac')
@@ -52,6 +51,7 @@ export default function Page() {
 	const [id, setId] = useState<string | null>()
 	const [quotaDisplayed, setQuotaDisplayed] = useState<boolean>()
 	const [quota, setQuota] = useState<KeysQuota>({})
+	const [autoComplete, setAutoComplete] = useState<boolean>()
 
 	const scrollRef = useRef<ScrollView>(null)
 
@@ -108,9 +108,12 @@ export default function Page() {
 			const id = await prefs.getKey('id')
 			if (id) setId(id)
 			else setId(null)
+
 			const quota = await prefs.getKey('quota')
 			if (quota === '1') setQuotaDisplayed(true)
-			else setQuotaDisplayed(false)
+
+			const autoComplete = await prefs.getKey('auto-complete')
+			if (autoComplete === '1') setAutoComplete(true)
 		})()
 	}, [])
 
@@ -251,7 +254,8 @@ export default function Page() {
 							send,
 							aiThinking,
 							apiKey: key,
-							isMac
+							isMac,
+							autoComplete
 						}}
 					/>
 					<View flexDirection='row' justify='space-between'>
@@ -310,7 +314,9 @@ export default function Page() {
 					setQuotaDisplayed,
 					isPortrait,
 					sheetOpen,
-					setSheetOpen
+					setSheetOpen,
+					autoComplete,
+					setAutoComplete
 				}}
 			/>
 		</View>
