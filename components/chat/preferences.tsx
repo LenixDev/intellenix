@@ -250,7 +250,7 @@ export const Preferences = ({
 			modal
 			open={sheetOpen}
 			onOpenChange={setSheetOpen}
-			snapPoints={[50, 10]}>
+			snapPoints={[40, 10]}>
 			<Sheet.Overlay transition='quick' bg='$color02' />
 			<Sheet.Handle />
 			<Sheet.Frame

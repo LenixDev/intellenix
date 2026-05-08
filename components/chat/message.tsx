@@ -1,5 +1,6 @@
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next'
-import { TextArea, View } from 'tamagui'
+import { TamaguiElement, TextArea, View } from 'tamagui'
 
 export const Message = ({
 	content,
@@ -21,6 +22,14 @@ export const Message = ({
 	autoCorrect: boolean | undefined
 }) => {
 	const { t } = useTranslation()
+
+	useEffect(() => {
+		if (content !== '') return
+		const element = document.querySelector('textarea')
+		if (!element) return
+		element.style.height = 'auto'
+	}, [content])
+
 	return (
 		<View flexDirection='row'>
 			<TextArea
