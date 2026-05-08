@@ -244,23 +244,16 @@ export default function Page() {
 					justify='center'
 					gap='$2'
 					border='1px solid $color6'>
-					<View
-						width='100%'
-						flexDirection='row'
-						justify='center'
-						px='$2'
-						items='flex-end'>
-						<Message
-							{...{
-								content: message,
-								setContent: setMessage,
-								send,
-								aiThinking,
-								apiKey: key,
-								isMac
-							}}
-						/>
-					</View>
+					<Message
+						{...{
+							content: message,
+							setContent: setMessage,
+							send,
+							aiThinking,
+							apiKey: key,
+							isMac
+						}}
+					/>
 					<View flexDirection='row' justify='space-between'>
 						<Button
 							chromeless

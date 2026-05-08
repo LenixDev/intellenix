@@ -41,12 +41,13 @@
 	"tokens_consumed": "Tokens consumed",
 	"protection_details": "Your API key will be stored securely on our servers instead of in your browser.\nResponses may be slightly slower as a result.",
 	"unprotection_details": "Your API key will be saved directly in your browser for faster responses.\nhowever, anyone with access to this browser could read it.",
-	"protect_key": "Enable API Key Protection",
+	"protect_key": "API Key Protection",
 	"enable": "Enable",
 	"disable": "Disable",
 	"calc": "calculating...",
 	"failed": "failed!",
-	"enable_quota": "Enable Quota Display",
+	"enable_quota": "Quota Display",
 	"quota_details": "Will show you how much you have consumed of your API Key.\nYou may notice some delay if the protection isn't enabled.",
-	"public_key": "Use Public Key"
+	"public_key": "Use Public Key",
+	"messages_missing": "Please talk to Intellenix first!"
 }

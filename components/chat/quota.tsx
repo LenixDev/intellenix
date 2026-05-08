@@ -3,11 +3,9 @@ import { Progress, Text } from "tamagui";
 import { Hover } from "../hover";
 import { KeysQuota, Model } from "@/types";
 
-const getConsumption = (value: number | string, limit: number | string, fallback: number | string = 0) => {
+const getConsumption = (value: number | string, limit: number | string) => {
   const val = Number(value)
   const lim = Number(limit)
-  
-  if (Number.isNaN(val)) return Number(fallback)
 	if (val === 0) return 0
 	
   const ratio = lim === 0 ? 0 : val / lim
@@ -31,9 +29,9 @@ export const Quota = ({
 	return <>
 		<Hover
 			placement='bottom-end'
-			content={() => <Text color='$color4'>{t('requests_consumed')} ({getConsumption(rpd, r_limits, 'ERR')}%)</Text>}>
+			content={() => <Text color='$color4'>{rpd === '0' ? t('messages_missing') : `${t('requests_consumed')} (${getConsumption(rpd, r_limits)}%)`}</Text>}>
 			<Progress
-				value={getConsumption(rpd, r_limits, 0)}
+				value={getConsumption(rpd, r_limits)}
 				bg='$color4'
 				minW={0}
 				maxW='$2'
@@ -43,9 +41,9 @@ export const Quota = ({
 		</Hover>
 		<Hover
 			placement='bottom-start'
-			content={() => <Text color='$color4'>{t('tokens_consumed')} ({getConsumption(tpm, t_limits, 'ERR')}%)</Text>}>
+			content={() => <Text color='$color4'>{tpm === '0' ? t('messages_missing') : `${t('tokens_consumed')} (${getConsumption(tpm, t_limits)}%)`}</Text>}>
 			<Progress
-				value={getConsumption(tpm, t_limits, 0)}
+				value={getConsumption(tpm, t_limits)}
 				bg='$color4'
 				minW={0}
 				maxW='$2'
