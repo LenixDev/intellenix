@@ -39,13 +39,14 @@ const composeId = () => {
 	const $ = new Date()
 	return `${$.getFullYear()}-${String($.getMonth() + 1).padStart(2, '0')}-${String($.getDate()).padStart(2, '0')} ${String($.getHours()).padStart(2, '0')}:${String($.getMinutes()).padStart(2, '0')}:${String($.getSeconds()).padStart(2, '0')}.${String($.getMilliseconds()).padStart(3, '0')}`
 }
-const calculatePercentage = (value: number | string, limit: number | string, fallback: number | string = 0) => {
-  const v = Number(value)
-  const l = Number(limit)
+const getConsumption = (value: number | string, limit: number | string, fallback: number | string = 0) => {
+  const val = Number(value)
+  const lim = Number(limit)
   
-  if (Number.isNaN(v)) return Number(fallback)
-  
-  const ratio = l === 0 ? 0 : v / l
+  if (Number.isNaN(val)) return Number(fallback)
+	if (val === 0) return 0
+	
+  const ratio = lim === 0 ? 0 : val / lim
   return Number(Number((100 - ratio * 100).toFixed(2)))
 }
 
@@ -297,9 +298,9 @@ export default function Page() {
 							{quotaDisplayed && <>
 								<Hover
 									placement='bottom-end'
-									content={() => <Text color='$color4'>{t('requests_consumed')} ({calculatePercentage(rpd, r_limits, 'ERR')}%)</Text>}>
+									content={() => <Text color='$color4'>{t('requests_consumed')} ({getConsumption(rpd, r_limits, 'ERR')}%)</Text>}>
 									<Progress
-										value={calculatePercentage(rpd, r_limits, 0)}
+										value={getConsumption(rpd, r_limits, 0)}
 										bg='$color4'
 										minW={0}
 										maxW='$2'
@@ -309,9 +310,9 @@ export default function Page() {
 								</Hover>
 								<Hover
 									placement='bottom-start'
-									content={() => <Text color='$color4'>{t('tokens_consumed')} ({calculatePercentage(tpm, t_limits, 'ERR')}%)</Text>}>
+									content={() => <Text color='$color4'>{t('tokens_consumed')} ({getConsumption(tpm, t_limits, 'ERR')}%)</Text>}>
 									<Progress
-										value={calculatePercentage(tpm, t_limits, 0)}
+										value={getConsumption(tpm, t_limits, 0)}
 										bg='$color4'
 										minW={0}
 										maxW='$2'
