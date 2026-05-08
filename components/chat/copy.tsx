@@ -1,8 +1,8 @@
 import { Copy as CopyIcon } from "@tamagui/lucide-icons-2"
-import { Button } from "tamagui"
+import { Button, ButtonProps } from "tamagui"
 import * as Clipboard from 'expo-clipboard'
 
-export const Copy = ({ text }: { text: string }) => <Button
+export const Copy = ({ text, ...props }: { text: string } & Omit<ButtonProps, 'text'>) =>	<Button
 	chromeless
 	circular
 	icon={CopyIcon}
@@ -11,4 +11,5 @@ export const Copy = ({ text }: { text: string }) => <Button
 		Clipboard.setStringAsync(text)
 		e.stopPropagation()
 	}}
+	{...props}
 />

@@ -35,62 +35,74 @@ export const Conversation = ({
 						items='flex-end'
 						gap='$4'
 						mb='$5'
+						bg={shown[$.date] || hover[$.date] ? '$color001' : undefined}
+						rounded={shown[$.date] || hover[$.date] ? '$2' : undefined}
 						onClick={() => setShown({ [$.date]: !shown[$.date] })}
 						onMouseEnter={() => setHover({ [$.date]: true })}
 						onMouseLeave={() => setHover({ [$.date]: false })}>
 						<View flexDirection='row' items='center' gap='$3'>
-							{hover[$.date] && <>
-								<Button
-									chromeless
-									circular
-									icon={Pencil}
-									size='$2'
-									onPress={e => {
-										toast.info(t('not_yet'))
-										e.stopPropagation()
-									}}
-								/>
-								<Copy text={$.content} />
-							</>}
+							<Button
+								opacity={hover[$.date] ? 1 : 0}
+								chromeless
+								circular
+								icon={Pencil}
+								size='$2'
+								onPress={event => {
+									toast.info(t('not_yet'))
+									event.stopPropagation()
+								}}
+							/>
+							<Copy text={$.content} opacity={hover[$.date] ? 1 : 0} />
 							<Text
 								py='$2'
 								px='$3'
 								maxW='100%'
 								color='$colorFocus'
-								bg='$color01'
-								rounded='$5'>
+								bg='$color1'
+								rounded='$5'
+								onPress={event => event.stopPropagation()}>
 								{$.content}
 							</Text>
 						</View>
-						{shown[$.date] && <View gap={0} items='flex-end'>
+						<View gap={0} items='flex-end' opacity={shown[$.date] ? 1 : 0}>
 							<Text color='$color04' fontSize='$1'>{$.date}</Text>
 							<Text color='$color04' fontStyle='italic' fontSize='$1'>
 								{t('tokens_used')} {($ as any).completion_tokens}
 							</Text>
-						</View>}
+						</View>
 					</View>
 				); return (
 					<View
 						key={$.date}
 						gap='$4'
 						mb='$10'
+						bg={shown[$.date] || hover[$.date] ? '$color001' : undefined}
 						onClick={() => setShown({ [$.date]: !shown[$.date] })}
 						onMouseEnter={() => setHover({ [$.date]: true })}
 						onMouseLeave={() => setHover({ [$.date]: false })}>
-						<View flexDirection='row' gap='$3'>
-							<Text maxW='90%' self='flex-start' color='$color'>{$.content}</Text>
-							{hover[$.date] && <Copy text={$.content} />}
+						<View
+							flexDirection='row'
+							gap='$3'
+							rounded={shown[$.date] || hover[$.date] ? '$2' : undefined}
+						>
+							<Text
+								bg='$background'
+								maxW='90%'
+								self='flex-start'
+								color='$color'
+								onPress={event => event.stopPropagation()}>
+								{$.content}
+							</Text>
+							<Copy text={$.content} opacity={hover[$.date] ? 1 : 0} />
 						</View>
-						{shown[$.date] && (
-							<View gap={0}>
-								<Text color='$color04' fontSize='$1'>{$.date}</Text>
-								<Text color='$color04' fontStyle='italic' fontSize='$1'>
-									{t('took')} {$.usage?.queue_time?.toFixed(2)}
-									{t('s')} | {t('tokens_used')} {$.usage?.completion_tokens} |{' '}
-									{t('service_tier')} {$.service_tier}
-								</Text>
-							</View>
-						)}
+						<View gap={0} opacity={shown[$.date] ? 1 : 0}>
+							<Text color='$color04' fontSize='$1'>{$.date}</Text>
+							<Text color='$color04' fontStyle='italic' fontSize='$1'>
+								{t('took')} {$.usage?.queue_time?.toFixed(2)}
+								{t('s')} | {t('tokens_used')} {$.usage?.completion_tokens} |{' '}
+								{t('service_tier')} {$.service_tier}
+							</Text>
+						</View>
 					</View>
 				)
 			})}
