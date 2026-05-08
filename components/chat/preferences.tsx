@@ -127,6 +127,98 @@ export const Preferences = ({
 		[items]
 	)
 
+	const handleKey = async () => {
+		setLoading(prev => ({ ...prev, key: true }))
+		if (Protected) {
+			const { error } = await supabase.functions.invoke('key', {
+			body: {
+				type: 'update',
+				key: stateKey,
+				id: id!
+			} satisfies SupaKeyArgs})
+			if (error instanceof Error) {
+				toast.error(t('err'), {
+					description: error.message
+				})
+				setLoading(prev => ({ ...prev, key: false }))
+				return
+			}
+			setLoading(prev => ({ ...prev, key: false }))
+			return
+		}
+		await prefs.setKey(stateKey, 'key')
+		toast.success(t('api_success'))
+		setStateKey('')
+		setKey(stateKey)
+		setLoading(prev => ({ ...prev, key: false }))
+	}
+
+	const handlePublic = async () => {
+		setLoading(prev => ({ ...prev, public: true }))
+		const { error, data } = await supabase.functions.invoke<SupaPublic>('key', {
+			body: {
+				type: 'public',
+				id
+			} satisfies SupaKeyArgs
+		})
+		if (error instanceof Error || !data) {
+			toast.error(t('err'), {
+				description: error.message
+			})
+			setLoading(prev => ({ ...prev, public: false }))
+			return
+		}
+
+		if (!Protected) {
+			await prefs.setKey(data, 'key')
+			setKey(data)
+		}
+		setLoading(prev => ({ ...prev, public: false }))
+	}
+
+	const handleProtection = async (bool: boolean) => {
+		if (typeof bool !== 'boolean') return
+		setLoading(prev => ({ ...prev, protection: true }))
+
+		const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
+			body: Protected ? {
+				type: 'get',
+				id: id!,
+			} satisfies SupaKeyArgs : {
+				type: 'protect',
+				key,
+			} satisfies SupaKeyArgs
+		})
+		if (error instanceof Error || !data) {
+			toast.error(t('err'), {
+				description: error.message
+			})
+			setLoading(prev => ({ ...prev, protection: false }))
+			return
+		}
+		if (typeof data !== 'string' && 'error' in data) {
+			toast.error(data.error)
+			setLoading(prev => ({ ...prev, protection: false }))
+			return
+		}
+
+		await prefs.destroy(Protected ? 'id' : 'key')
+		await prefs.setKey(data, Protected ? 'key' : 'id')
+		setLoading(prev => ({ ...prev, protection: false }))
+		setProtected(Protected ? undefined : data)
+		!Protected && setId(data)
+	}
+
+	const handleQuota = async (bool: boolean) => {
+		if (typeof bool !== 'boolean') return
+		
+		setLoading(prev => ({ ...prev, quota: true }))
+		bool ? await prefs.setKey('1', 'quota') : await prefs.destroy('quota')
+
+		setLoading(prev => ({ ...prev, quota: false }))
+		setQuotaDisplayed(bool)
+	}
+
 	return (
 		<>
 			<View gap='$4'>
@@ -142,57 +234,12 @@ export const Preferences = ({
 				</View>
 				<Button
 					disabled={stateKey === '' || loading.key}
-					onPress={async () => {
-						setLoading(prev => ({ ...prev, key: true }))
-						if (Protected) {
-							const { error } = await supabase.functions.invoke('key', {
-							body: {
-								type: 'update',
-								key: stateKey,
-								id: id!
-							} satisfies SupaKeyArgs})
-							if (error instanceof Error) {
-								toast.error(t('err'), {
-									description: error.message
-								})
-								setLoading(prev => ({ ...prev, key: false }))
-								return
-							}
-							setLoading(prev => ({ ...prev, key: false }))
-							return
-						}
-						await prefs.setKey(stateKey, 'key')
-						toast.success(t('api_success'))
-						setStateKey('')
-						setKey(stateKey)
-						setLoading(prev => ({ ...prev, key: false }))
-					}}>
+					onPress={handleKey}>
 					{loading.key ? <Spinner /> : t('save')}
 				</Button>
 				<Button
 					disabled={loading.public}
-					onPress={async () => {
-						setLoading(prev => ({ ...prev, public: true }))
-						const { error, data } = await supabase.functions.invoke<SupaPublic>('key', {
-							body: {
-								type: 'public',
-								id
-							} satisfies SupaKeyArgs
-						})
-						if (error instanceof Error || !data) {
-							toast.error(t('err'), {
-								description: error.message
-							})
-							setLoading(prev => ({ ...prev, public: false }))
-							return
-						}
-
-						if (!Protected) {
-							await prefs.setKey(data, 'key')
-							setKey(data)
-						}
-						setLoading(prev => ({ ...prev, public: false }))
-					}}
+					onPress={handlePublic}
 				>{loading.public ? <Spinner /> : t('public_key')}</Button>
 			</View>
 			<YStack>
@@ -201,39 +248,8 @@ export const Preferences = ({
 						disabled={loading.protection}
 						checked={!!Protected || loading.protection}
 						id='protection'
-						onCheckedChange={async bool => {
-						if (typeof bool !== 'boolean') return
-						setLoading(prev => ({ ...prev, protection: true }))
-
-						const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
-							body: Protected ? {
-								type: 'get',
-								id: id!,
-							} satisfies SupaKeyArgs : {
-								type: 'protect',
-								key,
-							} satisfies SupaKeyArgs
-						})
-						if (error instanceof Error || !data) {
-							toast.error(t('err'), {
-								description: error.message
-							})
-							setLoading(prev => ({ ...prev, protection: false }))
-							return
-						}
-						if (typeof data !== 'string' && 'error' in data) {
-							toast.error(data.error)
-							setLoading(prev => ({ ...prev, protection: false }))
-							return
-						}
-
-						await prefs.destroy(Protected ? 'id' : 'key')
-						await prefs.setKey(data, Protected ? 'key' : 'id')
-						setLoading(prev => ({ ...prev, protection: false }))
-						setProtected(Protected ? undefined : data)
-						!Protected && setId(data)
-					}}>
-						<Checkbox.Indicator>
+						onCheckedChange={handleProtection}>
+						<Checkbox.Indicator>z
 							{loading.protection ? <Spinner /> : <Check />}
 						</Checkbox.Indicator>
 					</Checkbox>
@@ -241,12 +257,7 @@ export const Preferences = ({
 					<Over content={
 						<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
 					}>
-						<Button
-							chromeless
-							circular
-							size='$2'
-							icon={Info}
-						/>
+						<Button chromeless circular size='$2' icon={Info} />
 					</Over>
 				</XStack>
 				<XStack gap='$2' items='center' justify='flex-start'>
@@ -254,16 +265,7 @@ export const Preferences = ({
 						disabled={loading.quota}
 						checked={quotaDisplayed || loading.quota}
 						id='quota'
-						onCheckedChange={async bool => {
-						if (typeof bool !== 'boolean') return
-						
-						setLoading(prev => ({ ...prev, quota: true }))
-						bool ? await prefs.setKey('1', 'quota') : await prefs.destroy('quota')
-
-						setLoading(prev => ({ ...prev, quota: false }))
-						setQuotaDisplayed(bool)
-
-					}}>
+						onCheckedChange={handleQuota}>
 						<Checkbox.Indicator>
 							{loading.quota ? <Spinner /> : <Check />}
 						</Checkbox.Indicator>
@@ -272,12 +274,7 @@ export const Preferences = ({
 					<Over content={
 						<Text>{t('quota_details')}</Text>
 					}>
-						<Button
-							chromeless
-							circular
-							size='$2'
-							icon={Info}
-						/>
+						<Button chromeless circular size='$2' icon={Info} />
 					</Over>
 				</XStack>
 			</YStack>
