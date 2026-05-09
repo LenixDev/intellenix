@@ -33,7 +33,7 @@ export const Quota = ({
 			<Progress
 				value={getConsumption(rpd, r_limits)}
 				bg='$color4'
-				minW={0}
+				minW='$2'
 				maxW='$2'
 				size='$1'>
 				<Progress.Indicator transition='slowest' />
@@ -45,7 +45,7 @@ export const Quota = ({
 			<Progress
 				value={getConsumption(tpm, t_limits)}
 				bg='$color4'
-				minW={0}
+				minW='$2'
 				maxW='$2'
 				size='$1'>
 				<Progress.Indicator transition='slowest' />

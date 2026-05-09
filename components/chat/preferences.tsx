@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, Checkbox, Input, Label, Select, Sheet, Spinner, Text, View, XStack, YStack } from 'tamagui';
 import { Selection } from '../selection';
 import { useTranslation } from 'react-i18next';
-import { GetKey, Model, SupaKeyArgs, SupaList, SupaProtect, SupaPublic } from '@/types';
+import { Model, SupaKeyArgs, SupaList, SupaProtect, SupaPublic } from '@/types';
 import { prefs } from '@/storage';
 import { toast } from '@tamagui/toast/v2';
 import { i18n } from 'i18next';
