@@ -31,9 +31,19 @@ export const Conversation = ({
       const rect = sel!.getRangeAt(0).getBoundingClientRect()
       setSelection({ text, x: rect.left + rect.width / 2, y: rect.top + window.scrollY - 30 })
     }
+		const onScroll = () => setSelection(null)
+
     document.addEventListener('mouseup', handler)
-    return () => document.removeEventListener('mouseup', handler)
+		document.addEventListener('scroll', onScroll, true)
+
+    return () => {
+			document.removeEventListener('mouseup', handler)
+			document.removeEventListener('scroll', onScroll, true)
+		}
   }, [])
+
+	useEffect(() => {
+	}, [])
 
   return (
     <>

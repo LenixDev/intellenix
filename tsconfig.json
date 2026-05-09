@@ -6,6 +6,5 @@
 			"@/*": ["./*"]
 		},
 		"types": ["node"],
-		"module": "nodenext"
-	}
+w	}
 }

@@ -27,5 +27,8 @@
 		"locales"
 	],
 	"deno.enable": true,
-	"i18n-ally.keystyle": "nested"
+	"i18n-ally.keystyle": "nested",
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "TypeScriptTeam.native-preview"
+	}
 }
