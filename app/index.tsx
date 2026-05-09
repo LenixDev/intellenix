@@ -304,6 +304,7 @@ export default function Page() {
 									borderColor: '$color6',
 									bg: '$background08'
 								}}
+								mr='$1'
 							/>
 							<View
 								flexDirection='row'

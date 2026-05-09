@@ -39,7 +39,7 @@ export const Message = ({
 	useEffect(() => {
 		setTimeout(() => {
 			const el = document.querySelector('textarea') as HTMLTextAreaElement
-			if (el) narrowWidth.current = el.offsetWidth
+			if (el) narrowWidth.current = el.offsetWidth - 2
 		}, 100)
 	}, [quotaDisplayed])
 

@@ -35,6 +35,7 @@ export const Quota = ({
 				bg='$color4'
 				minW='$2'
 				maxW='$2'
+				ml='$1'
 				size='$1'>
 				<Progress.Indicator transition='slowest' />
 			</Progress>
