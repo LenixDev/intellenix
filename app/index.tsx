@@ -309,7 +309,7 @@ export default function Page() {
 							<View
 								flexDirection='row'
 								justify='flex-end'
-								gap='$2'
+								gap='$1'
 								items='center'
 							>
 								{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
