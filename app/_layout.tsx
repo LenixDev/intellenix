@@ -11,7 +11,7 @@ export default function App() {
 	const theme = useColorScheme()
 	return (
 		<TamaguiProvider config={config} defaultTheme={theme ?? 'light'}>
-			<Toaster />
+			<Toaster position='top-right' />
 			<Slot />
 			<SpeedInsights />
 			<Analytics />
