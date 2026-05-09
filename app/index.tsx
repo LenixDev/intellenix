@@ -282,7 +282,8 @@ export default function Page() {
 								apiKey: key,
 								isMac,
 								isMultiLine,
-								setIsMultiLine
+								setIsMultiLine,
+								quotaDisplayed
 							}}
 						/>
 						<View

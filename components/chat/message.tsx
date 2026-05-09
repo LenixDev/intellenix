@@ -13,6 +13,7 @@ export const Message = ({
   style,
 	isMultiLine,
   setIsMultiLine,
+	quotaDisplayed,
   ...props
 }: {
   message: string
@@ -23,6 +24,7 @@ export const Message = ({
   isMac: boolean
 	isMultiLine: boolean
   setIsMultiLine: (isMultiLine: boolean) => void
+	quotaDisplayed: boolean | undefined
 } & TextAreaProps & BaseStyleProps) => {
   const { t } = useTranslation()
   const narrowWidth = useRef<number>(0)
@@ -39,7 +41,7 @@ export const Message = ({
 			const el = document.querySelector('textarea') as HTMLTextAreaElement
 			if (el) narrowWidth.current = el.offsetWidth
 		}, 100)
-	}, [])
+	}, [quotaDisplayed])
 
   useEffect(() => {
     if (message !== '') return
@@ -61,7 +63,7 @@ export const Message = ({
 
 					const textWidth = Number(ctx.measureText(el.value).width.toFixed(0))
 					const overflows = textWidth > narrowWidth.current || el.value.includes('\n')
-					
+				
 					el.style.height = 'auto'
 					el.style.height = `${el.scrollHeight}px`
 					console.debug(textWidth, narrowWidth.current, overflows)
