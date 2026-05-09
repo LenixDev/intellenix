@@ -1,10 +1,12 @@
 import {
     Button,
     Image,
+    useTheme,
+    useThemeName,
     useWindowDimensions,
     View
 } from 'tamagui';
-import { Plus, SlidersHorizontal } from '@tamagui/lucide-icons-2';
+import { AudioLines, Plus, SlidersHorizontal } from '@tamagui/lucide-icons-2';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Groq from 'groq-sdk';
 import { raise } from 'lenix';
@@ -53,9 +55,10 @@ export default function Page() {
 
 	const shouldScroll = useRef(false)
 
+	const { t } = useTranslation()
+	const theme = useThemeName()
 	const { width, height } = useWindowDimensions()
 	const isPortrait = height > width
-	const { t } = useTranslation()
 
 	const groq = useMemo(
 		() => key ? new Groq({ apiKey: key, dangerouslyAllowBrowser: true }) : null,
@@ -314,7 +317,7 @@ export default function Page() {
 			</View>
 			{conversations.length === 0 && <Image
 				height='$4'
-				src='https://console.groq.com/powered-by-groq-dark.svg'
+				src={`https://console.groq.com/powered-by-groq-${theme}.svg`}
 				alt='Powered by Groq for fast inference.'
 			/>}
 			<Preferences
