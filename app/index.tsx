@@ -310,6 +310,17 @@ export default function Page() {
 									r_tPM: false /* TODO: block when quota exceeded */
 								}}
 							/>
+							<Button
+								chromeless
+								circular
+								size='$3'
+								icon={AudioLines}
+								onPress={() => toast.info(t('not_yet'))}
+								hoverStyle={{
+									borderColor: '$color6',
+									bg: '$background08'
+								}}
+							/>
 						</View>
 					</View>
 				</View>
