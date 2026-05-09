@@ -49,6 +49,7 @@ export default function Page() {
 	const [aiThinking, setAiThinking] = useState(false)
 	const [keyDialog, setKeyDialog] = useState(false)
 	const [sheetOpen, setSheetOpen] = useState(false)
+	const [isMultiLine, setIsMultiLine] = useState(false)
 	const [quotaDisplayed, setQuotaDisplayed] = useState<boolean>()
 	const [autoComplete, setAutoComplete] = useState<boolean>()
 	const [autoCorrect, setAutoCorrect] = useState<boolean>()
@@ -232,13 +233,11 @@ export default function Page() {
 		}
 	}
 
-	const isMultiLine = false
-
 	return (
 		<View items='center' width='100%' height='100%' pb='$5'>
 			<View width='100%' items='flex-end' px='$5'>
 				<Button
-					size='$2'
+					size='$3'
 					theme='accent'
 					onPress={() => toast.error(t('not_yet'))}>
 					{t('continue_google')}
@@ -282,6 +281,7 @@ export default function Page() {
 								aiThinking,
 								apiKey: key,
 								isMac,
+								setIsMultiLine
 							}}
 						/>
 						<View

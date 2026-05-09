@@ -1,5 +1,5 @@
 import { BaseStyleProps } from '@tamagui/core';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TextArea, TextAreaProps, View } from 'tamagui';
 
@@ -11,6 +11,7 @@ export const Message = ({
 	apiKey,
 	isMac,
 	style,
+	setIsMultiLine,
 	...props
 }: {
 	message: string
@@ -19,8 +20,10 @@ export const Message = ({
 	aiThinking: boolean
 	apiKey: string
 	isMac: boolean
+	setIsMultiLine: (isMultiLine: boolean) => void
 } & TextAreaProps & BaseStyleProps) => {
 	const { t } = useTranslation()
+	const [previousWidth, setPreviousWidth] = useState<number>()
 
 	useEffect(() => {
 		if (message !== '') return
@@ -35,8 +38,24 @@ export const Message = ({
 		<View flexDirection='row' {...{ style }}>
 			<TextArea
 				onInput={event => {
-					event.currentTarget.style.height = 'auto'
-					event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`
+					const element = event.currentTarget
+					const ctx = document.createElement('canvas').getContext('2d')
+
+					element.style.height = 'auto'
+					element.style.height = `${element.scrollHeight}px`
+					ctx.font = getComputedStyle(element).font
+
+					const currentElementWidth = element.scrollWidth
+					const currentTextWidth = ctx.measureText(element.value).width
+
+					if (!previousWidth) setPreviousWidth(currentElementWidth)
+					if (currentTextWidth > currentElementWidth && currentTextWidth > (previousWidth ?? currentElementWidth) || message.includes('\n')) {
+						setIsMultiLine(true)
+						setPreviousWidth(currentElementWidth)
+					} else if (currentTextWidth < previousWidth) {
+						setIsMultiLine(false)
+						setPreviousWidth(currentElementWidth)
+					}
 				}}
 				onBlur={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
 				placeholder={t('chat_intell')}
@@ -55,23 +74,20 @@ export const Message = ({
 					scrollbarWidth: 'none',
 					resize: 'none',
 					maxHeight: '33vh',
-					borderRadius: '0.5rem',
 					fontSize: 16
 				}}
 				focusStyle={{
 					borderColor: 'transparent',
 					outlineWidth: 0
 				}}
-				outlineWidth={0}
-				borderWidth={1}
 				borderColor='transparent'
 				hoverStyle={{
-					borderColor: '$color5'
+					borderColor: 'transparent'
 				}}
 				rows={1}
 				rounded={0}
 				py={0}
-				px='$2'
+				px={0}
 				flex={1}
 				bg='transparent'
 			/>
