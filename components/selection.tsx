@@ -29,7 +29,7 @@ export const Selection = <T extends string>({
 		renderValue={renderer}>
 		<Select.Trigger
 			iconAfter={ChevronDown}
-			borderRadius='$4'
+			borderRadius='$3'
 			width='auto'
 			size='$3'
 			{...props}>
