@@ -281,6 +281,7 @@ export default function Page() {
 								aiThinking,
 								apiKey: key,
 								isMac,
+								isMultiLine,
 								setIsMultiLine
 							}}
 						/>
