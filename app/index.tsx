@@ -1,5 +1,6 @@
 import {
     Button,
+    Image,
     useWindowDimensions,
     View
 } from 'tamagui';
@@ -229,15 +230,22 @@ export default function Page() {
 	}
 
 	return (
-		<View items='center' width='100%' height='100%'>
+		<View items='center' width='100%' height='100%' pb='$5'>
+			<View width='100%' items='flex-end' px='$5'>
+				<Button
+					theme='accent'
+					onPress={() => toast.error(t('not_yet'))}>
+					{t('continue_google')}
+				</Button>
+			</View>
 			<View
 				width={isPortrait ? '95%' : '55%'}
-				height='100%'
 				items='center'
-				justify='flex-end'
+				flex={1}
+				justify={conversations.length === 0 ? 'center' : 'flex-end'}
 				pb='$5'
 				gap='$2'>
-				<Conversation {...{ conversations, shouldScroll, isPortrait }} />
+				{conversations.length > 0 && <Conversation {...{ conversations, shouldScroll, isPortrait }} />}
 				<View
 					width='100%'
 					bg='$color3'
@@ -304,6 +312,11 @@ export default function Page() {
 				</View>
 				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
 			</View>
+			{conversations.length === 0 && <Image
+				height='$4'
+				src='https://console.groq.com/powered-by-groq-dark.svg'
+				alt='Powered by Groq for fast inference.'
+			/>}
 			<Preferences
 				{...{
 					groq,
