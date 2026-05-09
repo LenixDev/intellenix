@@ -1,45 +1,60 @@
-import { useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TextArea, TextAreaProps, View } from 'tamagui';
+import { TamaguiElement, TextArea, TextAreaProps, View } from 'tamagui';
 
-export const Message = ({
-	content,
-	setContent,
-	send,
-	aiThinking,
-	apiKey,
-	isMac,
-	autoComplete,
-	autoCorrect,
-	isMultiline,
-	setIsMultiline,
-	...props
-}: {
-	content: string
-	setContent: (content: string) => void
+export const Message = forwardRef<TamaguiElement, {
+	message: string
+	setMessage: (message: string) => void
 	send: () => void
 	aiThinking: boolean
 	apiKey: string
 	isMac: boolean
-	autoComplete: boolean | undefined
-	autoCorrect: boolean | undefined
 	isMultiline: boolean
 	setIsMultiline: (state: boolean) => void
-} & TextAreaProps) => {
+} & TextAreaProps>(({
+	message,
+	setMessage,
+	send,
+	aiThinking,
+	apiKey,
+	isMac,
+	isMultiline,
+	setIsMultiline,
+	...props
+}, ref) => {
 	const { t } = useTranslation()
 
 	useEffect(() => {
-		if (content !== '') return
+		if (message !== '') return
+		setIsMultiline(false)
 		const element = document.querySelector('textarea')
 		if (!element) return
 		requestAnimationFrame(() => {
 			element.style.height = 'auto'
 		})
-	}, [content])
+	}, [message])
 
 	return (
 		<View flexDirection='row' {...(isMultiline ? {} : { flex: 1 } )} >
 			<TextArea
+				ref={ref}
+				onInput={event => {
+					event.currentTarget.style.height = 'auto'
+					event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`
+					setIsMultiline(event.currentTarget.scrollHeight > 40 || (event.currentTarget as unknown as HTMLTextAreaElement).value.includes('\n'))
+				}}
+				onBlur={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+				placeholder={t('chat_intell')}
+				value={message}
+				onChangeText={setMessage}
+				readOnly={!apiKey}
+				onKeyDown={event => {
+					if (event.key !== 'Enter') return
+					if (isMac ? !event.metaKey : !event.ctrlKey) return
+					if (aiThinking) return
+					send()
+				}}
+				{...props}
 				mx='$2'
 				style={{
 					scrollbarWidth: 'none',
@@ -48,16 +63,10 @@ export const Message = ({
 					borderRadius: '0.5rem',
 					fontSize: 16
 				}}
-				onInput={event => {
-					event.currentTarget.style.height = 'auto'
-					event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`
-					setIsMultiline(event.currentTarget.scrollHeight > 40)
-				}}
 				focusStyle={{
 					borderColor: 'transparent',
 					outlineWidth: 0
 				}}
-				onBlur={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
 				outlineWidth={0}
 				borderWidth={1}
 				borderColor='transparent'
@@ -70,20 +79,7 @@ export const Message = ({
 				px='$2'
 				flex={1}
 				bg='transparent'
-				autoComplete={autoComplete ? 'on' : 'off'}
-				autoCorrect={autoCorrect ? 'on' : 'off'}
-				placeholder={t('chat_intell')}
-				value={content}
-				onChangeText={setContent}
-				readOnly={!apiKey}
-				onKeyDown={event => {
-					if (event.key !== 'Enter') return
-					if (isMac ? !event.metaKey : !event.ctrlKey) return
-					if (aiThinking) return
-					send()
-				}}
-				{...props}
 			/>
 		</View>
 	)
-}
+})

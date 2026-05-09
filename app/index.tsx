@@ -1,6 +1,7 @@
 import {
     Button,
     Image,
+    TamaguiElement,
     useTheme,
     useThemeName,
     useWindowDimensions,
@@ -55,8 +56,8 @@ export default function Page() {
 	const [isMultiline, setIsMultiline] = useState(message.includes('\n'))
 
 	const shouldScroll = useRef(false)
-	const refA = useRef<HTMLTextAreaElement>(null)
-	const refB = useRef<HTMLTextAreaElement>(null)
+	const refA = useRef<TamaguiElement>(null)
+	const refB = useRef<TamaguiElement>(null)
 
 	const { t } = useTranslation()
 	const theme = useThemeName()
@@ -69,7 +70,7 @@ export default function Page() {
 	)
 
 	useEffect(() => {
-		if (conversations.length === 0) return
+		if (conversations.length === 0 && message === '') return
 
 		const handler = (event: BeforeUnloadEvent) => event.preventDefault()
 
@@ -269,15 +270,15 @@ export default function Page() {
 				>
 					{isMultiline && <Message
 						ref={refA}
+						autoComplete={autoComplete ? 'on' : 'off'}
+						autoCorrect={autoCorrect ? 'on' : 'off'}
 						{...{
-							content: message,
-							setContent: setMessage,
+							message,
+							setMessage,
 							send,
 							aiThinking,
 							apiKey: key,
 							isMac,
-							autoComplete,
-							autoCorrect,
 							isMultiline,
 							setIsMultiline
 						}}
@@ -299,16 +300,14 @@ export default function Page() {
 							}}
 						/>
 						{!isMultiline && <Message
-								ref={refB}
-								{...{
-								content: message,
-								setContent: setMessage,
+							ref={refB}
+							{...{
+								message,
+								setMessage,
 								send,
 								aiThinking,
 								apiKey: key,
 								isMac,
-								autoComplete,
-								autoCorrect,
 								isMultiline,
 								setIsMultiline
 							}}
