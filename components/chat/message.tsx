@@ -2,31 +2,26 @@ import { forwardRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TamaguiElement, TextArea, TextAreaProps, View } from 'tamagui';
 
-export const Message = forwardRef<TamaguiElement, {
-	message: string
-	setMessage: (message: string) => void
-	send: () => void
-	aiThinking: boolean
-	apiKey: string
-	isMac: boolean
-	isMultiline: boolean
-	setIsMultiline: (state: boolean) => void
-} & TextAreaProps>(({
+export const Message = ({
 	message,
 	setMessage,
 	send,
 	aiThinking,
 	apiKey,
 	isMac,
-	isMultiline,
-	setIsMultiline,
 	...props
-}, ref) => {
+}: {
+	message: string
+	setMessage: (message: string) => void
+	send: () => void
+	aiThinking: boolean
+	apiKey: string
+	isMac: boolean
+} & TextAreaProps) => {
 	const { t } = useTranslation()
 
 	useEffect(() => {
 		if (message !== '') return
-		setIsMultiline(false)
 		const element = document.querySelector('textarea')
 		if (!element) return
 		requestAnimationFrame(() => {
@@ -35,13 +30,11 @@ export const Message = forwardRef<TamaguiElement, {
 	}, [message])
 
 	return (
-		<View flexDirection='row' {...(isMultiline ? {} : { flex: 1 } )} >
+		<View flexDirection='row'>
 			<TextArea
-				ref={ref}
 				onInput={event => {
 					event.currentTarget.style.height = 'auto'
 					event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`
-					setIsMultiline(event.currentTarget.scrollHeight > 40 || (event.currentTarget as unknown as HTMLTextAreaElement).value.includes('\n'))
 				}}
 				onBlur={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
 				placeholder={t('chat_intell')}
@@ -82,4 +75,4 @@ export const Message = forwardRef<TamaguiElement, {
 			/>
 		</View>
 	)
-})
+}

@@ -1,38 +1,37 @@
-import {
-    Button,
-    Image,
-    TamaguiElement,
-    useTheme,
-    useThemeName,
-    useWindowDimensions,
-    View
-} from 'tamagui';
+import { Api } from '@/components/chat/api';
+import { Conversation } from '@/components/chat/conversation';
+import { Kdb } from '@/components/chat/kdb';
+import { Message } from '@/components/chat/message';
+import { Preferences } from '@/components/chat/preferences';
+import { Quota } from '@/components/chat/quota';
+import { Send } from '@/components/chat/send';
+import { Tasks } from '@/components/chat/tasks';
+import { defaultModel } from '@/constants';
+import { prefs } from '@/storage';
+import { supabase } from '@/supabase';
+import type {
+	GroqFn,
+	GroqParams,
+	Conversation as IConversation,
+	KeysQuota,
+	Model,
+	SupaKeyArgs,
+	SupaProtect
+} from '@/types';
 import { AudioLines, Plus, SlidersHorizontal } from '@tamagui/lucide-icons-2';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { toast } from '@tamagui/toast/v2';
 import Groq from 'groq-sdk';
 import { raise } from 'lenix';
-import { toast } from '@tamagui/toast/v2';
-import { prefs } from '@/storage';
-import { Conversation } from '@/components/chat/conversation';
-import { Api } from '@/components/chat/api';
-import { Message } from '@/components/chat/message';
-import { Send } from '@/components/chat/send';
-import { Kdb } from '@/components/chat/kdb';
-import { Preferences } from '@/components/chat/preferences';
-import { defaultModel } from '@/constants';
-import { Tasks } from '@/components/chat/tasks';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type {
-    Conversation as IConversation,
-    KeysQuota,
-    Model,
-    GroqFn,
-    GroqParams,
-    SupaProtect,
-    SupaKeyArgs
-} from '@/types';
-import { supabase } from '@/supabase';
-import { Quota } from '@/components/chat/quota';
+import {
+	Button,
+	Image,
+	TamaguiElement,
+	useThemeName,
+	useWindowDimensions,
+	View
+} from 'tamagui';
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -53,11 +52,8 @@ export default function Page() {
 	const [quotaDisplayed, setQuotaDisplayed] = useState<boolean>()
 	const [autoComplete, setAutoComplete] = useState<boolean>()
 	const [autoCorrect, setAutoCorrect] = useState<boolean>()
-	const [isMultiline, setIsMultiline] = useState(message.includes('\n'))
 
 	const shouldScroll = useRef(false)
-	const refA = useRef<TamaguiElement>(null)
-	const refB = useRef<TamaguiElement>(null)
 
 	const { t } = useTranslation()
 	const theme = useThemeName()
@@ -124,11 +120,6 @@ export default function Page() {
 			if (autoCorrect === '1') setAutoCorrect(true)
 		})()
 	}, [])
-
-	useEffect(() => {
-		if (isMultiline) refA.current?.focus()
-		else refB.current?.focus()
-	}, [isMultiline])
 
 	if (key.length === 0 || keyDialog) return <Api
 		{...{
@@ -245,6 +236,7 @@ export default function Page() {
 		<View items='center' width='100%' height='100%' pb='$5'>
 			<View width='100%' items='flex-end' px='$5'>
 				<Button
+					size='$2'
 					theme='accent'
 					onPress={() => toast.error(t('not_yet'))}>
 					{t('continue_google')}
@@ -264,12 +256,12 @@ export default function Page() {
 					rounded='$8'
 					px='$2'
 					py='$2'
+					pt='$3'
 					justify='center'
 					gap='$2'
 					border='1px solid $color6'
 				>
-					{isMultiline && <Message
-						ref={refA}
+					<Message
 						autoComplete={autoComplete ? 'on' : 'off'}
 						autoCorrect={autoCorrect ? 'on' : 'off'}
 						{...{
@@ -279,13 +271,11 @@ export default function Page() {
 							aiThinking,
 							apiKey: key,
 							isMac,
-							isMultiline,
-							setIsMultiline
 						}}
-					/>}
+					/>
 					<View
 						flexDirection='row'
-						justify={isMultiline ? 'space-between' : 'center'}
+						justify='space-between'
 						items='center'>
 						<Button
 							chromeless
@@ -299,19 +289,6 @@ export default function Page() {
 								bg: '$background08'
 							}}
 						/>
-						{!isMultiline && <Message
-							ref={refB}
-							{...{
-								message,
-								setMessage,
-								send,
-								aiThinking,
-								apiKey: key,
-								isMac,
-								isMultiline,
-								setIsMultiline
-							}}
-						/>}
 						<View
 							flexDirection='row'
 							justify='flex-end'
