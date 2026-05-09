@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next'
-import { TamaguiElement, TextArea, View } from 'tamagui'
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { TextArea, TextAreaProps, View } from 'tamagui';
 
 export const Message = ({
 	content,
@@ -10,7 +10,10 @@ export const Message = ({
 	apiKey,
 	isMac,
 	autoComplete,
-	autoCorrect
+	autoCorrect,
+	isMultiline,
+	setIsMultiline,
+	...props
 }: {
 	content: string
 	setContent: (content: string) => void
@@ -20,7 +23,9 @@ export const Message = ({
 	isMac: boolean
 	autoComplete: boolean | undefined
 	autoCorrect: boolean | undefined
-}) => {
+	isMultiline: boolean
+	setIsMultiline: (state: boolean) => void
+} & TextAreaProps) => {
 	const { t } = useTranslation()
 
 	useEffect(() => {
@@ -33,7 +38,7 @@ export const Message = ({
 	}, [content])
 
 	return (
-		<View flexDirection='row'>
+		<View flexDirection='row' {...(isMultiline ? {} : { flex: 1 } )} >
 			<TextArea
 				mx='$2'
 				style={{
@@ -46,6 +51,7 @@ export const Message = ({
 				onInput={event => {
 					event.currentTarget.style.height = 'auto'
 					event.currentTarget.style.height = `${event.currentTarget.scrollHeight}px`
+					setIsMultiline(event.currentTarget.scrollHeight > 40)
 				}}
 				focusStyle={{
 					borderColor: 'transparent',
@@ -76,6 +82,7 @@ export const Message = ({
 					if (aiThinking) return
 					send()
 				}}
+				{...props}
 			/>
 		</View>
 	)

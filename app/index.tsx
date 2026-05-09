@@ -52,8 +52,11 @@ export default function Page() {
 	const [quotaDisplayed, setQuotaDisplayed] = useState<boolean>()
 	const [autoComplete, setAutoComplete] = useState<boolean>()
 	const [autoCorrect, setAutoCorrect] = useState<boolean>()
+	const [isMultiline, setIsMultiline] = useState(message.includes('\n'))
 
 	const shouldScroll = useRef(false)
+	const refA = useRef<HTMLTextAreaElement>(null)
+	const refB = useRef<HTMLTextAreaElement>(null)
 
 	const { t } = useTranslation()
 	const theme = useThemeName()
@@ -120,6 +123,11 @@ export default function Page() {
 			if (autoCorrect === '1') setAutoCorrect(true)
 		})()
 	}, [])
+
+	useEffect(() => {
+		if (isMultiline) refA.current?.focus()
+		else refB.current?.focus()
+	}, [isMultiline])
 
 	if (key.length === 0 || keyDialog) return <Api
 		{...{
@@ -253,13 +261,14 @@ export default function Page() {
 					width='100%'
 					bg='$color3'
 					rounded='$8'
-					pt='$3'
 					px='$2'
-					pb='$2'
+					py='$2'
 					justify='center'
 					gap='$2'
-					border='1px solid $color6'>
-					<Message
+					border='1px solid $color6'
+				>
+					{isMultiline && <Message
+						ref={refA}
 						{...{
 							content: message,
 							setContent: setMessage,
@@ -268,10 +277,15 @@ export default function Page() {
 							apiKey: key,
 							isMac,
 							autoComplete,
-							autoCorrect
+							autoCorrect,
+							isMultiline,
+							setIsMultiline
 						}}
-					/>
-					<View flexDirection='row' justify='space-between'>
+					/>}
+					<View
+						flexDirection='row'
+						justify={isMultiline ? 'space-between' : 'center'}
+						items='center'>
 						<Button
 							chromeless
 							circular
@@ -284,6 +298,21 @@ export default function Page() {
 								bg: '$background08'
 							}}
 						/>
+						{!isMultiline && <Message
+								ref={refB}
+								{...{
+								content: message,
+								setContent: setMessage,
+								send,
+								aiThinking,
+								apiKey: key,
+								isMac,
+								autoComplete,
+								autoCorrect,
+								isMultiline,
+								setIsMultiline
+							}}
+						/>}
 						<View
 							flexDirection='row'
 							justify='flex-end'
