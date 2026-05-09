@@ -1,6 +1,7 @@
-import { forwardRef, useEffect } from 'react';
+import { BaseStyleProps } from '@tamagui/core';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TamaguiElement, TextArea, TextAreaProps, View } from 'tamagui';
+import { TextArea, TextAreaProps, View } from 'tamagui';
 
 export const Message = ({
 	message,
@@ -9,6 +10,7 @@ export const Message = ({
 	aiThinking,
 	apiKey,
 	isMac,
+	style,
 	...props
 }: {
 	message: string
@@ -17,7 +19,7 @@ export const Message = ({
 	aiThinking: boolean
 	apiKey: string
 	isMac: boolean
-} & TextAreaProps) => {
+} & TextAreaProps & BaseStyleProps) => {
 	const { t } = useTranslation()
 
 	useEffect(() => {
@@ -30,7 +32,7 @@ export const Message = ({
 	}, [message])
 
 	return (
-		<View flexDirection='row'>
+		<View flexDirection='row' {...{ style }}>
 			<TextArea
 				onInput={event => {
 					event.currentTarget.style.height = 'auto'

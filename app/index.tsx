@@ -232,6 +232,8 @@ export default function Page() {
 		}
 	}
 
+	const isMultiLine = false
+
 	return (
 		<View items='center' width='100%' height='100%' pb='$5'>
 			<View width='100%' items='flex-end' px='$5'>
@@ -256,76 +258,89 @@ export default function Page() {
 					rounded='$8'
 					px='$2'
 					py='$2'
-					pt='$3'
+					{...(isMultiLine ? { pt: '$3'} : {}) }
 					justify='center'
-					gap='$2'
 					border='1px solid $color6'
 				>
-					<Message
-						autoComplete={autoComplete ? 'on' : 'off'}
-						autoCorrect={autoCorrect ? 'on' : 'off'}
-						{...{
-							message,
-							setMessage,
-							send,
-							aiThinking,
-							apiKey: key,
-							isMac,
-						}}
-					/>
 					<View
-						flexDirection='row'
-						justify='space-between'
-						items='center'>
-						<Button
-							chromeless
-							circular
-							size='$3'
-							iconSize='$6'
-							icon={Plus}
-							onPress={() => toast.info(t('not_yet'))}
-							hoverStyle={{
-								borderColor: '$color6',
-								bg: '$background08'
+						flexDirection={isMultiLine ? 'column' : 'row'}
+						{...(isMultiLine ? {
+							gap: '$2'
+						} : {
+							justify: 'space-between',
+							items: 'center'
+						})}
+					>
+						<Message
+							autoComplete={autoComplete ? 'on' : 'off'}
+							autoCorrect={autoCorrect ? 'on' : 'off'}
+							style={{ flex: 1 }}
+							{...{
+								message,
+								setMessage,
+								send,
+								aiThinking,
+								apiKey: key,
+								isMac,
 							}}
 						/>
 						<View
 							flexDirection='row'
-							justify='flex-end'
-							gap='$2'
+							justify='space-between'
 							items='center'
+							{...(isMultiLine ? {} : { style: { display: 'contents' } }) }
 						>
-							{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
-							<Button
-								chromeless
-								size='$3'
-								icon={SlidersHorizontal}
-								onPress={() => setSheetOpen(true)}
-								hoverStyle={{
-									borderColor: '$color6',
-									bg: '$background08'
-								}}
-							/>
-							<Tasks />
-							<Send
-								{...{
-									content: message,
-									send,
-									aiThinking,
-									r_tPM: false /* TODO: block when quota exceeded */
-								}}
-							/>
 							<Button
 								chromeless
 								circular
 								size='$3'
-								icon={AudioLines}
+								iconSize='$6'
+								icon={Plus}
 								onPress={() => toast.info(t('not_yet'))}
+								style={{ order: -1 }}
 								hoverStyle={{
 									borderColor: '$color6',
 									bg: '$background08'
 								}}
 							/>
+							<View
+								flexDirection='row'
+								justify='flex-end'
+								gap='$2'
+								items='center'
+							>
+								{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
+								<Button
+									chromeless
+									size='$3'
+									icon={SlidersHorizontal}
+									onPress={() => setSheetOpen(true)}
+									hoverStyle={{
+										borderColor: '$color6',
+										bg: '$background08'
+									}}
+								/>
+								<Tasks />
+								<Send
+									{...{
+										content: message,
+										send,
+										aiThinking,
+										r_tPM: false /* TODO: block when quota exceeded */
+									}}
+								/>
+								<Button
+									chromeless
+									circular
+									size='$3'
+									icon={AudioLines}
+									onPress={() => toast.info(t('not_yet'))}
+									hoverStyle={{
+										borderColor: '$color6',
+										bg: '$background08'
+									}}
+								/>
+							</View>
 						</View>
 					</View>
 				</View>
