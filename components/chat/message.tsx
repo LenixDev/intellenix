@@ -64,8 +64,8 @@ export const Message = ({
 					
 					el.style.height = 'auto'
 					el.style.height = `${el.scrollHeight}px`
-					
-					setIsMultiLine(overflows) // state update last
+					console.debug(textWidth, narrowWidth.current, overflows)
+					setIsMultiLine(overflows)
 				}}
         onBlur={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         placeholder={t('chat_intell')}
@@ -77,9 +77,9 @@ export const Message = ({
           if (isMac ? !event.metaKey : !event.ctrlKey) return
           if (aiThinking) return
           send()
+					setIsMultiLine(false)
         }}
         {...props}
-        mx='$2'
         style={{
           scrollbarWidth: 'none',
           resize: 'none',
