@@ -253,6 +253,7 @@ export default function Page() {
 				<View
 					flexDirection={isPortrait ? 'column' : 'row'}
 					items='center'
+					gap='$1'
 				>
 					<View
 						width='100%'
