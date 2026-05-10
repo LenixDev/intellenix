@@ -252,7 +252,7 @@ export default function Page() {
 				gap='$2'>
 				{conversations.length > 0 && <Conversation {...{ conversations, shouldScroll, isPortrait }} />}
 				<View
-					flexDirection={isPortrait ? 'column' : 'row'}
+					flexDirection={'row'}
 					items='center'
 					width='100%'
 					gap='$1'
