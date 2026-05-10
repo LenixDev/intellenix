@@ -345,10 +345,14 @@ export default function Page() {
 					</View>
 				</View>
 				<View flexDirection='row' items='center' gap='$2'>
-					{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
-					<Separator vertical height={12} borderColor='$color02' />
-					{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
-					<Separator vertical height={12} borderColor='$color02' />
+					{!('ontouchstart' in window) && <>
+						<Kdb {...{ isMac }} />
+						<Separator vertical height={12} borderColor='$color02' />
+					</>}
+					{quotaDisplayed && <>
+						<Quota {...{ quota, apiKey: key, model }} />
+						<Separator vertical height={12} borderColor='$color02' />
+					</>}
 					<Button
 						chromeless
 						size='$3'

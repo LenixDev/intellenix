@@ -10,7 +10,7 @@ const TASK_KEYS = ['programming', 'health'] as const satisfies readonly Task[]
 
 export const Tasks = () => {
 	const { t } = useTranslation()
-	const [item, setItem] = useState<Task>(TASK_KEYS[0])
+	const [item, setItem] = useState<Task>(TASK_KEYS[1])
 
 	return (
 		<Selection
