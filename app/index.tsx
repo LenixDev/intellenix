@@ -251,101 +251,107 @@ export default function Page() {
 				gap='$2'>
 				{conversations.length > 0 && <Conversation {...{ conversations, shouldScroll, isPortrait }} />}
 				<View
-					width='100%'
-					bg='$color3'
-					rounded='$8'
-					px='$2'
-					py='$2'
-					{...(isMultiLine ? { pt: '$3'} : {}) }
-					justify='center'
-					border='1px solid $color6'
+					flexDirection='row'
+					items='center'
 				>
 					<View
-						flexDirection={isMultiLine ? 'column' : 'row'}
-						{...(isMultiLine ? {
-							gap: '$2'
-						} : {
-							justify: 'space-between',
-							items: 'center'
-						})}
+						width='100%'
+						bg='$color3'
+						rounded='$8'
+						px='$2'
+						py='$2'
+						{...(isMultiLine ? { pt: '$3'} : {}) }
+						justify='center'
+						border='1px solid $color6'
 					>
-						<Message
-							autoComplete={autoComplete ? 'on' : 'off'}
-							autoCorrect={autoCorrect ? 'on' : 'off'}
-							style={{ flex: 1 }}
-							{...{
-								message,
-								setMessage,
-								send,
-								aiThinking,
-								apiKey: key,
-								isMac,
-								isMultiLine,
-								setIsMultiLine,
-								quotaDisplayed
-							}}
-						/>
 						<View
-							flexDirection='row'
-							justify='space-between'
-							items='center'
-							{...(isMultiLine ? {} : { style: { display: 'contents' } }) }
+							flexDirection={isMultiLine ? 'column' : 'row'}
+							{...(isMultiLine ? {
+								gap: '$2'
+							} : {
+								justify: 'space-between',
+								items: 'center'
+							})}
 						>
-							<Button
-								chromeless
-								circular
-								size='$3'
-								iconSize='$6'
-								icon={Plus}
-								onPress={() => toast.info(t('not_yet'))}
-								style={{ order: -1 }}
-								hoverStyle={{
-									borderColor: '$color6',
-									bg: '$background08'
+							<Message
+								autoComplete={autoComplete ? 'on' : 'off'}
+								autoCorrect={autoCorrect ? 'on' : 'off'}
+								style={{ flex: 1 }}
+								{...{
+									message,
+									setMessage,
+									send,
+									aiThinking,
+									apiKey: key,
+									isMac,
+									isMultiLine,
+									setIsMultiLine,
+									quotaDisplayed
 								}}
-								mr='$1'
 							/>
 							<View
 								flexDirection='row'
-								justify='flex-end'
-								gap='$1'
+								justify='space-between'
 								items='center'
+								{...(isMultiLine ? {} : { style: { display: 'contents' } }) }
 							>
-								{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
-								<Button
-									chromeless
-									size='$3'
-									icon={SlidersHorizontal}
-									onPress={() => setSheetOpen(true)}
-									hoverStyle={{
-										borderColor: '$color6',
-										bg: '$background08'
-									}}
-								/>
-								<Tasks />
 								<Button
 									chromeless
 									circular
-									// ml='$3'
 									size='$3'
-									icon={AudioLines}
+									iconSize='$6'
+									icon={Plus}
 									onPress={() => toast.info(t('not_yet'))}
+									style={{ order: -1 }}
 									hoverStyle={{
 										borderColor: '$color6',
 										bg: '$background08'
 									}}
+									mr='$1'
 								/>
-								<Send
-									{...{
-										content: message,
-										send,
-										aiThinking,
-										r_tPM: false /* TODO: block when quota exceeded */
-									}}
-								/>
+								<View
+									flexDirection='row'
+									justify='flex-end'
+									gap='$1'
+									items='center'
+								>
+									<Button
+										chromeless
+										circular
+										// ml='$3'
+										size='$3'
+										icon={AudioLines}
+										onPress={() => toast.info(t('not_yet'))}
+										hoverStyle={{
+											borderColor: '$color6',
+											bg: '$background08'
+										}}
+									/>
+									<Send
+										{...{
+											content: message,
+											send,
+											aiThinking,
+											r_tPM: false /* TODO: block when quota exceeded */
+										}}
+									/>
+								</View>
 							</View>
 						</View>
 					</View>
+					{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
+					<Button
+						chromeless
+						size='$3'
+						mr='$1'
+						icon={SlidersHorizontal}
+						onPress={() => setSheetOpen(true)}
+						hoverStyle={{
+							borderColor: '$color6',
+							bg: '$background08'
+						}}
+					/>
+					<Tasks />
 				</View>
 				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
 			</View>
