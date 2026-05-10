@@ -251,7 +251,7 @@ export default function Page() {
 				gap='$2'>
 				{conversations.length > 0 && <Conversation {...{ conversations, shouldScroll, isPortrait }} />}
 				<View
-					flexDirection='row'
+					flexDirection={isPortrait ? 'column' : 'row'}
 					items='center'
 				>
 					<View
@@ -339,19 +339,21 @@ export default function Page() {
 							</View>
 						</View>
 					</View>
-					{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
-					<Button
-						chromeless
-						size='$3'
-						mr='$1'
-						icon={SlidersHorizontal}
-						onPress={() => setSheetOpen(true)}
-						hoverStyle={{
-							borderColor: '$color6',
-							bg: '$background08'
-						}}
-					/>
-					<Tasks />
+					<View flexDirection='row' items='center'>
+						{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
+						<Button
+							chromeless
+							size='$3'
+							mr='$1'
+							icon={SlidersHorizontal}
+							onPress={() => setSheetOpen(true)}
+							hoverStyle={{
+								borderColor: '$color6',
+								bg: '$background08'
+							}}
+						/>
+						<Tasks />
+					</View>
 				</View>
 				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
 			</View>
