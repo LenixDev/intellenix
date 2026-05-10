@@ -19,7 +19,6 @@ export const Send = ({
 		disabled={aiThinking || r_tPM}
 		onPress={send}
 		size='$3'
-		ml='$3'
 		hoverStyle={{
 			borderColor: '$color6',
 			bg: '$background08'

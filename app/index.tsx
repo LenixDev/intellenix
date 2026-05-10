@@ -234,8 +234,8 @@ export default function Page() {
 	}
 
 	return (
-		<View items='center' width='100%' height='100%' pb='$5'>
-			<View width='100%' items='flex-end' px='$5'>
+		<View items='center' width='100%' height='100%' pb={isPortrait ? '$3' : '$5'} >
+			<View width='100%' items='flex-end' p='$2'>
 				<Button
 					size='$3'
 					theme='accent'
@@ -248,7 +248,6 @@ export default function Page() {
 				items='center'
 				flex={1}
 				justify={conversations.length === 0 ? 'center' : 'flex-end'}
-				pb='$5'
 				gap='$2'>
 				{conversations.length > 0 && <Conversation {...{ conversations, shouldScroll, isPortrait }} />}
 				<View
@@ -324,23 +323,24 @@ export default function Page() {
 									}}
 								/>
 								<Tasks />
-								<Send
-									{...{
-										content: message,
-										send,
-										aiThinking,
-										r_tPM: false /* TODO: block when quota exceeded */
-									}}
-								/>
 								<Button
 									chromeless
 									circular
+									// ml='$3'
 									size='$3'
 									icon={AudioLines}
 									onPress={() => toast.info(t('not_yet'))}
 									hoverStyle={{
 										borderColor: '$color6',
 										bg: '$background08'
+									}}
+								/>
+								<Send
+									{...{
+										content: message,
+										send,
+										aiThinking,
+										r_tPM: false /* TODO: block when quota exceeded */
 									}}
 								/>
 							</View>
