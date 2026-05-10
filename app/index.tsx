@@ -27,6 +27,7 @@ import { useTranslation } from 'react-i18next';
 import {
 	Button,
 	Image,
+	Separator,
 	TamaguiElement,
 	useThemeName,
 	useWindowDimensions,
@@ -253,10 +254,11 @@ export default function Page() {
 				<View
 					flexDirection={isPortrait ? 'column' : 'row'}
 					items='center'
+					width='100%'
 					gap='$1'
 				>
 					<View
-						width='100%'
+						flex={1}
 						bg='$color3'
 						rounded='$8'
 						px='$2'
@@ -341,24 +343,25 @@ export default function Page() {
 							</View>
 						</View>
 					</View>
-					<View flexDirection='row' items='center'>
-						{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
-						<Button
-							chromeless
-							size='$3'
-							mx='$1'
-							ml='$2'
-							icon={SlidersHorizontal}
-							onPress={() => setSheetOpen(true)}
-							hoverStyle={{
-								borderColor: '$color6',
-								bg: '$background08'
-							}}
-						/>
-						<Tasks />
-					</View>
 				</View>
-				{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
+				<View flexDirection='row' items='center' gap='$2'>
+					{!('ontouchstart' in window) && <Kdb {...{ isMac }} />}
+					<Separator vertical height={12} borderColor='$color02' />
+					{quotaDisplayed && <Quota {...{ quota, apiKey: key, model }} />}
+					<Separator vertical height={12} borderColor='$color02' />
+					<Button
+						chromeless
+						size='$3'
+						icon={SlidersHorizontal}
+						onPress={() => setSheetOpen(true)}
+						hoverStyle={{
+							borderColor: '$color6',
+							bg: '$background08'
+						}}
+					/>
+					<Separator vertical height={12} borderColor='$color02' />
+					<Tasks />
+				</View>
 			</View>
 			{conversations.length === 0 && <Image
 				height='$4'
