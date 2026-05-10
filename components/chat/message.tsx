@@ -94,7 +94,7 @@ export const Message = ({
         rows={1}
         rounded={0}
         py={0}
-        px={0}
+				px={isMultiLine ? '$2' : 0}
         flex={1}
         bg='transparent'
       />
