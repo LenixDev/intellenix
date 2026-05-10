@@ -344,7 +344,8 @@ export default function Page() {
 						<Button
 							chromeless
 							size='$3'
-							mr='$1'
+							mx='$1'
+							ml='$2'
 							icon={SlidersHorizontal}
 							onPress={() => setSheetOpen(true)}
 							hoverStyle={{
