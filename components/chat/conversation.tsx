@@ -1,7 +1,7 @@
 import type { Conversation as IConversation } from '@/types'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, Text, View, Button, Spinner } from 'tamagui'
+import { ScrollView, Text, View, Button, Spinner, TamaguiElement } from 'tamagui'
 import { Copy } from './copy'
 import { toast } from '@tamagui/toast/v2'
 import { Pencil, Reply } from '@tamagui/lucide-icons-2'
@@ -10,17 +10,20 @@ import { createPortal } from 'react-dom'
 export const Conversation = ({
   conversations,
   isPortrait,
-	aiThinking
+  aiThinking
 }: {
   conversations: IConversation[]
   isPortrait: boolean
-	aiThinking: boolean
+  aiThinking: boolean
 }) => {
   const [shown, setShown] = useState<Record<string, boolean>>({})
   const [hover, setHover] = useState<Record<string, boolean>>({})
   const [selection, setSelection] = useState<{ text: string; x: number; y: number } | null>(null)
+
   const { t } = useTranslation()
+	
   const scrollRef = useRef<ScrollView>(null)
+  const lastMessageRef = useRef<TamaguiElement>(null)
 
   useEffect(() => {
     const handler = () => {
@@ -31,15 +34,15 @@ export const Conversation = ({
       const rect = sel!.getRangeAt(0).getBoundingClientRect()
       setSelection({ text, x: rect.left + rect.width / 2, y: rect.top + window.scrollY - 30 })
     }
-		const onScroll = () => setSelection(null)
+    const onScroll = () => setSelection(null)
 
     document.addEventListener('mouseup', handler)
-		document.addEventListener('scroll', onScroll, true)
+    document.addEventListener('scroll', onScroll, true)
 
     return () => {
-			document.removeEventListener('mouseup', handler)
-			document.removeEventListener('scroll', onScroll, true)
-		}
+      document.removeEventListener('mouseup', handler)
+      document.removeEventListener('scroll', onScroll, true)
+    }
   }, [])
 
   return (
@@ -48,17 +51,19 @@ export const Conversation = ({
         ref={scrollRef}
         width='100%'
         py='$10'
-				px={isPortrait ? '$2' : '$5'}
+        px={isPortrait ? '$2' : '$5'}
         flex={1}
         onContentSizeChange={() => {
-          scrollRef.current?.scrollToEnd({ animated: true })
+          const node = lastMessageRef.current as unknown as HTMLElement
+          node?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }}
-				// @ts-ignore
+        // @ts-ignore
         scrollbarWidth='none'>
-        {conversations.map($ => {
+        {conversations.map(($, i) => {
           if ($.role === 'user') return (
             <View
               key={$.date}
+              ref={i === conversations.length - 1 ? lastMessageRef : undefined}
               items='flex-end'
               gap='$4'
               mb='$5'
@@ -128,19 +133,19 @@ export const Conversation = ({
             </View>
           )
         })}
-				<View items='flex-start'>
-					{aiThinking && <Spinner />}
-				</View>
+        <View items='flex-start'>
+          {aiThinking && <Spinner />}
+        </View>
       </ScrollView>
       {selection && createPortal(
         <View
           position='absolute'
           style={{ left: selection.x, top: selection.y, transform: 'translateX(-50%)', zIndex: 9999 }}>
           <Button
-						icon={Reply}
-						size='$2'
-						onPress={() => toast.info(t('not_yet'))}
-					/>
+            icon={Reply}
+            size='$2'
+            onPress={() => toast.info(t('not_yet'))}
+          />
         </View>,
         document.body
       )}
