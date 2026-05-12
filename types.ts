@@ -61,7 +61,7 @@ export type Quota = Record<Model, {
 
 export type KeysQuota = Record<string, Quota>
 
-export type Key = 'key' | 'model' | 'id' | 'quota' | 'auto-complete' | 'auto-correct'
+export type Key = 'key' | 'model' | 'id' | 'quota' | 'auto-complete' | 'auto-correct' | 'message'
 export type Task = 'programming' | 'health'
 
 export type GroqFn = {

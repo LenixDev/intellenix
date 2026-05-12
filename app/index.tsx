@@ -108,6 +108,9 @@ export default function Page() {
 
 	useEffect(() => {
 		(async () => {
+			const message = await prefs.getKey('message')
+			if (message) setMessage(message)
+
 			const id = await prefs.getKey('id')
 			if (id) setId(id)
 			else setId(null)
@@ -122,6 +125,10 @@ export default function Page() {
 			if (autoCorrect === '1') setAutoCorrect(true)
 		})()
 	}, [])
+	
+	useEffect(() => {
+		prefs.setKey(message, 'message')
+	}, [message])
 
 	if (key.length === 0 || keyDialog) return <Api
 		{...{
