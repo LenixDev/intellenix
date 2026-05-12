@@ -36,7 +36,7 @@ export const Api = ({
 		}}>
 			<View>
 				<Dialog.Title>{t('enter_key')}</Dialog.Title>
-				<Dialog.Description>{t('fill_key')}</Dialog.Description>
+				<Dialog.Description>{t('get_key')}: <a target='_blank' href='https://console.groq.com/keys'>https://console.groq.com/keys</a></Dialog.Description>
 			</View>
 			<Input
 				type='password'
