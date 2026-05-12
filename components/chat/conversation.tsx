@@ -1,7 +1,7 @@
 import type { Conversation as IConversation } from '@/types'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, Text, View, Button } from 'tamagui'
+import { ScrollView, Text, View, Button, Spinner } from 'tamagui'
 import { Copy } from './copy'
 import { toast } from '@tamagui/toast/v2'
 import { Pencil, Reply } from '@tamagui/lucide-icons-2'
@@ -10,11 +10,13 @@ import { createPortal } from 'react-dom'
 export const Conversation = ({
   conversations,
   isPortrait,
-  shouldScroll
+  shouldScroll,
+	aiThinking
 }: {
   conversations: IConversation[]
   isPortrait: boolean
   shouldScroll: React.RefObject<boolean>
+	aiThinking: boolean
 }) => {
   const [shown, setShown] = useState<Record<string, boolean>>({})
   const [hover, setHover] = useState<Record<string, boolean>>({})
@@ -42,16 +44,13 @@ export const Conversation = ({
 		}
   }, [])
 
-	useEffect(() => {
-	}, [])
-
   return (
     <>
       <ScrollView
         ref={scrollRef}
         width='100%'
-        pt='$10'
-        px={isPortrait ? '$2' : '$5'}
+        py='$10'
+				px={isPortrait ? '$2' : '$5'}
         flex={1}
         onContentSizeChange={() => {
           if (!shouldScroll.current) return
@@ -106,7 +105,6 @@ export const Conversation = ({
             <View
               key={$.date}
               gap='$4'
-              mb='$10'
               bg={shown[$.date] || hover[$.date] ? '$color001' : undefined}
               onClick={() => setShown({ [$.date]: !shown[$.date] })}
               onMouseEnter={() => setHover({ [$.date]: true })}
@@ -133,6 +131,9 @@ export const Conversation = ({
             </View>
           )
         })}
+				<View items='flex-start'>
+					{aiThinking && <Spinner />}
+				</View>
       </ScrollView>
       {selection && createPortal(
         <View

@@ -252,7 +252,7 @@ export default function Page() {
 				flex={1}
 				justify={conversations.length === 0 ? 'center' : 'flex-end'}
 				gap='$2'>
-				{conversations.length > 0 && <Conversation {...{ conversations, shouldScroll, isPortrait }} />}
+				{conversations.length > 0 && <Conversation {...{ conversations, shouldScroll, isPortrait, aiThinking }} />}
 				<View
 					flexDirection={'row'}
 					items='center'
