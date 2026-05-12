@@ -28,7 +28,6 @@ import {
 	Button,
 	Image,
 	Separator,
-	TamaguiElement,
 	useThemeName,
 	useWindowDimensions,
 	View
@@ -125,10 +124,6 @@ export default function Page() {
 			if (autoCorrect === '1') setAutoCorrect(true)
 		})()
 	}, [])
-	
-	useEffect(() => {
-		prefs.setKey(message, 'message')
-	}, [message])
 
 	if (key.length === 0 || keyDialog) return <Api
 		{...{

@@ -2,6 +2,7 @@ import { BaseStyleProps } from '@tamagui/core';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TextArea, TextAreaProps, View } from 'tamagui';
+import { prefs } from '@/storage';
 
 export const Message = ({
   message,
@@ -44,7 +45,8 @@ export const Message = ({
 	}, [quotaDisplayed])
 
   useEffect(() => {
-    if (message !== '') return
+		prefs.setKey(message, 'message')
+		if (message !== '') return
     const element = document.querySelector('textarea')
     if (!element) return
     requestAnimationFrame(() => {
