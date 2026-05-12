@@ -10,12 +10,10 @@ import { createPortal } from 'react-dom'
 export const Conversation = ({
   conversations,
   isPortrait,
-  shouldScroll,
 	aiThinking
 }: {
   conversations: IConversation[]
   isPortrait: boolean
-  shouldScroll: React.RefObject<boolean>
 	aiThinking: boolean
 }) => {
   const [shown, setShown] = useState<Record<string, boolean>>({})
@@ -53,10 +51,9 @@ export const Conversation = ({
 				px={isPortrait ? '$2' : '$5'}
         flex={1}
         onContentSizeChange={() => {
-          if (!shouldScroll.current) return
           scrollRef.current?.scrollToEnd({ animated: true })
-          shouldScroll.current = false
         }}
+				// @ts-ignore
         scrollbarWidth='none'>
         {conversations.map($ => {
           if ($.role === 'user') return (

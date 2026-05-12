@@ -22,7 +22,7 @@ import { AudioLines, Plus, SlidersHorizontal } from '@tamagui/lucide-icons-2';
 import { toast } from '@tamagui/toast/v2';
 import Groq from 'groq-sdk';
 import { raise } from 'lenix';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
 	Button,
@@ -54,8 +54,6 @@ export default function Page() {
 	const [autoComplete, setAutoComplete] = useState<boolean>()
 	const [autoCorrect, setAutoCorrect] = useState<boolean>()
 
-	const shouldScroll = useRef(false)
-
 	const { t } = useTranslation()
 	const theme = useThemeName()
 	const { width, height } = useWindowDimensions()
@@ -83,7 +81,7 @@ export default function Page() {
 	}, [model])
 
 	useEffect(() => {
-		if (key.length !== 0 || id === undefined) return
+		if (key !== '' || id === undefined) return
 		(async () => {
 			let key = await prefs.getKey('key')
 			if (!key && !id) return setKeyDialog(true)
@@ -125,7 +123,7 @@ export default function Page() {
 		})()
 	}, [])
 
-	if (key.length === 0 || keyDialog) return <Api
+	if (key === '' || keyDialog) return <Api
 		{...{
 			apiKey: key,
 			setKey,
@@ -136,7 +134,6 @@ export default function Page() {
 
 	const send = async () => {
 		if (!message.trim()) return toast.info(t('not_yet'))
-		shouldScroll.current = true
 		setConversations(prev => [
 			...prev,
 			{
@@ -252,7 +249,7 @@ export default function Page() {
 				flex={1}
 				justify={conversations.length === 0 ? 'center' : 'flex-end'}
 				gap='$2'>
-				{conversations.length > 0 && <Conversation {...{ conversations, shouldScroll, isPortrait, aiThinking }} />}
+				{conversations.length > 0 && <Conversation {...{ conversations, isPortrait, aiThinking }} />}
 				<View
 					flexDirection={'row'}
 					items='center'
