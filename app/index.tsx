@@ -247,8 +247,7 @@ export default function Page() {
 				width={isPortrait ? '95%' : '55%'}
 				items='center'
 				flex={1}
-				justify={conversations.length === 0 ? 'center' : 'flex-end'}
-				gap='$2'>
+				justify={conversations.length === 0 ? 'center' : 'flex-end'}>
 				{conversations.length > 0 && <Conversation {...{ conversations, isPortrait, aiThinking }} />}
 				<View
 					flexDirection={'row'}

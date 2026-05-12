@@ -29,7 +29,8 @@ export const Conversation = ({
     const handler = () => {
       const sel = window.getSelection()
       const text = sel?.toString().trim()
-      if (!text) return setSelection(null)
+			if (!text || !sel!.anchorNode?.parentElement?.closest('[data-assistant]')) return setSelection(null)
+
 
       const rect = sel!.getRangeAt(0).getBoundingClientRect()
       setSelection({ text, x: rect.left + rect.width / 2, y: rect.top + window.scrollY - 30 })
@@ -117,6 +118,7 @@ export const Conversation = ({
                   maxW='90%'
                   self='flex-start'
                   color='$color'
+									data-assistant='true'
                   onPress={event => event.stopPropagation()}>
                   {$.content}
                 </Text>
