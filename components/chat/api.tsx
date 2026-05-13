@@ -30,13 +30,21 @@ export const Api = ({
 	const [loading, setLoading] = useState(false)
 	const { t } = useTranslation()
 	return (
-		<Prompt gap='$6' open={keyDialog} onOpenChange={open => {
-			if (!open) return
-			setKeyDialog(open)
-		}}>
+		<Prompt
+			gap='$6'
+			open={keyDialog}
+			onOpenChange={open => {
+				if (!open) return
+				setKeyDialog(open)
+			}}>
 			<View>
 				<Dialog.Title>{t('enter_key')}</Dialog.Title>
-				<Dialog.Description>{t('get_key')}: <a target='_blank' href='https://console.groq.com/keys'>https://console.groq.com/keys</a></Dialog.Description>
+				<Dialog.Description>
+					{t('get_key')}:{' '}
+					<a target='_blank' href='https://console.groq.com/keys'>
+						https://console.groq.com/keys
+					</a>
+				</Dialog.Description>
 			</View>
 			<Input
 				type='password'
@@ -44,7 +52,8 @@ export const Api = ({
 				value={apiKey}
 				onChangeText={setKey}
 			/>
-			<Button disabled={apiKey.length === 0}
+			<Button
+				disabled={apiKey.length === 0}
 				onPress={async () => {
 					if (typeof apiKey === 'string' && apiKey.length === 0) return
 					await prefs.setKey(apiKey, 'key')
@@ -65,12 +74,21 @@ export const Api = ({
 				disabled={loading}
 				onPress={async () => {
 					setLoading(true)
-					
-					const { data, error } = await supabase.functions.invoke<GetKey>('key', { body: {
-						type: 'get'
-					} satisfies SupaKeyArgs})
 
-					if (error instanceof Error || !data || typeof data !== 'string' && 'error' in data) {
+					const { data, error } = await supabase.functions.invoke<GetKey>(
+						'key',
+						{
+							body: {
+								type: 'get'
+							} satisfies SupaKeyArgs
+						}
+					)
+
+					if (
+						error instanceof Error
+						|| !data
+						|| (typeof data !== 'string' && 'error' in data)
+					) {
 						toast.error(t('key_err'))
 						setLoading(false)
 						return
@@ -83,7 +101,7 @@ export const Api = ({
 				}}>
 				{loading ?
 					<Spinner />
-					: t('pub_key')}
+				:	t('pub_key')}
 			</Button>
 		</Prompt>
 	)

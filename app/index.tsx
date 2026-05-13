@@ -1,14 +1,14 @@
-import { Api } from '@/components/chat/api';
-import { Conversation } from '@/components/chat/conversation';
-import { Kdb } from '@/components/chat/kdb';
-import { Message } from '@/components/chat/message';
-import { Preferences } from '@/components/chat/preferences';
-import { Quota } from '@/components/chat/quota';
-import { Send } from '@/components/chat/send';
-import { Tasks } from '@/components/chat/tasks';
-import { defaultModel } from '@/constants';
-import { prefs } from '@/storage';
-import { supabase } from '@/supabase';
+import { Api } from '@/components/chat/api'
+import { Conversation } from '@/components/chat/conversation'
+import { Kdb } from '@/components/chat/kdb'
+import { Message } from '@/components/chat/message'
+import { Preferences } from '@/components/chat/preferences'
+import { Quota } from '@/components/chat/quota'
+import { Send } from '@/components/chat/send'
+import { Tasks } from '@/components/chat/tasks'
+import { defaultModel } from '@/constants'
+import { prefs } from '@/storage'
+import { supabase } from '@/supabase'
 import type {
 	GroqFn,
 	GroqParams,
@@ -17,13 +17,13 @@ import type {
 	Model,
 	SupaKeyArgs,
 	SupaProtect
-} from '@/types';
-import { AudioLines, Plus, SlidersHorizontal } from '@tamagui/lucide-icons-2';
-import { toast } from '@tamagui/toast/v2';
-import Groq from 'groq-sdk';
-import { raise } from 'lenix';
-import { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+} from '@/types'
+import { AudioLines, Plus, SlidersHorizontal } from '@tamagui/lucide-icons-2'
+import { toast } from '@tamagui/toast/v2'
+import Groq from 'groq-sdk'
+import { raise } from 'lenix'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
 	Button,
 	Image,
@@ -31,7 +31,7 @@ import {
 	useThemeName,
 	useWindowDimensions,
 	View
-} from 'tamagui';
+} from 'tamagui'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -60,7 +60,8 @@ export default function Page() {
 	const isPortrait = height > width
 
 	const groq = useMemo(
-		() => key ? new Groq({ apiKey: key, dangerouslyAllowBrowser: true }) : null,
+		() =>
+			key ? new Groq({ apiKey: key, dangerouslyAllowBrowser: true }) : null,
 		[key]
 	)
 
@@ -74,7 +75,7 @@ export default function Page() {
 	}, [conversations])
 
 	useEffect(() => {
-		(async () => {
+		;(async () => {
 			const model = await prefs.getKey('model')
 			if (model) setModel(model as Model)
 		})()
@@ -82,21 +83,26 @@ export default function Page() {
 
 	useEffect(() => {
 		if (key !== '' || id === undefined) return
-		(async () => {
+		;(async () => {
 			let key = await prefs.getKey('key')
 			if (!key && !id) return setKeyDialog(true)
 			if (!key) {
-				const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
-					body: {
-						type: 'get'
-					} satisfies SupaKeyArgs
-				})
-				if (error instanceof Error || !data) return toast.error(t('err'), {
-					description: error?.message
-				})
-				if (typeof data !== 'string' && 'error' in data) return toast.error(t('err'), {
-					description: data.error
-				})
+				const { error, data } = await supabase.functions.invoke<SupaProtect>(
+					'key',
+					{
+						body: {
+							type: 'get'
+						} satisfies SupaKeyArgs
+					}
+				)
+				if (error instanceof Error || !data)
+					return toast.error(t('err'), {
+						description: error?.message
+					})
+				if (typeof data !== 'string' && 'error' in data)
+					return toast.error(t('err'), {
+						description: data.error
+					})
 				key = data
 			}
 			setKey(key)
@@ -104,7 +110,7 @@ export default function Page() {
 	}, [key, model, id])
 
 	useEffect(() => {
-		(async () => {
+		;(async () => {
 			const message = await prefs.getKey('message')
 			if (message) setMessage(message)
 
@@ -123,14 +129,17 @@ export default function Page() {
 		})()
 	}, [])
 
-	if (key === '' || keyDialog) return <Api
-		{...{
-			apiKey: key,
-			setKey,
-			keyDialog,
-			setKeyDialog
-		}}
-	/>
+	if (key === '' || keyDialog)
+		return (
+			<Api
+				{...{
+					apiKey: key,
+					setKey,
+					keyDialog,
+					setKeyDialog
+				}}
+			/>
+		)
 
 	const send = async () => {
 		if (!message.trim()) return toast.info(t('not_yet'))
@@ -166,42 +175,47 @@ export default function Page() {
 				// user: null
 			}
 			let result
-			if (groq && !quotaDisplayed) result = await groq?.chat.completions.create(params).withResponse()
-			else result = await supabase.functions.invoke<GroqFn>('groq', {
-				body: {
-					params,
-					id: id!,
-					key
-				} satisfies GroqParams
-			}).then(({ error, data }) => {
-				if (error instanceof Error || !data) {
-					toast.error(t('err'), {
-						description: error.message,
+			if (groq && !quotaDisplayed)
+				result = await groq?.chat.completions.create(params).withResponse()
+			else
+				result = await supabase.functions
+					.invoke<GroqFn>('groq', {
+						body: {
+							params,
+							id: id!,
+							key
+						} satisfies GroqParams
 					})
-					return null
-				}
-				if ('error' in data) {
-					toast.error(data.error)
-					return null
-				}
-				return data
-			})
+					.then(({ error, data }) => {
+						if (error instanceof Error || !data) {
+							toast.error(t('err'), {
+								description: error.message
+							})
+							return null
+						}
+						if ('error' in data) {
+							toast.error(data.error)
+							return null
+						}
+						return data
+					})
 			if (!result) return
 			const { choices, service_tier, usage } = result.data
-			if ('rateLimits' in result) setQuota({
-				[key]: {
-					[model]: {
-						rpd: result.rateLimits.remaining_requests ?? '0',
-						tpm: result.rateLimits.remaining_tokens ?? '0',
-						r_limits: result.rateLimits.limit_requests ?? '0',
-						t_limits: result.rateLimits.limit_tokens ?? '0'
+			if ('rateLimits' in result)
+				setQuota({
+					[key]: {
+						[model]: {
+							rpd: result.rateLimits.remaining_requests ?? '0',
+							tpm: result.rateLimits.remaining_tokens ?? '0',
+							r_limits: result.rateLimits.limit_requests ?? '0',
+							t_limits: result.rateLimits.limit_tokens ?? '0'
+						}
 					}
-				}
-			})
+				})
 
 			const response = choices[0]?.message.content
 			if (typeof response !== 'string') return toast.error(t('no_res'))
-	
+
 			setConversations(prev => [
 				...prev.map(($, i, arr) => {
 					if ($.role !== 'user') return $
@@ -234,7 +248,11 @@ export default function Page() {
 	}
 
 	return (
-		<View items='center' width='100%' height='100%' pb={isPortrait ? '$3' : '$5'} >
+		<View
+			items='center'
+			width='100%'
+			height='100%'
+			pb={isPortrait ? '$3' : '$5'}>
 			<View width='100%' items='flex-end' p='$2'>
 				<Button
 					size='$3'
@@ -248,32 +266,29 @@ export default function Page() {
 				items='center'
 				flex={1}
 				justify={conversations.length === 0 ? 'center' : 'flex-end'}>
-				{conversations.length > 0 && <Conversation {...{ conversations, isPortrait, aiThinking }} />}
-				<View
-					flexDirection={'row'}
-					items='center'
-					width='100%'
-					gap='$1'
-				>
+				{conversations.length > 0 && (
+					<Conversation {...{ conversations, isPortrait, aiThinking }} />
+				)}
+				<View flexDirection={'row'} items='center' width='100%' gap='$1'>
 					<View
 						flex={1}
 						bg='$color3'
 						rounded='$8'
 						px='$2'
 						py='$2'
-						{...(isMultiLine ? { pt: '$3'} : {}) }
+						{...(isMultiLine ? { pt: '$3' } : {})}
 						justify='center'
-						border='1px solid $color6'
-					>
+						border='1px solid $color6'>
 						<View
 							flexDirection={isMultiLine ? 'column' : 'row'}
-							{...(isMultiLine ? {
-								gap: '$2'
-							} : {
-								justify: 'space-between',
-								items: 'center'
-							})}
-						>
+							{...(isMultiLine ?
+								{
+									gap: '$2'
+								}
+							:	{
+									justify: 'space-between',
+									items: 'center'
+								})}>
 							<Message
 								autoComplete={autoComplete ? 'on' : 'off'}
 								autoCorrect={autoCorrect ? 'on' : 'off'}
@@ -294,8 +309,7 @@ export default function Page() {
 								flexDirection='row'
 								justify='space-between'
 								items='center'
-								{...(isMultiLine ? {} : { style: { display: 'contents' } }) }
-							>
+								{...(isMultiLine ? {} : { style: { display: 'contents' } })}>
 								<Button
 									chromeless
 									circular
@@ -314,8 +328,7 @@ export default function Page() {
 									flexDirection='row'
 									justify='flex-end'
 									gap='$1'
-									items='center'
-								>
+									items='center'>
 									<Button
 										chromeless
 										circular
@@ -342,14 +355,18 @@ export default function Page() {
 					</View>
 				</View>
 				<View flexDirection='row' items='center' gap='$2'>
-					{!('ontouchstart' in window) && <>
-						<Kdb {...{ isMac }} />
-						<Separator vertical height={12} borderColor='$color02' />
-					</>}
-					{quotaDisplayed && <>
-						<Quota {...{ quota, apiKey: key, model }} />
-						<Separator vertical height={12} borderColor='$color02' />
-					</>}
+					{!('ontouchstart' in window) && (
+						<>
+							<Kdb {...{ isMac }} />
+							<Separator vertical height={12} borderColor='$color02' />
+						</>
+					)}
+					{quotaDisplayed && (
+						<>
+							<Quota {...{ quota, apiKey: key, model }} />
+							<Separator vertical height={12} borderColor='$color02' />
+						</>
+					)}
 					<Button
 						chromeless
 						size='$3'
@@ -364,11 +381,13 @@ export default function Page() {
 					<Tasks />
 				</View>
 			</View>
-			{conversations.length === 0 && <Image
-				height='$4'
-				src={`https://console.groq.com/powered-by-groq-${theme}.svg`}
-				alt='Powered by Groq for fast inference.'
-			/>}
+			{conversations.length === 0 && (
+				<Image
+					height='$4'
+					src={`https://console.groq.com/powered-by-groq-${theme}.svg`}
+					alt='Powered by Groq for fast inference.'
+				/>
+			)}
 			<Preferences
 				{...{
 					groq,

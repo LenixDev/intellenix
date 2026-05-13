@@ -42,7 +42,9 @@ export const Selection = <T extends string>({
 				position='relative'
 				width='100%'
 				height='$3'>
-				<YStack z={10}><ChevronUp size={20} /></YStack>
+				<YStack z={10}>
+					<ChevronUp size={20} />
+				</YStack>
 				<LinearGradient
 					start={[0, 0]}
 					end={[0, 1]}
@@ -77,7 +79,9 @@ export const Selection = <T extends string>({
 				position='relative'
 				width='100%'
 				height='$3'>
-				<YStack z={10}><ChevronDown size={20} /></YStack>
+				<YStack z={10}>
+					<ChevronDown size={20} />
+				</YStack>
 				<LinearGradient
 					start={[0, 0]}
 					end={[0, 1]}

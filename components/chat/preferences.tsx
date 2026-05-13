@@ -1,17 +1,29 @@
-import { defaultModel } from '@/constants';
-import { Check, Info } from '@tamagui/lucide-icons-2';
-import type Groq from 'groq-sdk';
-import { useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Input, Label, Select, Sheet, Spinner, Text, View, XStack, YStack } from 'tamagui';
-import { Selection } from '../selection';
-import { useTranslation } from 'react-i18next';
-import { Model, SupaKeyArgs, SupaList, SupaProtect, SupaPublic } from '@/types';
-import { prefs } from '@/storage';
-import { toast } from '@tamagui/toast/v2';
-import { i18n } from 'i18next';
-import type { Model as GroqModel } from 'groq-sdk/resources';
-import { supabase } from '@/supabase';
-import { Over } from '@/components/over';
+import { defaultModel } from '@/constants'
+import { Check, Info } from '@tamagui/lucide-icons-2'
+import type Groq from 'groq-sdk'
+import { useEffect, useMemo, useState } from 'react'
+import {
+	Button,
+	Checkbox,
+	Input,
+	Label,
+	Select,
+	Sheet,
+	Spinner,
+	Text,
+	View,
+	XStack,
+	YStack
+} from 'tamagui'
+import { Selection } from '../selection'
+import { useTranslation } from 'react-i18next'
+import { Model, SupaKeyArgs, SupaList, SupaProtect, SupaPublic } from '@/types'
+import { prefs } from '@/storage'
+import { toast } from '@tamagui/toast/v2'
+import { i18n } from 'i18next'
+import type { Model as GroqModel } from 'groq-sdk/resources'
+import { supabase } from '@/supabase'
+import { Over } from '@/components/over'
 
 const setItem = async (
 	model: Model,
@@ -71,13 +83,12 @@ export const Preferences = ({
 	const { t } = useTranslation()
 
 	useEffect(() => {
-		(async () => {
+		;(async () => {
 			const key = await prefs.getKey('id')
 			if (key) setProtected(key)
 
 			const displayed = await prefs.getKey('quota')
 			if (displayed === '1') setQuotaDisplayed(true)
-
 		})()
 		;(async () => {
 			if (items.length > 0) return
@@ -85,26 +96,29 @@ export const Preferences = ({
 				toast.error(t('err'))
 				return
 			}
-			const res = await groq?.models.list() ?? await supabase.functions.invoke<SupaList['fn']>('list', {
-				body: {
-					id: id!
-				} satisfies SupaList['args']
-			})
-				.then(({ error, data }) => {
-					if (error instanceof Error || !data) {
-						toast.error(t('err'), {
-							description: error.message
-						})
-						return
-					}
-					if ('error' in data) {
-						toast.error(t('err'), {
-							description: data.error
-						})
-						return
-					}
-					return data
-				})
+			const res =
+				(await groq?.models.list())
+				?? (await supabase.functions
+					.invoke<SupaList['fn']>('list', {
+						body: {
+							id: id!
+						} satisfies SupaList['args']
+					})
+					.then(({ error, data }) => {
+						if (error instanceof Error || !data) {
+							toast.error(t('err'), {
+								description: error.message
+							})
+							return
+						}
+						if ('error' in data) {
+							toast.error(t('err'), {
+								description: data.error
+							})
+							return
+						}
+						return data
+					}))
 			if (!res) return
 			setItems(res.data)
 		})()
@@ -122,13 +136,10 @@ export const Preferences = ({
 							</Select.ItemText>
 							<Select.ItemText color='$color7' fontSize='$2'>
 								{t('on')}{' '}
-								{new Date(item.created * 1000).toLocaleDateString(
-									undefined,
-									{
-										year: 'numeric',
-										month: 'short'
-									}
-								)}
+								{new Date(item.created * 1000).toLocaleDateString(undefined, {
+									year: 'numeric',
+									month: 'short'
+								})}
 							</Select.ItemText>
 						</View>
 					</View>
@@ -144,11 +155,12 @@ export const Preferences = ({
 		setLoading(prev => ({ ...prev, key: true }))
 		if (Protected) {
 			const { error } = await supabase.functions.invoke('key', {
-			body: {
-				type: 'update',
-				key: stateKey,
-				id: id!
-			} satisfies SupaKeyArgs})
+				body: {
+					type: 'update',
+					key: stateKey,
+					id: id!
+				} satisfies SupaKeyArgs
+			})
 			if (error instanceof Error) {
 				toast.error(t('err'), {
 					description: error.message
@@ -193,15 +205,21 @@ export const Preferences = ({
 		if (typeof state !== 'boolean') return
 		setLoading(prev => ({ ...prev, protection: true }))
 
-		const { error, data } = await supabase.functions.invoke<SupaProtect>('key', {
-			body: Protected ? {
-				type: 'get',
-				id: id!,
-			} satisfies SupaKeyArgs : {
-				type: 'protect',
-				key,
-			} satisfies SupaKeyArgs
-		})
+		const { error, data } = await supabase.functions.invoke<SupaProtect>(
+			'key',
+			{
+				body:
+					Protected ?
+						({
+							type: 'get',
+							id: id!
+						} satisfies SupaKeyArgs)
+					:	({
+							type: 'protect',
+							key
+						} satisfies SupaKeyArgs)
+			}
+		)
 		if (error instanceof Error || !data) {
 			toast.error(t('err'), {
 				description: error.message
@@ -232,14 +250,18 @@ export const Preferences = ({
 	const handleAutoComplete = async (state: boolean) => {
 		if (typeof state !== 'boolean') return
 
-		state ? await prefs.setKey('1', 'auto-complete') : await prefs.destroy('auto-complete')
+		state ?
+			await prefs.setKey('1', 'auto-complete')
+		:	await prefs.destroy('auto-complete')
 		setAutoComplete(state ? true : undefined)
 	}
 
 	const handleAutoCorrect = async (state: boolean) => {
 		if (typeof state !== 'boolean') return
 
-		state ? await prefs.setKey('1', 'auto-correct') : await prefs.destroy('auto-correct')
+		state ?
+			await prefs.setKey('1', 'auto-correct')
+		:	await prefs.destroy('auto-correct')
 		setAutoCorrect(state ? true : undefined)
 	}
 
@@ -257,8 +279,7 @@ export const Preferences = ({
 				bg='$color1'
 				items='center'
 				justify='space-evenly'
-				flexDirection={isPortrait ? 'column' : 'row'}
-			>
+				flexDirection={isPortrait ? 'column' : 'row'}>
 				<View gap='$4'>
 					<View>
 						<Label htmlFor='key'>{t('api_key')}</Label>
@@ -270,31 +291,39 @@ export const Preferences = ({
 							secureTextEntry
 						/>
 					</View>
-					<Button
-						disabled={stateKey === '' || loading.key}
-						onPress={handleKey}>
-						{loading.key ? <Spinner /> : t('save')}
+					<Button disabled={stateKey === '' || loading.key} onPress={handleKey}>
+						{loading.key ?
+							<Spinner />
+						:	t('save')}
 					</Button>
-					<Button
-						disabled={loading.public}
-						onPress={handlePublic}
-					>{loading.public ? <Spinner /> : t('public_key')}</Button>
+					<Button disabled={loading.public} onPress={handlePublic}>
+						{loading.public ?
+							<Spinner />
+						:	t('public_key')}
+					</Button>
 				</View>
 				<YStack>
-					<XStack gap='$2' items="center" justify='center'>
+					<XStack gap='$2' items='center' justify='center'>
 						<Checkbox
 							disabled={loading.protection}
 							checked={!!Protected || loading.protection}
 							id='protection'
 							onCheckedChange={handleProtection}>
 							<Checkbox.Indicator>
-								{loading.protection ? <Spinner /> : <Check />}
+								{loading.protection ?
+									<Spinner />
+								:	<Check />}
 							</Checkbox.Indicator>
 						</Checkbox>
 						<Label htmlFor='protection'>{t('protect_key')}</Label>
-						<Over content={
-							<Text>{Protected ? (t('unprotection_details')) : t('protection_details')}</Text>
-						}>
+						<Over
+							content={
+								<Text>
+									{Protected ?
+										t('unprotection_details')
+									:	t('protection_details')}
+								</Text>
+							}>
 							<Button chromeless circular size='$2' icon={Info} />
 						</Over>
 					</XStack>
@@ -308,9 +337,7 @@ export const Preferences = ({
 							</Checkbox.Indicator>
 						</Checkbox>
 						<Label htmlFor='quota'>{t('enable_quota')}</Label>
-						<Over content={
-							<Text>{t('quota_details')}</Text>
-						}>
+						<Over content={<Text>{t('quota_details')}</Text>}>
 							<Button chromeless circular size='$2' icon={Info} />
 						</Over>
 					</XStack>

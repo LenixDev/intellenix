@@ -1,36 +1,36 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
-import type { GetKey, SupaKeyArgs, SupaProtect, SupaPublic } from '../../../types.ts'
+import type {
+	GetKey,
+	SupaKeyArgs,
+	SupaProtect,
+	SupaPublic
+} from '../../../types.ts'
 import { init, supabase } from '../__shared/index.ts'
 
 Deno.serve(async req => {
 	const [success, res] = init(req)
 	if (!success) return res
 
-	const Data = await req.json() as SupaKeyArgs
+	const Data = (await req.json()) as SupaKeyArgs
 	const key = Deno.env.get('API_KEY')
 
 	if (Data.type === 'get') {
-		if (typeof key !== 'string') return new Response(
-			JSON.stringify({ error: 'missing key'} satisfies GetKey),
-			{ headers: res }
-		)
+		if (typeof key !== 'string')
+			return new Response(
+				JSON.stringify({ error: 'missing key' } satisfies GetKey),
+				{ headers: res }
+			)
 
 		if (Data.id) {
-			const { error } = await supabase
-				.from('quota')
-				.delete()
-				.eq('id', Data.id)
-			if (error) return new Response(
-				JSON.stringify({ error: error.message }),
-				{
+			const { error } = await supabase.from('quota').delete().eq('id', Data.id)
+			if (error)
+				return new Response(JSON.stringify({ error: error.message }), {
 					headers: res,
 					status: 400
-				}
-			)
+				})
 		}
 
-		return new Response(
-			JSON.stringify(key satisfies GetKey), {
+		return new Response(JSON.stringify(key satisfies GetKey), {
 			headers: res
 		})
 	}
@@ -41,13 +41,11 @@ Deno.serve(async req => {
 			.update({ api_key: Data.key })
 			.eq('id', Data.id)
 
-		if (error) return new Response(
-			JSON.stringify({ error: error.message }),
-			{
+		if (error)
+			return new Response(JSON.stringify({ error: error.message }), {
 				headers: res,
 				status: 400
-			}
-		)
+			})
 
 		return new Response(null, { headers: res })
 	}
@@ -59,28 +57,23 @@ Deno.serve(async req => {
 				.update({ api_key: key })
 				.eq('id', Data.id)
 
-			if (error) return new Response(
-				JSON.stringify({ error: error.message }),
-				{
+			if (error)
+				return new Response(JSON.stringify({ error: error.message }), {
 					headers: res,
 					status: 400
-				}
-			)
+				})
 		}
 
-		if (typeof key !== 'string') return new Response(
-			JSON.stringify({ error: 'missing key'}),
-			{
+		if (typeof key !== 'string')
+			return new Response(JSON.stringify({ error: 'missing key' }), {
 				headers: res,
 				status: 400
-			}
-		)
-		return new Response(
-			JSON.stringify(key satisfies SupaPublic),
-			{ headers: res }
-		)
+			})
+		return new Response(JSON.stringify(key satisfies SupaPublic), {
+			headers: res
+		})
 	}
-	
+
 	const { error, data } = await supabase
 		.from('quota')
 		.select('id')
@@ -96,15 +89,15 @@ Deno.serve(async req => {
 				.select('id')
 				.single<{ id: string }>()
 
-			if (error) return new Response(
-				JSON.stringify({ error: error.message } satisfies SupaProtect),
-				{ headers: res }
-			)
+			if (error)
+				return new Response(
+					JSON.stringify({ error: error.message } satisfies SupaProtect),
+					{ headers: res }
+				)
 
-			return new Response(
-				JSON.stringify(data.id satisfies SupaProtect),
-				{ headers: res }
-			)
+			return new Response(JSON.stringify(data.id satisfies SupaProtect), {
+				headers: res
+			})
 		}
 		return new Response(
 			JSON.stringify({ error: error.message } satisfies SupaProtect),

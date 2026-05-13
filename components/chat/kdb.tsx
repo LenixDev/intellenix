@@ -8,13 +8,19 @@ export const Kdb = ({ isMac }: { isMac: boolean }) => {
 	return (
 		<XStack flexDirection='row' items='center' gap='$2'>
 			<View flexDirection='row' items='center' gap='$1'>
-				<Text color='$color06' fontSize='$1'>{t('press')}</Text>
+				<Text color='$color06' fontSize='$1'>
+					{t('press')}
+				</Text>
 				<Kbd size={10}>Tab</Kbd>
-				<Text color='$color06' fontSize='$1'>{t('to_focus')}</Text>
+				<Text color='$color06' fontSize='$1'>
+					{t('to_focus')}
+				</Text>
 			</View>
 			<Separator vertical height={12} borderColor='$color02' />
 			<View flexDirection='row' gap='$1' items='center'>
-				<Text color='$color06' fontSize='$1'>{t('press')}</Text>
+				<Text color='$color06' fontSize='$1'>
+					{t('press')}
+				</Text>
 				<View flexDirection='row' items='center'>
 					<Kbd size={10}>
 						{isMac ?
@@ -24,7 +30,9 @@ export const Kdb = ({ isMac }: { isMac: boolean }) => {
 					<Text> + </Text>
 					<Kbd size={10}>Enter</Kbd>
 				</View>
-				<Text color='$color06' fontSize='$1'>{t('to_send')}</Text>
+				<Text color='$color06' fontSize='$1'>
+					{t('to_send')}
+				</Text>
 			</View>
 		</XStack>
 	)
