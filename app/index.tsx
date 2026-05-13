@@ -269,7 +269,7 @@ export default function Page() {
 				{conversations.length > 0 && (
 					<Conversation {...{ conversations, isPortrait, aiThinking }} />
 				)}
-				<View flexDirection={'row'} items='center' width='100%' gap='$1'>
+				<View flexDirection='row' items='center' width='100%'>
 					<View
 						flex={1}
 						bg='$color3'
@@ -354,7 +354,7 @@ export default function Page() {
 						</View>
 					</View>
 				</View>
-				<View flexDirection='row' items='center' gap='$2'>
+				<View flexDirection='row' items='center' gap='$2' mt='$2'>
 					{!('ontouchstart' in window) && (
 						<>
 							<Kdb {...{ isMac }} />
