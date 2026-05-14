@@ -12,7 +12,7 @@ import {
 } from 'tamagui'
 import { Copy } from './copy'
 import { toast } from '@tamagui/toast/v2'
-import { Pencil, Reply } from '@tamagui/lucide-icons-2'
+import { Pencil, RefreshCw, Reply } from '@tamagui/lucide-icons-2'
 import { createPortal } from 'react-dom'
 
 export const Conversation = ({
@@ -41,6 +41,7 @@ export const Conversation = ({
 
 	const scrollRef = useRef<ScrollView>(null)
 	const lastMessageRef = useRef<TamaguiElement>(null)
+	const ref = useRef<TamaguiElement>(null)
 
 	useEffect(() => {
 		const handler = () => {
@@ -71,6 +72,10 @@ export const Conversation = ({
 		const node = lastMessageRef.current as unknown as HTMLElement
 		node?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 	}, [conversations])
+
+	useEffect(() => {
+    if (messageEditing) ref.current?.focus()
+}, [messageEditing])
 
 	return (
 		<>
@@ -104,6 +109,7 @@ export const Conversation = ({
 								onMouseLeave={() => setHover({ [$.date]: false })}>
 								{messageEditing?.[$.date] !== undefined && (
 									<TextArea
+										ref={ref}
 										value={messageEditing[$.date]}
 										onChangeText={value => setMessageEditing({ [$.date]: value })}
 										width='100%'
@@ -124,7 +130,7 @@ export const Conversation = ({
 										opacity={hover[$.date] ? 1 : 0}
 										chromeless
 										circular
-										icon={Pencil}
+										icon={messageEditing?.[$.date] ? RefreshCw : Pencil}
 										size='$2'
 										onPress={event => {
 											event.stopPropagation()
@@ -141,6 +147,8 @@ export const Conversation = ({
 												}}
 											>Cancel</Button>
 											<Button
+												disabled={messageEditing[$.date] === $.content}
+												theme='accent'
 												onPress={event => {
 													event.stopPropagation()
 													setMessageEditing(undefined)
