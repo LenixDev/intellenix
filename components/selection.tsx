@@ -57,7 +57,8 @@ export const Selection = <T extends string>({
 				bg='$background'
 				rounded='$4'
 				borderWidth={1}
-				borderColor='$borderColor'>
+				borderColor='$borderColor'
+				maxW='20%'>
 				<Select.Group>
 					<Select.Label fontWeight='100'>{listLabel}</Select.Label>
 					{children}

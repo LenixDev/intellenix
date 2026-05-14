@@ -128,10 +128,12 @@ export const Preferences = ({
 		() =>
 			items.map((item, iter) => (
 				<Select.Item index={iter} key={item.id} value={item.id}>
-					<View>
-						<Select.ItemText>{item.id}</Select.ItemText>
+					<View flex={1} overflow='hidden'>
+						<Select.ItemText whiteSpace='normal' wordWrap='break-word'>
+							{item.id}
+						</Select.ItemText>
 						<View flexDirection='row'>
-							<Select.ItemText color='$color7' fontSize='$2'>
+							<Select.ItemText color='$color7' fontSize='$2' whiteSpace='normal' wordWrap='break-word'>
 								{t('by')} {item.owned_by}&nbsp;
 							</Select.ItemText>
 							<Select.ItemText color='$color7' fontSize='$2'>
@@ -367,7 +369,7 @@ export const Preferences = ({
 				<View>
 					<Label>{t('models')}</Label>
 					<Selection
-						renderer={value => items.find(item => item.id === value)?.id}
+						renderer={value => items.find(item => item.id === value)?.id ?? value}
 						listLabel={t('models')}
 						{...{
 							item,
