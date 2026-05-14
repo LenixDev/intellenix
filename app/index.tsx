@@ -137,7 +137,8 @@ export default function Page() {
 		)
 
 	const send = async (request = message) => {
-		if (!request.trim()) return toast.info(t('not_yet'))
+		console.debug(request)
+		if (request === '') return toast.info(t('not_yet'))
 		setConversations(prev => [
 			...prev,
 			{

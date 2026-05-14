@@ -1,4 +1,4 @@
-import { Plus, AudioLines, Send, Mic } from "@tamagui/lucide-icons-2"
+import { Plus, AudioLines, Send, Mic, Square } from "@tamagui/lucide-icons-2"
 import { toast } from "@tamagui/toast/v2"
 import { t } from "i18next"
 import { View, Button } from "tamagui"
@@ -108,14 +108,12 @@ export const InputBar = ({
 							<Button
 								circular
 								chromeless
-								icon={message.trim() ? Send : Mic}
-								disabled={aiThinking || r_tPM}
-								onPress={send}
-								size='$3'
-								hoverStyle={{
-									borderColor: '$color6',
-									bg: '$background08'
+								icon={aiThinking ? Square : message !== '' ? Send : Mic}
+								disabled={r_tPM}
+								onPress={() => {
+									aiThinking ? toast.info(t('not_yet')) : send()
 								}}
+								size='$3'
 							/>
 						</View>
 					</View>
