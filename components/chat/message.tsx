@@ -11,7 +11,6 @@ export const Message = ({
 	aiThinking,
 	apiKey,
 	isMac,
-	style,
 	isMultiLine,
 	setIsMultiLine,
 	quotaDisplayed,
@@ -26,8 +25,7 @@ export const Message = ({
 	isMultiLine: boolean
 	setIsMultiLine: (isMultiLine: boolean) => void
 	quotaDisplayed: boolean | undefined
-} & TextAreaProps
-	& BaseStyleProps) => {
+} & TextAreaProps) => {
 	const { t } = useTranslation()
 	const narrowWidth = useRef<number>(0)
 
@@ -56,7 +54,7 @@ export const Message = ({
 	}, [message])
 
 	return (
-		<View flexDirection='row' {...{ style }}>
+		<View flexDirection='row' style={{ flex: 1 }}>
 			<TextArea
 				onInput={event => {
 					const el = event.currentTarget as unknown as HTMLTextAreaElement

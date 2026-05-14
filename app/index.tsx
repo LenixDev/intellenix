@@ -292,7 +292,6 @@ export default function Page() {
 							<Message
 								autoComplete={autoComplete ? 'on' : 'off'}
 								autoCorrect={autoCorrect ? 'on' : 'off'}
-								style={{ flex: 1 }}
 								{...{
 									message,
 									setMessage,

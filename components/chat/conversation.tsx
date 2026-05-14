@@ -7,7 +7,9 @@ import {
 	View,
 	Button,
 	Spinner,
-	TamaguiElement
+	TamaguiElement,
+	Input,
+	TextArea
 } from 'tamagui'
 import { Copy } from './copy'
 import { toast } from '@tamagui/toast/v2'
@@ -30,6 +32,8 @@ export const Conversation = ({
 		x: number
 		y: number
 	} | null>(null)
+	const [messageEditing, setMessageEditing] = useState<string>()
+	const [message, setMessage] = useState<string>('')
 
 	const { t } = useTranslation()
 
@@ -69,6 +73,7 @@ export const Conversation = ({
 				py='$10'
 				px={isPortrait ? '$2' : '$5'}
 				flex={1}
+				/* TODO: move this */
 				onContentSizeChange={() => {
 					const node = lastMessageRef.current as unknown as HTMLElement
 					node?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -91,6 +96,23 @@ export const Conversation = ({
 								onClick={() => setShown({ [$.date]: !shown[$.date] })}
 								onMouseEnter={() => setHover({ [$.date]: true })}
 								onMouseLeave={() => setHover({ [$.date]: false })}>
+								{messageEditing === $.date && (
+									<TextArea
+										value={message}
+										onChangeText={setMessage}
+										width='100%'
+										style={{
+											scrollbarWidth: 'none',
+											resize: 'block',
+										}}
+										onInput={event => {
+											const el = event.currentTarget as unknown as HTMLTextAreaElement
+											el.style.height = 'auto'
+											el.style.height = `${el.scrollHeight}px`
+										}}
+										onPress={event => event.stopPropagation()}
+									/>
+								)}
 								<View flexDirection='row' items='center' gap='$3'>
 									<Button
 										opacity={hover[$.date] ? 1 : 0}
@@ -99,21 +121,36 @@ export const Conversation = ({
 										icon={Pencil}
 										size='$2'
 										onPress={event => {
-											toast.info(t('not_yet'))
 											event.stopPropagation()
+											setMessageEditing($.date)
+											setMessage($.content)
 										}}
 									/>
 									<Copy text={$.content} opacity={hover[$.date] ? 1 : 0} />
-									<Text
-										py='$2'
-										px='$3'
-										maxW='100%'
-										color='$colorFocus'
-										bg='$color1'
-										rounded='$5'
-										onPress={event => event.stopPropagation()}>
-										{$.content}
-									</Text>
+									{messageEditing === $.date ? (
+										<>
+											<Button
+												onPress={event => {
+													event.stopPropagation()
+													setMessageEditing(undefined)
+												}}
+											>Cancel</Button>
+											<Button
+												onPress={event => event.stopPropagation()}
+											>Revision</Button>
+										</>
+									) : (
+										<Text
+											py='$2'
+											px='$3'
+											maxW='100%'
+											color='$colorFocus'
+											bg='$color1'
+											rounded='$5'
+											onPress={event => event.stopPropagation()}>
+											{$.content}
+										</Text>
+									)}
 								</View>
 								<View gap={0} items='flex-end' opacity={shown[$.date] ? 1 : 0}>
 									<Text color='$color04' fontSize='$1'>
