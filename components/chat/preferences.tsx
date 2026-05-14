@@ -129,14 +129,14 @@ export const Preferences = ({
 			items.map((item, iter) => (
 				<Select.Item index={iter} key={item.id} value={item.id}>
 					<View flex={1} overflow='hidden'>
-						<Select.ItemText whiteSpace='normal' wordWrap='break-word'>
+						<Select.ItemText whiteSpace='normal'>
 							{item.id}
 						</Select.ItemText>
 						<View flexDirection='row'>
-							<Select.ItemText color='$color7' fontSize='$2' whiteSpace='normal' wordWrap='break-word'>
+							<Select.ItemText color='$color7' fontSize='$2' whiteSpace='normal'>
 								{t('by')} {item.owned_by}&nbsp;
 							</Select.ItemText>
-							<Select.ItemText color='$color7' fontSize='$2'>
+							<Select.ItemText color='$color7' fontSize='$2' whiteSpace='normal'>
 								{t('on')}{' '}
 								{new Date(item.created * 1000).toLocaleDateString(undefined, {
 									year: 'numeric',
