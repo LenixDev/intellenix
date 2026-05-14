@@ -1,11 +1,8 @@
 import { Api } from '@/components/chat/api'
 import { Conversation } from '@/components/chat/conversation'
-import { Kdb } from '@/components/chat/kdb'
-import { Message } from '@/components/chat/message'
+import { InputBar } from '@/components/chat/input-bar'
+import { InputPreferences } from '@/components/chat/input-prefs'
 import { Preferences } from '@/components/chat/preferences'
-import { Quota } from '@/components/chat/quota'
-import { Send } from '@/components/chat/send'
-import { Tasks } from '@/components/chat/tasks'
 import { defaultModel } from '@/constants'
 import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
@@ -18,7 +15,6 @@ import type {
 	SupaKeyArgs,
 	SupaProtect
 } from '@/types'
-import { AudioLines, Plus, SlidersHorizontal } from '@tamagui/lucide-icons-2'
 import { toast } from '@tamagui/toast/v2'
 import Groq from 'groq-sdk'
 import { raise } from 'lenix'
@@ -27,7 +23,6 @@ import { useTranslation } from 'react-i18next'
 import {
 	Button,
 	Image,
-	Separator,
 	useThemeName,
 	useWindowDimensions,
 	View
@@ -270,116 +265,32 @@ export default function Page() {
 				{conversations.length > 0 && (
 					<Conversation {...{ conversations, isPortrait, aiThinking, send, setConversations }} />
 				)}
-				<View flexDirection='row' items='center' width='100%'>
-					<View
-						flex={1}
-						bg='$color3'
-						rounded='$8'
-						px='$2'
-						py='$2'
-						{...(isMultiLine ? { pt: '$3' } : {})}
-						justify='center'
-						border='1px solid $color6'>
-						<View
-							flexDirection={isMultiLine ? 'column' : 'row'}
-							{...(isMultiLine ?
-								{
-									gap: '$2'
-								}
-							:	{
-									justify: 'space-between',
-									items: 'center'
-								})}>
-							<Message
-								autoComplete={autoComplete ? 'on' : 'off'}
-								autoCorrect={autoCorrect ? 'on' : 'off'}
-								{...{
-									message,
-									setMessage,
-									send,
-									aiThinking,
-									apiKey: key,
-									isMac,
-									isMultiLine,
-									setIsMultiLine,
-									quotaDisplayed
-								}}
-							/>
-							<View
-								flexDirection='row'
-								justify='space-between'
-								items='center'
-								{...(isMultiLine ? {} : { style: { display: 'contents' } })}>
-								<Button
-									chromeless
-									circular
-									size='$3'
-									iconSize='$6'
-									icon={Plus}
-									onPress={() => toast.info(t('not_yet'))}
-									style={{ order: -1 }}
-									hoverStyle={{
-										borderColor: '$color6',
-										bg: '$background08'
-									}}
-									mr='$1'
-								/>
-								<View
-									flexDirection='row'
-									justify='flex-end'
-									gap='$1'
-									items='center'>
-									<Button
-										chromeless
-										circular
-										// ml='$3'
-										size='$3'
-										icon={AudioLines}
-										onPress={() => toast.info(t('not_yet'))}
-										hoverStyle={{
-											borderColor: '$color6',
-											bg: '$background08'
-										}}
-									/>
-									<Send
-										{...{
-											content: message,
-											send,
-											aiThinking,
-											r_tPM: false /* TODO: block when quota exceeded */
-										}}
-									/>
-								</View>
-							</View>
-						</View>
-					</View>
-				</View>
-				<View flexDirection='row' items='center' gap='$2' mt='$2'>
-					{!('ontouchstart' in window) && (
-						<>
-							<Kdb {...{ isMac }} />
-							<Separator vertical height={12} borderColor='$color02' />
-						</>
-					)}
-					{quotaDisplayed && (
-						<>
-							<Quota {...{ quota, apiKey: key, model }} />
-							<Separator vertical height={12} borderColor='$color02' />
-						</>
-					)}
-					<Button
-						chromeless
-						size='$3'
-						icon={SlidersHorizontal}
-						onPress={() => setSheetOpen(true)}
-						hoverStyle={{
-							borderColor: '$color6',
-							bg: '$background08'
-						}}
-					/>
-					<Separator vertical height={12} borderColor='$color02' />
-					<Tasks />
-				</View>
+				<InputBar
+					{...{
+						autoComplete,
+						autoCorrect,
+						message,
+						setMessage,
+						send,
+						aiThinking,
+						apiKey: key,
+						isMac,
+						isMultiLine,
+						setIsMultiLine,
+						quotaDisplayed,
+						r_tPM: false
+					}}
+				/>
+				<InputPreferences
+					{...{
+						isMac,
+						quotaDisplayed,
+						quota,
+						apiKey: key,
+						model,
+						setSheetOpen
+					}}
+				/>
 			</View>
 			{conversations.length === 0 && (
 				<Image
