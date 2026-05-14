@@ -11,5 +11,5 @@
 - [ ] do something about sheets bug when navigating with the tab to it
 - [ ] interupt the ai
 - [x] loading state
-- [ ] edit sent messages
+- [x] edit sent messages
 - [x] add a use public key and remerge user to the public insttead of inserting new row

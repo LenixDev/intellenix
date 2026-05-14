@@ -85,10 +85,6 @@ export const Conversation = ({
 				py='$10'
 				px={isPortrait ? '$2' : '$5'}
 				flex={1}
-				/* TODO: move this */
-				onContentSizeChange={() => {
-					
-				}}
 				// @ts-ignore
 				scrollbarWidth='none'>
 				{conversations.map(($, i) => {
