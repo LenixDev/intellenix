@@ -18,7 +18,7 @@ import type {
 import { toast } from '@tamagui/toast/v2'
 import Groq from 'groq-sdk'
 import { raise } from 'lenix'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	Button,
@@ -48,6 +48,8 @@ export default function Page() {
 	const [quotaDisplayed, setQuotaDisplayed] = useState<boolean>()
 	const [autoComplete, setAutoComplete] = useState<boolean>()
 	const [autoCorrect, setAutoCorrect] = useState<boolean>()
+
+	const abortRef = useRef<AbortController | null>(null)
 
 	const { t } = useTranslation()
 	const theme = useThemeName()
@@ -137,8 +139,9 @@ export default function Page() {
 		)
 
 	const send = async (request = message) => {
-		console.debug(request)
 		if (request === '') return toast.info(t('not_yet'))
+		const { signal } = abortRef.current = new AbortController()
+
 		setConversations(prev => [
 			...prev,
 			{
@@ -172,7 +175,7 @@ export default function Page() {
 			}
 			let result
 			if (groq && !quotaDisplayed)
-				result = await groq?.chat.completions.create(params).withResponse()
+				result = await groq?.chat.completions.create(params, { signal }).withResponse()
 			else
 				result = await supabase.functions
 					.invoke<GroqFn>('groq', {
@@ -183,6 +186,7 @@ export default function Page() {
 						} satisfies GroqParams
 					})
 					.then(({ error, data }) => {
+						if (signal.aborted) return null
 						if (error instanceof Error || !data) {
 							toast.error(t('err'), {
 								description: error.message
@@ -195,7 +199,7 @@ export default function Page() {
 						}
 						return data
 					})
-			if (!result) return
+			if (!result || signal.aborted) return
 			const { choices, service_tier, usage } = result.data
 			if ('rateLimits' in result)
 				setQuota({
@@ -232,12 +236,14 @@ export default function Page() {
 			])
 		} catch (err: any) {
 			setConversations(prev => prev.slice(0, prev.length - 1))
-			toast.error(t('conn_err'), {
-				description: err?.error?.error?.message,
-				duration: 40_000
-			})
 			setMessage(request)
-			raise(err)
+			if (err?.message !== 'Request was aborted.') {
+				toast.error(t('conn_err'), {
+					description: err?.error?.error?.message,
+					duration: 40_000
+				})
+				raise(err)
+			}
 		} finally {
 			setAiThinking(false)
 		}
@@ -279,7 +285,8 @@ export default function Page() {
 						isMultiLine,
 						setIsMultiLine,
 						quotaDisplayed,
-						r_tPM: false
+						r_tPM: false,
+						abort: () => abortRef.current?.abort()
 					}}
 				/>
 				<InputPreferences

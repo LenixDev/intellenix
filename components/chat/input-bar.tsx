@@ -17,7 +17,8 @@ export const InputBar = ({
 	isMultiLine,
 	setIsMultiLine,
 	quotaDisplayed,
-	r_tPM
+	r_tPM,
+	abort
 }: {
 	autoComplete: boolean | undefined
 	autoCorrect: boolean | undefined
@@ -31,6 +32,7 @@ export const InputBar = ({
 	setIsMultiLine: S<boolean>
 	quotaDisplayed: boolean | undefined
 	r_tPM: boolean
+	abort: () => void
 }) => {
 	return (
 		<View flexDirection='row' items='center' width='100%'>
@@ -110,9 +112,7 @@ export const InputBar = ({
 								chromeless
 								icon={aiThinking ? Square : message !== '' ? Send : Mic}
 								disabled={r_tPM}
-								onPress={() => {
-									aiThinking ? toast.info(t('not_yet')) : send()
-								}}
+								onPress={() => aiThinking ? abort() : send()}
 								size='$3'
 							/>
 						</View>

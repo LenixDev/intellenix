@@ -68,7 +68,6 @@ export const Message = ({
 
 					el.style.height = 'auto'
 					el.style.height = `${el.scrollHeight}px`
-					console.debug(textWidth, narrowWidth.current, overflows)
 					setIsMultiLine(overflows)
 				}}
 				onBlur={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
