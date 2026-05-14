@@ -14,6 +14,7 @@ import { Copy } from './copy'
 import { toast } from '@tamagui/toast/v2'
 import { Pencil, RefreshCw, Reply } from '@tamagui/lucide-icons-2'
 import { createPortal } from 'react-dom'
+import { RichText } from '../rich-text'
 
 export const Conversation = ({
 	conversations,
@@ -189,16 +190,14 @@ export const Conversation = ({
 								items='flex-end'
 								gap='$3'
 								rounded={shown[$.date] || hover[$.date] ? '$2' : undefined}>
-								<Text
+								<RichText
 									bg='$background'
 									maxW='90%'
 									self='flex-start'
-									color='$color'
 									data-assistant='true'
-									fontWeight='200'
 									onPress={event => event.stopPropagation()}>
 									{$.content}
-								</Text>
+								</RichText>
 								<Copy text={$.content} opacity={hover[$.date] ? 1 : 0} />
 							</View>
 							<View gap={0} opacity={shown[$.date] ? 1 : 0}>
