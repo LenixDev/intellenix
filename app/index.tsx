@@ -141,13 +141,13 @@ export default function Page() {
 			/>
 		)
 
-	const send = async () => {
-		if (!message.trim()) return toast.info(t('not_yet'))
+	const send = async (request = message) => {
+		if (!request.trim()) return toast.info(t('not_yet'))
 		setConversations(prev => [
 			...prev,
 			{
 				date: composeId(),
-				content: message,
+				content: request,
 				role: 'user',
 				completion_tokens: t('calc')
 			}
@@ -160,7 +160,7 @@ export default function Page() {
 					...conversations.map(({ role, content }) => ({ role, content })),
 					{
 						role: 'user',
-						content: message
+						content: request
 					}
 				],
 				model
@@ -240,7 +240,7 @@ export default function Page() {
 				description: err?.error?.error?.message,
 				duration: 40_000
 			})
-			setMessage(message)
+			setMessage(request)
 			raise(err)
 		} finally {
 			setAiThinking(false)
@@ -267,7 +267,7 @@ export default function Page() {
 				flex={1}
 				justify={conversations.length === 0 ? 'center' : 'flex-end'}>
 				{conversations.length > 0 && (
-					<Conversation {...{ conversations, isPortrait, aiThinking }} />
+					<Conversation {...{ conversations, isPortrait, aiThinking, send, setConversations }} />
 				)}
 				<View flexDirection='row' items='center' width='100%'>
 					<View

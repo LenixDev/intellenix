@@ -1,4 +1,4 @@
-import type { Conversation as IConversation } from '@/types'
+import type { Conversation as IConversation, S } from '@/types'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -8,7 +8,6 @@ import {
 	Button,
 	Spinner,
 	TamaguiElement,
-	Input,
 	TextArea
 } from 'tamagui'
 import { Copy } from './copy'
@@ -19,11 +18,15 @@ import { createPortal } from 'react-dom'
 export const Conversation = ({
 	conversations,
 	isPortrait,
-	aiThinking
+	aiThinking,
+	send,
+	setConversations
 }: {
 	conversations: IConversation[]
 	isPortrait: boolean
 	aiThinking: boolean
+	send: (request: string) => void
+	setConversations: S<IConversation[]>
 }) => {
 	const [shown, setShown] = useState<Record<string, boolean>>({})
 	const [hover, setHover] = useState<Record<string, boolean>>({})
@@ -32,8 +35,7 @@ export const Conversation = ({
 		x: number
 		y: number
 	} | null>(null)
-	const [messageEditing, setMessageEditing] = useState<string>()
-	const [message, setMessage] = useState<string>('')
+	const [messageEditing, setMessageEditing] = useState<Record<string, string>>()
 
 	const { t } = useTranslation()
 
@@ -65,6 +67,11 @@ export const Conversation = ({
 		}
 	}, [])
 
+	useEffect(() => {
+		const node = lastMessageRef.current as unknown as HTMLElement
+		node?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+	}, [conversations])
+
 	return (
 		<>
 			<ScrollView
@@ -75,8 +82,7 @@ export const Conversation = ({
 				flex={1}
 				/* TODO: move this */
 				onContentSizeChange={() => {
-					const node = lastMessageRef.current as unknown as HTMLElement
-					node?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+					
 				}}
 				// @ts-ignore
 				scrollbarWidth='none'>
@@ -96,10 +102,10 @@ export const Conversation = ({
 								onClick={() => setShown({ [$.date]: !shown[$.date] })}
 								onMouseEnter={() => setHover({ [$.date]: true })}
 								onMouseLeave={() => setHover({ [$.date]: false })}>
-								{messageEditing === $.date && (
+								{messageEditing?.[$.date] !== undefined && (
 									<TextArea
-										value={message}
-										onChangeText={setMessage}
+										value={messageEditing[$.date]}
+										onChangeText={value => setMessageEditing({ [$.date]: value })}
 										width='100%'
 										style={{
 											scrollbarWidth: 'none',
@@ -122,12 +128,11 @@ export const Conversation = ({
 										size='$2'
 										onPress={event => {
 											event.stopPropagation()
-											setMessageEditing($.date)
-											setMessage($.content)
+											setMessageEditing({ [$.date]: $.content })
 										}}
 									/>
 									<Copy text={$.content} opacity={hover[$.date] ? 1 : 0} />
-									{messageEditing === $.date ? (
+									{messageEditing?.[$.date] !== undefined ? (
 										<>
 											<Button
 												onPress={event => {
@@ -136,7 +141,12 @@ export const Conversation = ({
 												}}
 											>Cancel</Button>
 											<Button
-												onPress={event => event.stopPropagation()}
+												onPress={event => {
+													event.stopPropagation()
+													setMessageEditing(undefined)
+													setConversations(prev => prev.slice(0, prev.findIndex(m => m.date === $.date)))
+													send(messageEditing[$.date])
+												}}
 											>Revision</Button>
 										</>
 									) : (

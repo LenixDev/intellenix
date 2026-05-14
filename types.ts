@@ -101,3 +101,5 @@ export interface GroqParams {
 	id: string
 	key?: string
 }
+
+export type S<T> = React.Dispatch<React.SetStateAction<T>>
