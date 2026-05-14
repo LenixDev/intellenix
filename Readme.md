@@ -9,7 +9,7 @@
 - [x] sync selection color with others
 - [x] fix auto new line after sending message in the placeholder
 - [ ] do something about sheets bug when navigating with the tab to it
-- [ ] interupt the ai
+- [x] interupt the ai
 - [x] loading state
 - [x] edit sent messages
 - [x] add a use public key and remerge user to the public insttead of inserting new row

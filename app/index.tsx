@@ -255,8 +255,8 @@ export default function Page() {
 			width='100%'
 			height='100%'
 			pb={isPortrait ? '$3' : '$5'}>
-			<View width='100%' flexDirection='row' items='center' justify='space-between' px='$5'>
-				<Image src='https://lenix.dev/favicon.svg' maxH='$5' />
+			<View width='100%' flexDirection='row' items='center' justify='space-between' px='$5' py='$2'>
+				<Image src={`https://lenix.dev/favicon-${theme}.svg`} maxH='$5' />
 				<Button
 					size='$3'
 					theme='accent'
