@@ -1,4 +1,4 @@
-import { defaultModel } from '@/constants'
+import { defaultModel, recommendedModels } from '@/constants'
 import { Check, Info } from '@tamagui/lucide-icons-2'
 import type Groq from 'groq-sdk'
 import { useEffect, useMemo, useState } from 'react'
@@ -89,6 +89,9 @@ export const Preferences = ({
 
 			const displayed = await prefs.getKey('quota')
 			if (displayed === '1') setQuotaDisplayed(true)
+
+			const model = await prefs.getKey('model')
+			if (model) setItemState(model)
 		})()
 		;(async () => {
 			if (items.length > 0) return
@@ -127,10 +130,15 @@ export const Preferences = ({
 	const renderedItems = useMemo(
 		() =>
 			items.map((item, iter) => (
-				<Select.Item index={iter} key={item.id} value={item.id}>
+				<Select.Item
+					index={iter}
+					key={item.id}
+					value={item.id}>
 					<View flex={1} overflow='hidden'>
-						<Select.ItemText whiteSpace='normal'>
-							{item.id}
+							{/* @ts-ignore */}
+							<Select.ItemText whiteSpace='normal' {...(recommendedModels.includes(item.id) ? { color: 'cyan' } : {})}>
+							{/* @ts-ignore */}
+							{item.id} {recommendedModels.includes(item.id) && `(${t('recommended')})`}
 						</Select.ItemText>
 						<View flexDirection='row'>
 							<Select.ItemText color='$color7' fontSize='$2' whiteSpace='normal'>

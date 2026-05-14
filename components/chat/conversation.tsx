@@ -121,7 +121,7 @@ export const Conversation = ({
 										onPress={event => event.stopPropagation()}
 									/>
 								)}
-								<View flexDirection='row' items='center' gap='$3'>
+								<View flexDirection='row' items='flex-end' gap='$3'>
 									<Button
 										opacity={hover[$.date] ? 1 : 0}
 										chromeless
@@ -186,6 +186,7 @@ export const Conversation = ({
 							onMouseLeave={() => setHover({ [$.date]: false })}>
 							<View
 								flexDirection='row'
+								items='flex-end'
 								gap='$3'
 								rounded={shown[$.date] || hover[$.date] ? '$2' : undefined}>
 								<Text
@@ -194,6 +195,7 @@ export const Conversation = ({
 									self='flex-start'
 									color='$color'
 									data-assistant='true'
+									fontWeight='200'
 									onPress={event => event.stopPropagation()}>
 									{$.content}
 								</Text>
