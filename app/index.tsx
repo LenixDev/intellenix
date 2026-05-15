@@ -55,6 +55,7 @@ export default function Page() {
 	const [quotaDisplayed, setQuotaDisplayed] = useState<boolean>()
 	const [autoComplete, setAutoComplete] = useState<boolean>()
 	const [autoCorrect, setAutoCorrect] = useState<boolean>()
+	const [topic, setTopic] = useState('')
 
 	const abortRef = useRef<AbortController | null>(null)
 
@@ -271,7 +272,7 @@ export default function Page() {
 						{t('continue_google')}
 					</Button>
 				) : (
-					<Text>Topic</Text>
+					<Text>{topic}</Text>
 				)}
 			</View>
 			<View
@@ -312,21 +313,19 @@ export default function Page() {
 				</>) : (
 					<Topic
 						{...{
-							send
+							send,
+							topic,
+							setTopic
 						}}
 					/>
 				)}
 			</View>
 			{conversations.length === 0 && (
-				<>
-					<Image
-						height='$4'
-						src={`https://console.groq.com/powered-by-groq-${theme}.svg`}
-						alt='Powered by Groq for fast inference.'
-					/>
-					x
-					<Image src={`https://lenix.dev/favicon-${theme}.svg`} maxH='$5' width='$true' />
-				</>
+				<Image
+					height='$4'
+					src={`https://console.groq.com/powered-by-groq-${theme}.svg`}
+					alt='Powered by Groq for fast inference.'
+				/>
 			)}
 			<Preferences
 				{...{

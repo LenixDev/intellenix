@@ -1,13 +1,16 @@
-import { useState } from "react"
+import { S } from "@/types"
 import { useTranslation } from "react-i18next"
 import { Button, Input, Label, YStack } from "tamagui"
 
 export const Topic = ({
-	send
+	send,
+	topic,
+	setTopic
 }: {
 	send: (request?: string) => void
+	topic: string
+	setTopic: S<string>
 }) => {
-	const [topic, setTopic] = useState('')
 	const { t } = useTranslation()
 
 	return (
@@ -18,6 +21,7 @@ export const Topic = ({
 				onChangeText={setTopic}
 				id='topic'
 				placeholder={t('conversation_topic')}
+				fontSize={16}
 			/>
 			<Button
 				chromeless

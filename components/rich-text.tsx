@@ -15,7 +15,7 @@ const components: Components = {
   li: ({ children }) => (
     <View flexDirection='row' gap='$2'>
       <Text>•</Text>
-      <Text>{children}</Text>
+      <Text fontWeight='200'>{children}</Text>
     </View>
   ),
   blockquote: ({ children }) => (
