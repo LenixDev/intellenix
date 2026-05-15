@@ -135,9 +135,7 @@ export const Preferences = ({
 					key={item.id}
 					value={item.id}>
 					<View flex={1} overflow='hidden'>
-							{/* @ts-ignore */}
 							<Select.ItemText whiteSpace='normal' {...(recommendedModels.includes(item.id) ? { color: 'cyan' } : {})}>
-							{/* @ts-ignore */}
 							{item.id} {recommendedModels.includes(item.id) && `(${t('recommended')})`}
 						</Select.ItemText>
 						<View flexDirection='row'>

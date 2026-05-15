@@ -13,3 +13,9 @@
 - [x] loading state
 - [x] edit sent messages
 - [x] add a use public key and remerge user to the public insttead of inserting new row
+- [ ] implement the authentication
+- [ ] implement the assets upload
+- [ ] implement the voice chat
+- [ ] implement the dictate
+- [ ] implement topics, tasks
+- [ ] add conversations storage

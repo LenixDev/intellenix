@@ -9,4 +9,4 @@ export const recommendedModels = [
 	'whisper-large-v3-turbo',
 	'groq/compound',
 	'groq/compound-mini',
-] as const
+]
