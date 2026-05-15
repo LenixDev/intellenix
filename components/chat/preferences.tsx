@@ -259,7 +259,7 @@ export const Preferences = ({
 		if (typeof state !== 'boolean') return
 
 		state ?
-			await prefs.setKey('1', 'auto-complete')
+			await prefs.setKey('0', 'auto-complete')
 		:	await prefs.destroy('auto-complete')
 		setAutoComplete(state ? true : undefined)
 	}
@@ -268,7 +268,7 @@ export const Preferences = ({
 		if (typeof state !== 'boolean') return
 
 		state ?
-			await prefs.setKey('1', 'auto-correct')
+			await prefs.setKey('0', 'auto-correct')
 		:	await prefs.destroy('auto-correct')
 		setAutoCorrect(state ? true : undefined)
 	}

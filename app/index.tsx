@@ -130,10 +130,12 @@ export default function Page() {
 			if (quota === '1') setQuotaDisplayed(true)
 
 			const autoComplete = await prefs.getKey('auto-complete')
-			if (autoComplete === '1') setAutoComplete(true)
+			if (autoComplete === '0') setAutoComplete(false)
+			else setAutoComplete(true)
 
 			const autoCorrect = await prefs.getKey('auto-correct')
-			if (autoCorrect === '1') setAutoCorrect(true)
+			if (autoCorrect === '0') setAutoCorrect(false)
+			else setAutoCorrect(true)
 		})()
 	}, [])
 
