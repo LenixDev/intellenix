@@ -47,7 +47,7 @@ Deno.serve(async req => {
 				status: 400
 			})
 
-		return new Response(null, { headers: res })
+		return new Response(JSON.stringify('ok'), { headers: res })
 	}
 
 	if (Data.type === 'public') {

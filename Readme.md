@@ -19,3 +19,4 @@
 - [ ] implement the dictate
 - [x] implement topics, tasks
 - [ ] add conversations storage
+- [x] dynamic prompt modifier

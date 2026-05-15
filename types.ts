@@ -100,4 +100,10 @@ export interface SupaList {
 
 export interface SupaPrompt {
 	return: string | PostgrestError
+	args: {
+		type: 'get'
+	} | {
+		type: 'update'
+		prompt: string
+	}
 }

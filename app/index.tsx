@@ -133,7 +133,11 @@ export default function Page() {
 			if (autoCorrect === '0') setAutoCorrect(false)
 			else setAutoCorrect(true)
 
-			const { error, data } = await supabase.functions.invoke<Extract<SupaPrompt['return'], string>>('prompt')
+			const { error, data } = await supabase.functions.invoke<Extract<SupaPrompt['return'], string>>('prompt', {
+				body: {
+					type: 'get'
+				}
+			})
 			if (error || !data) return toast.error(t('err'), {
 				description: error.message
 			})
