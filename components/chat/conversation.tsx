@@ -110,6 +110,7 @@ export const Conversation = ({
 										value={messageEditing[$.date]}
 										onChangeText={value => setMessageEditing({ [$.date]: value })}
 										width='100%'
+										fontSize={16}
 										style={{
 											scrollbarWidth: 'none',
 											resize: 'none',

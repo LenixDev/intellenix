@@ -28,6 +28,7 @@ export default function Page() {
 				value={prompt}
 				onChangeText={setPrompt}
 				height='80vh'
+				fontSize={16}
 			/>
 			<Button
 				disabled={!prompt}
