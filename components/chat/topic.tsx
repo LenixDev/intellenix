@@ -12,7 +12,7 @@ export const Topic = ({
 
 	return (
 		<YStack gap='$2'>
-			<Label htmlFor='topic'>{t('what_conversation')}</Label>
+			<Label htmlFor='topic' lineHeight='$1'>{t('what_conversation')}</Label>
 			<Input
 				value={topic}
 				onChangeText={setTopic}

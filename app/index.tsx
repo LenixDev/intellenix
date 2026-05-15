@@ -26,6 +26,7 @@ import {
 	Image,
 	Input,
 	Label,
+	Text,
 	useThemeName,
 	useWindowDimensions,
 	View,
@@ -261,14 +262,17 @@ export default function Page() {
 			width='100%'
 			height='100%'
 			pb={isPortrait ? '$3' : '$5'}>
-			<View width='100%' flexDirection='row' items='center' justify='space-between' px='$5' py='$2'>
-				<Image src={`https://lenix.dev/favicon-${theme}.svg`} maxH='$5' width='$true' />
-				<Button
-					size='$3'
-					theme='accent'
-					onPress={() => toast.error(t('not_yet'))}>
-					{t('continue_google')}
-				</Button>
+			<View width='100%' items='flex-start' p='$3'>
+				{conversations.length === 0 ? (
+					<Button
+						size='$3'
+						theme='accent'
+						onPress={() => toast.error(t('not_yet'))}>
+						{t('continue_google')}
+					</Button>
+				) : (
+					<Text>Topic</Text>
+				)}
 			</View>
 			<View
 				width={isPortrait ? '95%' : '55%'}
@@ -314,11 +318,15 @@ export default function Page() {
 				)}
 			</View>
 			{conversations.length === 0 && (
-				<Image
-					height='$4'
-					src={`https://console.groq.com/powered-by-groq-${theme}.svg`}
-					alt='Powered by Groq for fast inference.'
-				/>
+				<>
+					<Image
+						height='$4'
+						src={`https://console.groq.com/powered-by-groq-${theme}.svg`}
+						alt='Powered by Groq for fast inference.'
+					/>
+					x
+					<Image src={`https://lenix.dev/favicon-${theme}.svg`} maxH='$5' width='$true' />
+				</>
 			)}
 			<Preferences
 				{...{
