@@ -51,5 +51,8 @@
 	"public_key": "Use Public Key",
 	"messages_missing": "Please send a message first!",
 	"auto_complete": "Auto Complete",
-	"auto_correct": "Auto Correct"
+	"auto_correct": "Auto Correct",
+	"what_conversation": "What topic you want this conversation to be about?",
+	"conversation_topic": "New Conversation's Topic",
+	"create_conversation": "Create New Conversation"
 }

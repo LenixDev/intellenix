@@ -15,6 +15,7 @@ import type {
 	SupaKeyArgs,
 	SupaProtect
 } from '@/types'
+import { ArrowRight } from '@tamagui/lucide-icons-2'
 import { toast } from '@tamagui/toast/v2'
 import Groq from 'groq-sdk'
 import { raise } from 'lenix'
@@ -23,10 +24,15 @@ import { useTranslation } from 'react-i18next'
 import {
 	Button,
 	Image,
+	Input,
+	Label,
 	useThemeName,
 	useWindowDimensions,
-	View
+	View,
+	XStack,
+	YStack
 } from 'tamagui'
+import { Topic } from '../components/chat/topic'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -269,36 +275,43 @@ export default function Page() {
 				items='center'
 				flex={1}
 				justify={conversations.length === 0 ? 'center' : 'flex-end'}>
-				{conversations.length > 0 && (
-					<Conversation {...{ conversations, isPortrait, aiThinking, send, setConversations }} />
+				{conversations.length > 0 ? (
+					<>
+						<Conversation {...{ conversations, isPortrait, aiThinking, send, setConversations }} />
+						<InputBar
+						{...{
+							autoComplete,
+							autoCorrect,
+							message,
+							setMessage,
+							send,
+							aiThinking,
+							apiKey: key,
+							isMac,
+							isMultiLine,
+							setIsMultiLine,
+							quotaDisplayed,
+							r_tPM: false,
+							abort: () => abortRef.current?.abort()
+						}}
+					/>
+					<InputPreferences
+						{...{
+							isMac,
+							quotaDisplayed,
+							quota,
+							apiKey: key,
+							model,
+							setSheetOpen
+						}}
+					/>
+				</>) : (
+					<Topic
+						{...{
+							send
+						}}
+					/>
 				)}
-				<InputBar
-					{...{
-						autoComplete,
-						autoCorrect,
-						message,
-						setMessage,
-						send,
-						aiThinking,
-						apiKey: key,
-						isMac,
-						isMultiLine,
-						setIsMultiLine,
-						quotaDisplayed,
-						r_tPM: false,
-						abort: () => abortRef.current?.abort()
-					}}
-				/>
-				<InputPreferences
-					{...{
-						isMac,
-						quotaDisplayed,
-						quota,
-						apiKey: key,
-						model,
-						setSheetOpen
-					}}
-				/>
 			</View>
 			{conversations.length === 0 && (
 				<Image
