@@ -112,7 +112,7 @@ export const Conversation = ({
 										width='100%'
 										style={{
 											scrollbarWidth: 'none',
-											resize: 'block',
+											resize: 'none',
 										}}
 										onInput={event => {
 											const el = event.currentTarget as unknown as HTMLTextAreaElement

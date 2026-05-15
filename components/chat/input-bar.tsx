@@ -112,7 +112,7 @@ export const InputBar = ({
 								chromeless
 								icon={aiThinking ? Square : message !== '' ? Send : Mic}
 								disabled={r_tPM}
-								onPress={() => aiThinking ? abort() : send()}
+								onPress={() => aiThinking ? abort() : message === '' ? toast.info(t('not_yet')) : send()}
 								size='$3'
 							/>
 						</View>
