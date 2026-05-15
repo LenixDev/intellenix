@@ -79,7 +79,6 @@ export type Key =
 	| 'auto-complete'
 	| 'auto-correct'
 	| 'message'
-export type Task = 'programming' | 'health'
 
 export type GroqFn =
 	| {
