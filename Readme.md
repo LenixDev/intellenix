@@ -17,5 +17,5 @@
 - [ ] implement the assets upload
 - [ ] implement the voice chat
 - [ ] implement the dictate
-- [ ] implement topics, tasks
+- [x] implement topics, tasks
 - [ ] add conversations storage

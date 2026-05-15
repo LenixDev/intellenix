@@ -6,7 +6,10 @@ import type { CompletionUsage, ModelListResponse } from 'groq-sdk/resources'
 import { PostgrestError } from '@supabase/supabase-js'
 
 export type GetKey = string | { error: PostgrestError['message'] }
-
+export type SupaPublic = string
+export type SupaProtect = string | { error: PostgrestError['message'] }
+export type KeysQuota = Record<string, Quota>
+export type Model = string
 export type SupaKeyArgs =
 	| {
 			type: 'get'
@@ -25,17 +28,6 @@ export type SupaKeyArgs =
 			type: 'public'
 			id: string | undefined | null
 	  }
-
-export type SupaPublic = string
-
-export interface SupaList {
-	fn: ModelListResponse | { error: PostgrestError['message'] }
-	args: {
-		id: string
-	}
-}
-
-export type SupaProtect = string | { error: PostgrestError['message'] }
 
 export type Conversation =
 	| {
@@ -57,8 +49,6 @@ export type Conversation =
 			completion_tokens: string | CompletionUsage['completion_tokens']
 	  }
 
-export type Model = string
-
 export type Quota = Record<
 	Model,
 	{
@@ -68,8 +58,6 @@ export type Quota = Record<
 		t_limits: string
 	}
 >
-
-export type KeysQuota = Record<string, Quota>
 
 export type Key =
 	| 'key'
@@ -95,10 +83,21 @@ export type GroqFn =
 	  }
 	| { error: PostgrestError['message'] }
 
+export type S<T> = React.Dispatch<React.SetStateAction<T>>
+
 export interface GroqParams {
 	params: ChatCompletionCreateParamsNonStreaming
 	id: string
 	key?: string
 }
 
-export type S<T> = React.Dispatch<React.SetStateAction<T>>
+export interface SupaList {
+	fn: ModelListResponse | { error: PostgrestError['message'] }
+	args: {
+		id: string
+	}
+}
+
+export interface SupaPrompt {
+	return: string | PostgrestError
+}

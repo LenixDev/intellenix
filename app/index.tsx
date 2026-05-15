@@ -6,16 +6,16 @@ import { Preferences } from '@/components/chat/preferences'
 import { defaultModel } from '@/constants'
 import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
-import type {
-	GroqFn,
-	GroqParams,
-	Conversation as IConversation,
-	KeysQuota,
-	Model,
-	SupaKeyArgs,
-	SupaProtect
+import {
+	SupaPrompt,
+	type GroqFn,
+	type GroqParams,
+	type Conversation as IConversation,
+	type KeysQuota,
+	type Model,
+	type SupaKeyArgs,
+	type SupaProtect
 } from '@/types'
-import { ArrowRight } from '@tamagui/lucide-icons-2'
 import { toast } from '@tamagui/toast/v2'
 import Groq from 'groq-sdk'
 import { raise } from 'lenix'
@@ -23,15 +23,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	Button,
-	Image,
-	Input,
-	Label,
-	Text,
+	Image, Text,
 	useThemeName,
 	useWindowDimensions,
-	View,
-	XStack,
-	YStack
+	View
 } from 'tamagui'
 import { Topic } from '../components/chat/topic'
 import { ChatCompletion } from 'groq-sdk/resources/chat/completions.mjs'
@@ -58,6 +53,7 @@ export default function Page() {
 	const [autoComplete, setAutoComplete] = useState<boolean>()
 	const [autoCorrect, setAutoCorrect] = useState<boolean>()
 	const [topic, setTopic] = useState('')
+	const [prompts, setPrompts] = useState<string>()
 
 	const abortRef = useRef<AbortController | null>(null)
 
@@ -136,6 +132,12 @@ export default function Page() {
 			const autoCorrect = await prefs.getKey('auto-correct')
 			if (autoCorrect === '0') setAutoCorrect(false)
 			else setAutoCorrect(true)
+
+			const { error, data } = await supabase.functions.invoke<Extract<SupaPrompt['return'], string>>('prompt')
+			if (error || !data) return toast.error(t('err'), {
+				description: error.message
+			})
+			setPrompts(data)
 		})()
 	}, [])
 
@@ -245,22 +247,20 @@ export default function Page() {
 		return result
 	}
 
+console.debug(prompts)
 	const send = async (request = message) => {
+		if (!prompts) return toast.error(t('err'), {
+			description: 'error loading the AI instructions'
+		})
 		const { signal } = abortRef.current = new AbortController()
 		const prompt =
 		`
-		system: {
+		# system
 			userJustStartedANewConversation: ${!started}
 			topic: ${topic}
-			instructions: [
-				you are in the production mode,
-				if userJustStartedANewConversation is true, be ready to have a conversation with the user the next request from him,
-				if userJustStartedANewConversation is true, make sure to intial the conversation regarding the entered topic without thinking outloud
-			]
-		}
-		user: {
+			instructions: ${prompts}
+		# user:
 			request: ${request}
-		}
 		`
 		if (request !== '') memoUserRequest(request)
 
