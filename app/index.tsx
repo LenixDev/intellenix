@@ -34,6 +34,8 @@ import {
 	YStack
 } from 'tamagui'
 import { Topic } from '../components/chat/topic'
+import { ChatCompletion } from 'groq-sdk/resources/chat/completions.mjs'
+import { CompletionUsage } from 'groq-sdk/resources'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -146,10 +148,7 @@ export default function Page() {
 			/>
 		)
 
-	const send = async (request = message) => {
-		if (request === '') return toast.info(t('not_yet'))
-		const { signal } = abortRef.current = new AbortController()
-
+	const memoUserRequest = (request: string) => {
 		setConversations(prev => [
 			...prev,
 			{
@@ -159,54 +158,113 @@ export default function Page() {
 				completion_tokens: t('calc')
 			}
 		])
+	}
+
+	const memoAIReponse = (usage: CompletionUsage | undefined, response: string, service_tier: ChatCompletion['service_tier']) => {
+		setConversations(prev => [
+			...prev.map(($, i, arr) => {
+				if ($.role !== 'user') return $
+				const isLast = arr.slice(i + 1).every(n => n.role !== 'user')
+				if (!isLast) return $
+				return {
+					...$,
+					completion_tokens: usage?.prompt_tokens ?? t('failed')
+				} as IConversation
+			}),
+			{
+				date: composeId(),
+				role: 'assistant',
+				content: response,
+				service_tier,
+				usage
+			}
+		])
+	}
+
+	const abortSend = (request: string, err: any) => {
+		setConversations(prev => prev.slice(0, prev.length - 1))
+		setMessage(request)
+		if (err?.message !== 'Request was aborted.') {
+			toast.error(t('conn_err'), {
+				description: err?.error?.error?.message,
+				duration: 40_000
+			})
+			raise(err)
+		}
+	}
+
+	const fireGroq = async (prompt: string, signal: AbortSignal) => {
+		const params: GroqParams['params'] = {
+			messages: [
+				...conversations.map(({ role, content }) => ({ role, content })),
+				{
+					role: 'user',
+					content: prompt
+				}
+			],
+			model
+			// temperature: null,
+			// search_settings: null,
+			// reasoning_effort: null,
+			// max_completion_tokens: null,
+			// include_reasoning: null,
+			// documents: null,
+			// compound_custom: null,
+			// tools: null,
+			// user: null
+		}
+		let result
+		if (groq && !quotaDisplayed)
+			result = await groq?.chat.completions.create(params, { signal }).withResponse()
+		else
+			result = await supabase.functions
+			.invoke<GroqFn>('groq', {
+				body: {
+					params,
+					id: id!,
+					key
+				} satisfies GroqParams
+			})
+			.then(({ error, data }) => {
+				if (signal.aborted) return null
+				if (error instanceof Error || !data) {
+					toast.error(t('err'), {
+						description: error.message
+					})
+					return null
+				}
+				if ('error' in data) {
+					toast.error(data.error)
+					return null
+				}
+				return data
+			})
+		return result
+	}
+
+	const send = async (request = message) => {
+		const { signal } = abortRef.current = new AbortController()
+		const prompt =
+		`
+		system: {
+			userJustStartedANewConversation: ${conversations.length === 0}
+			topic: ${topic}
+			instructions: [
+				you are in the production mode,
+				if userJustStartedANewConversation is true, be ready to have a conversation with the user the next request from him,
+				if userJustStartedANewConversation is true, make sure to intial the conversation regarding the entered topic without thinking outloud
+			]
+		}
+		user: {
+			request: ${request}
+		}
+		`
+		if (request !== '') memoUserRequest(request)
+
 		setAiThinking(true)
 		try {
 			setMessage('')
-			const params: GroqParams['params'] = {
-				messages: [
-					...conversations.map(({ role, content }) => ({ role, content })),
-					{
-						role: 'user',
-						content: request
-					}
-				],
-				model
-				// temperature: null,
-				// search_settings: null,
-				// reasoning_effort: null,
-				// max_completion_tokens: null,
-				// include_reasoning: null,
-				// documents: null,
-				// compound_custom: null,
-				// tools: null,
-				// user: null
-			}
-			let result
-			if (groq && !quotaDisplayed)
-				result = await groq?.chat.completions.create(params, { signal }).withResponse()
-			else
-				result = await supabase.functions
-					.invoke<GroqFn>('groq', {
-						body: {
-							params,
-							id: id!,
-							key
-						} satisfies GroqParams
-					})
-					.then(({ error, data }) => {
-						if (signal.aborted) return null
-						if (error instanceof Error || !data) {
-							toast.error(t('err'), {
-								description: error.message
-							})
-							return null
-						}
-						if ('error' in data) {
-							toast.error(data.error)
-							return null
-						}
-						return data
-					})
+			const result = await fireGroq(prompt, signal)
 			if (!result || signal.aborted) return
 			const { choices, service_tier, usage } = result.data
 			if ('rateLimits' in result)
@@ -224,34 +282,9 @@ export default function Page() {
 			const response = choices[0]?.message.content
 			if (typeof response !== 'string') return toast.error(t('no_res'))
 
-			setConversations(prev => [
-				...prev.map(($, i, arr) => {
-					if ($.role !== 'user') return $
-					const isLast = arr.slice(i + 1).every(n => n.role !== 'user')
-					if (!isLast) return $
-					return {
-						...$,
-						completion_tokens: usage?.prompt_tokens ?? t('failed')
-					} as IConversation
-				}),
-				{
-					date: composeId(),
-					role: 'assistant',
-					content: response,
-					service_tier,
-					usage
-				}
-			])
+			memoAIReponse(usage, response, service_tier)
 		} catch (err: any) {
-			setConversations(prev => prev.slice(0, prev.length - 1))
-			setMessage(request)
-			if (err?.message !== 'Request was aborted.') {
-				toast.error(t('conn_err'), {
-					description: err?.error?.error?.message,
-					duration: 40_000
-				})
-				raise(err)
-			}
+			abortSend(request, err)
 		} finally {
 			setAiThinking(false)
 		}

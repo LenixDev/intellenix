@@ -25,9 +25,7 @@ export const Topic = ({
 			/>
 			<Button
 				chromeless
-				onPress={() => {
-					send(topic)
-				}}
+				onPress={() => send()}
 			>{t('create_conversation')}</Button>
 		</YStack>
 	)
