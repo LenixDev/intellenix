@@ -65,6 +65,7 @@ export default function Page() {
 	const theme = useThemeName()
 	const { width, height } = useWindowDimensions()
 	const isPortrait = height > width
+	const started = conversations.length > 0
 
 	const groq = useMemo(
 		() =>
@@ -73,7 +74,7 @@ export default function Page() {
 	)
 
 	useEffect(() => {
-		if (conversations.length === 0 && message === '') return
+		if (!started && message === '') return
 
 		const handler = (event: BeforeUnloadEvent) => event.preventDefault()
 
@@ -247,7 +248,7 @@ export default function Page() {
 		const prompt =
 		`
 		system: {
-			userJustStartedANewConversation: ${conversations.length === 0}
+			userJustStartedANewConversation: ${!started}
 			topic: ${topic}
 			instructions: [
 				you are in the production mode,
@@ -296,24 +297,28 @@ export default function Page() {
 			width='100%'
 			height='100%'
 			pb={isPortrait ? '$3' : '$5'}>
-			<View width='100%' items='flex-start' p='$3'>
-				{conversations.length === 0 ? (
+			<View
+				width='100%'
+				items={started ? 'center' : 'flex-start'}
+				p='$3'
+				bg='$color3'>
+				{started ? (
+					<Text>{topic}</Text>
+				) : (
 					<Button
 						size='$3'
 						theme='accent'
 						onPress={() => toast.error(t('not_yet'))}>
 						{t('continue_google')}
 					</Button>
-				) : (
-					<Text>{topic}</Text>
 				)}
 			</View>
 			<View
 				width={isPortrait ? '95%' : '55%'}
 				items='center'
 				flex={1}
-				justify={conversations.length === 0 ? 'center' : 'flex-end'}>
-				{conversations.length > 0 ? (
+				justify={started ? 'flex-end' : 'center'}>
+				{started ? (
 					<>
 						<Conversation {...{ conversations, isPortrait, aiThinking, send, setConversations }} />
 						<InputBar
@@ -353,7 +358,7 @@ export default function Page() {
 					/>
 				)}
 			</View>
-			{conversations.length === 0 && (
+			{!started && (
 				<Image
 					height='$4'
 					src={`https://console.groq.com/powered-by-groq-${theme}.svg`}
