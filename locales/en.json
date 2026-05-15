@@ -21,7 +21,7 @@
 	"key_err": "Could not retrieve API Key from the server",
 	"submit": "Submit",
 	"get_key": "You can get one from",
-	"enter_key": "Enter your AI API Key",
+	"enter_key": "Enter your groq API key",
 	"press": "Press",
 	"to_focus": "to focus",
 	"to_send": "to send",
