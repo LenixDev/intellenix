@@ -20,3 +20,4 @@
 - [x] implement topics, tasks
 - [ ] add conversations storage
 - [x] dynamic prompt modifier
+- [ ] reply to a specific text

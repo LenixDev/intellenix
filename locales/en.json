@@ -51,5 +51,7 @@
 	"auto_correct": "Auto Correct",
 	"what_conversation": "What is the topic of this conversation you want it to be about?",
 	"conversation_topic": "New Conversation's Topic",
-	"create_conversation": "Create New Conversation"
+	"create_conversation": "Create New Conversation",
+	"cancel": "Cancel",
+	"revision": "Revision"
 }

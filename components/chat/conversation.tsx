@@ -143,7 +143,7 @@ export const Conversation = ({
 													event.stopPropagation()
 													setMessageEditing(undefined)
 												}}
-											>Cancel</Button>
+											>{t('cancel')}</Button>
 											<Button
 												disabled={messageEditing[$.date] === $.content}
 												theme='accent'
@@ -153,7 +153,7 @@ export const Conversation = ({
 													setConversations(prev => prev.slice(0, prev.findIndex(m => m.date === $.date)))
 													send(messageEditing[$.date])
 												}}
-											>Revision</Button>
+											>{t('revision')}</Button>
 										</>
 									) : (
 										<Text
