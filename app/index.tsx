@@ -202,7 +202,7 @@ export default function Page() {
 		}
 	}
 
-	const fireGroq = async (prompt: string, signal: AbortSignal) => {
+	const requestGroq = async (prompt: string, signal: AbortSignal) => {
 		const params: GroqParams['params'] = {
 			messages: [
 				...conversations.map(({ role, content }) => ({ role, content })),
@@ -251,7 +251,6 @@ export default function Page() {
 		return result
 	}
 
-console.debug(prompts)
 	const send = async (request = message) => {
 		if (!prompts) return toast.error(t('err'), {
 			description: 'error loading the AI instructions'
@@ -271,7 +270,7 @@ console.debug(prompts)
 		setAiThinking(true)
 		try {
 			setMessage('')
-			const result = await fireGroq(prompt, signal)
+			const result = await requestGroq(prompt, signal)
 			if (!result || signal.aborted) return
 			const { choices, service_tier, usage } = result.data
 			if ('rateLimits' in result)
@@ -309,7 +308,7 @@ console.debug(prompts)
 				p='$3'
 				bg='$color3'>
 				{started ? (
-					<Text>{topic}</Text>
+					<Text textTransform='capitalize'>{topic}</Text>
 				) : (
 					<Button
 						size='$3'
