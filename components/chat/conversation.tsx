@@ -21,13 +21,15 @@ export const Conversation = ({
 	isPortrait,
 	aiThinking,
 	send,
-	setConversations
+	setConversations,
+	setAttachs
 }: {
 	conversations: IConversation[]
 	isPortrait: boolean
 	aiThinking: boolean
 	send: (request: string) => void
 	setConversations: S<IConversation[]>
+	setAttachs: S<string[]>
 }) => {
 	const [shown, setShown] = useState<Record<string, boolean>>({})
 	const [hover, setHover] = useState<Record<string, boolean>>({})
@@ -229,7 +231,7 @@ export const Conversation = ({
 						<Button
 							icon={Reply}
 							size='$2'
-							onPress={() => toast.info(t('not_yet'))}
+							onPress={() => setAttachs(prev => [...prev, "Intellenix's text"])}
 						/>
 					</View>,
 					document.body

@@ -1,7 +1,7 @@
-import { Plus, AudioLines, Send, Mic, Square } from "@tamagui/lucide-icons-2"
+import { Plus, AudioLines, Send, Mic, Square, X, File } from "@tamagui/lucide-icons-2"
 import { toast } from "@tamagui/toast/v2"
 import { t } from "i18next"
-import { View, Button } from "tamagui"
+import { View, Button, Card, Paragraph, XStack } from "tamagui"
 import { Message } from "./message"
 import { S } from "@/types"
 
@@ -18,7 +18,9 @@ export const InputBar = ({
 	setIsMultiLine,
 	quotaDisplayed,
 	r_tPM,
-	abort
+	abort,
+	attachs,
+	setAttachs
 }: {
 	autoComplete: boolean | undefined
 	autoCorrect: boolean | undefined
@@ -33,7 +35,10 @@ export const InputBar = ({
 	quotaDisplayed: boolean | undefined
 	r_tPM: boolean
 	abort: () => void
+	attachs: string[]
+	setAttachs: S<string[]>
 }) => {
+
 	return (
 		<View flexDirection='row' items='center' width='100%'>
 			<View
@@ -46,6 +51,45 @@ export const InputBar = ({
 				justify='center'
 				border='1px solid $color6'
 			>
+				<XStack
+					overflowX='scroll'
+					//@ts-ignore
+					scrollbarWidth='none'
+				>
+					{attachs.map((attach, i) => (
+						<Card
+							key={i}
+							group
+							rounded='$6'
+							borderWidth={1}
+							borderColor="$color02"
+							transition='quick'
+							height='$12'
+							width='25%'
+							scale={0.9}
+							hoverStyle={{ scale: 0.925 }}
+							pressStyle={{ scale: 0.875 }}
+							overflow='hidden'
+						>
+							<Card.Header p="$2" items='flex-end'>
+								<Button
+									opacity={0}
+									$group-hover={{ opacity: 1 }}
+									rounded="$2"
+									size='$2'
+									icon={X}
+									onPress={() => setAttachs(attachs => attachs.filter((_, index) => index !== i))}
+								/>
+							</Card.Header>
+							<Card.Footer p="$4">
+								<Paragraph color='$color04'>{attach}</Paragraph>
+							</Card.Footer>
+							<Card.Background items="center" justify='center'>
+								<File size='$10' color='$color01' />
+							</Card.Background>
+						</Card>
+					))}
+				</XStack>
 				<View
 					flexDirection={isMultiLine ? 'column' : 'row'}
 					{...(isMultiLine ?

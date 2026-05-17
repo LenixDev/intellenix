@@ -54,6 +54,7 @@ export default function Page() {
 	const [autoCorrect, setAutoCorrect] = useState<boolean>()
 	const [topic, setTopic] = useState('')
 	const [prompts, setPrompts] = useState<string>()
+	const [attachs, setAttachs] = useState<string[]>([])
 
 	const abortRef = useRef<AbortController | null>(null)
 
@@ -325,7 +326,16 @@ export default function Page() {
 				justify={started ? 'flex-end' : 'center'}>
 				{started ? (
 					<>
-						<Conversation {...{ conversations, isPortrait, aiThinking, send, setConversations }} />
+						<Conversation
+							{...{
+								conversations,
+								isPortrait,
+								aiThinking,
+								send,
+								setConversations,
+								setAttachs
+							}}
+						/>
 						<InputBar
 						{...{
 							autoComplete,
@@ -340,7 +350,9 @@ export default function Page() {
 							setIsMultiLine,
 							quotaDisplayed,
 							r_tPM: false,
-							abort: () => abortRef.current?.abort()
+							abort: () => abortRef.current?.abort(),
+							attachs,
+							setAttachs
 						}}
 					/>
 					<InputPreferences
