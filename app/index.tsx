@@ -265,7 +265,7 @@ export default function Page() {
 		# user:
 			topic: ${topic}
 			request: ${request}
-			attachments: ${attachs}
+			attachments: ${JSON.stringify(attachs)}
 		`
 		if (request !== '') memoUserRequest(request)
 
