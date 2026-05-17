@@ -54,7 +54,7 @@ export default function Page() {
 	const [autoCorrect, setAutoCorrect] = useState<boolean>()
 	const [topic, setTopic] = useState('')
 	const [prompts, setPrompts] = useState<string>()
-	const [attachs, setAttachs] = useState<string[]>([])
+	const [attachs, setAttachs] = useState<Record<string, string>>({})
 
 	const abortRef = useRef<AbortController | null>(null)
 
@@ -291,7 +291,7 @@ export default function Page() {
 			if (typeof response !== 'string') return toast.error(t('no_res'))
 
 			memoAIReponse(usage, response, service_tier)
-			setAttachs([])
+			setAttachs({})
 		} catch (err: any) {
 			abortSend(request, err)
 		} finally {
@@ -339,24 +339,24 @@ export default function Page() {
 							}}
 						/>
 						<InputBar
-						{...{
-							autoComplete,
-							autoCorrect,
-							message,
-							setMessage,
-							send,
-							aiThinking,
-							apiKey: key,
-							isMac,
-							isMultiLine,
-							setIsMultiLine,
-							quotaDisplayed,
-							r_tPM: false,
-							abort: () => abortRef.current?.abort(),
-							attachs,
-							setAttachs
-						}}
-					/>
+							{...{
+								autoComplete,
+								autoCorrect,
+								message,
+								setMessage,
+								send,
+								aiThinking,
+								apiKey: key,
+								isMac,
+								isMultiLine,
+								setIsMultiLine,
+								quotaDisplayed,
+								r_tPM: false,
+								abort: () => abortRef.current?.abort(),
+								attachs,
+								setAttachs
+							}}
+						/>
 					<InputPreferences
 						{...{
 							isMac,

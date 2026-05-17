@@ -11,7 +11,6 @@ import {
 	TextArea
 } from 'tamagui'
 import { Copy } from './copy'
-import { toast } from '@tamagui/toast/v2'
 import { Pencil, RefreshCw, Reply } from '@tamagui/lucide-icons-2'
 import { createPortal } from 'react-dom'
 import { RichText } from '../rich-text'
@@ -29,7 +28,7 @@ export const Conversation = ({
 	aiThinking: boolean
 	send: (request: string) => void
 	setConversations: S<IConversation[]>
-	setAttachs: S<string[]>
+	setAttachs: S<Record<string, string>>
 }) => {
 	const [shown, setShown] = useState<Record<string, boolean>>({})
 	const [hover, setHover] = useState<Record<string, boolean>>({})
@@ -231,7 +230,7 @@ export const Conversation = ({
 						<Button
 							icon={Reply}
 							size='$2'
-							onPress={() => setAttachs(prev => [...prev, "Intellenix's text"])}
+							onPress={() => setAttachs(prev => ({ ...prev, [`Intellenix's text - ${Date.now()}`]: selection.text }))}
 						/>
 					</View>,
 					document.body

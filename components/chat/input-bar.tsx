@@ -35,8 +35,8 @@ export const InputBar = ({
 	quotaDisplayed: boolean | undefined
 	r_tPM: boolean
 	abort: () => void
-	attachs: string[]
-	setAttachs: S<string[]>
+	attachs: Record<string, string>
+	setAttachs: S<Record<string, string>>
 }) => {
 
 	return (
@@ -56,7 +56,7 @@ export const InputBar = ({
 					//@ts-ignore
 					scrollbarWidth='none'
 				>
-					{attachs.map((attach, i) => (
+					{Object.entries(attachs).map(([key, attach], i) => (
 						<Card
 							key={i}
 							group
@@ -70,6 +70,7 @@ export const InputBar = ({
 							hoverStyle={{ scale: 0.925 }}
 							pressStyle={{ scale: 0.875 }}
 							overflow='hidden'
+							
 						>
 							<Card.Header p="$2" items='flex-end'>
 								<Button
@@ -78,11 +79,11 @@ export const InputBar = ({
 									rounded="$2"
 									size='$2'
 									icon={X}
-									onPress={() => setAttachs(attachs => attachs.filter((_, index) => index !== i))}
+									onPress={() => setAttachs(({ [key]: _, ...rest }) => rest)}
 								/>
 							</Card.Header>
 							<Card.Footer p="$4">
-								<Paragraph color='$color04'>{attach}</Paragraph>
+								<Paragraph color='$color04'>{key}</Paragraph>
 							</Card.Footer>
 							<Card.Background items="center" justify='center'>
 								<File size='$10' color='$color01' />
