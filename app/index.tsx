@@ -261,10 +261,11 @@ export default function Page() {
 		`
 		# system
 			userJustStartedANewConversation: ${!started}
-			topic: ${topic}
 			instructions: ${prompts}
 		# user:
+			topic: ${topic}
 			request: ${request}
+			attachments: ${attachs}
 		`
 		if (request !== '') memoUserRequest(request)
 
@@ -290,6 +291,7 @@ export default function Page() {
 			if (typeof response !== 'string') return toast.error(t('no_res'))
 
 			memoAIReponse(usage, response, service_tier)
+			setAttachs([])
 		} catch (err: any) {
 			abortSend(request, err)
 		} finally {
