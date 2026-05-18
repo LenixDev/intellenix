@@ -8,8 +8,7 @@ import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
 import {
 	SupaPrompt,
-	type GroqFn,
-	type GroqParams,
+	type SupaGroq,
 	type Conversation as IConversation,
 	type KeysQuota,
 	type Model,
@@ -32,6 +31,7 @@ import {
 import { Topic } from '../components/chat/topic'
 import { ChatCompletion } from 'groq-sdk/resources/chat/completions.mjs'
 import { CompletionUsage } from 'groq-sdk/resources'
+import { FunctionsHttpError } from '@supabase/supabase-js'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -176,30 +176,35 @@ export default function Page() {
 		])
 	}
 
-	const abortSend = (request: string, err: any) => {
+	const abortSend = (request: string, err?: any) => {
 		setConversations(prev => prev.slice(0, prev.length - 1))
 		setMessage(request)
 		if (err?.message !== 'Request was aborted.') {
 			toast.error(t('conn_err'), {
 				description: err?.error?.error?.message,
-				duration: 40_000
 			})
 			raise(err)
 		}
 	}
 
 	const requestGroq = async (prompt: string, signal: AbortSignal) => {
-		const params: GroqParams['params'] = {
+		const params: SupaGroq['args']['params'] = {
 			messages: [
 				...conversations.map(({ role, content }) => ({ role, content })),
 				{ role: 'user', content: prompt }
 			],
-			model
-			// temperature: null,
-			// search_settings: null,
-			// reasoning_effort: null,
-			// max_completion_tokens: null,
-			// include_reasoning: null,
+			model,
+			temperature: 0.5,
+			max_completion_tokens: Number(quota[key]?.[model]?.tpm),
+			search_settings: {
+				// TODO
+				// country: ,
+				include_domains: ['https://lenix.dev'],
+				include_images: true
+			},
+			// TODO
+			// reasoning_effort: ,
+			// include_reasoning: true,
 			// documents: null,
 			// compound_custom: null,
 			// tools: null,
@@ -208,25 +213,22 @@ export default function Page() {
 		let result
 		if (groq && !quotaDisplayed)
 			result = await groq?.chat.completions
-				.create(params, { signal })
-				.withResponse()
-		else
-			result = await supabase.functions
-				.invoke<GroqFn>('groq', {
-					body: { params, id: id!, key } satisfies GroqParams
+				.create(params, { signal }).withResponse()
+		else {
+			const { error, data } = await supabase.functions
+				.invoke<SupaGroq['return']>('groq', {
+					body: { params, id: id!, key } satisfies SupaGroq['args']
 				})
-				.then(({ error, data }) => {
-					if (signal.aborted) return null
-					if (error instanceof Error || !data) {
-						toast.error(t('err'), { description: error.message })
-						return null
-					}
-					if ('error' in data) {
-						toast.error(data.error)
-						return null
-					}
-					return data
+	
+			if (signal.aborted) return null
+			if (error instanceof FunctionsHttpError || !data) {
+				toast.error(t('err'), {
+					description: (await error.context.json()).error.error.message
 				})
+				return null
+			}
+			result = data
+		}
 		return result
 	}
 
@@ -253,7 +255,8 @@ export default function Page() {
 		try {
 			setMessage('')
 			const result = await requestGroq(prompt, signal)
-			if (!result || signal.aborted) return
+			if (!result || signal.aborted) return abortSend(request)
+
 			const { choices, service_tier, usage } = result.data
 			if ('rateLimits' in result)
 				setQuota({
@@ -267,10 +270,11 @@ export default function Page() {
 					}
 				})
 
-			const response = choices[0]?.message.content
-			if (typeof response !== 'string') return toast.error(t('no_res'))
+			const { content, reasoning } = choices[0]?.message
+			if (typeof content !== 'string') return toast.error(t('no_res'))
+			console.debug(reasoning)
 
-			memoAIReponse(usage, response, service_tier)
+			memoAIReponse(usage, content, service_tier)
 			setAttachs({})
 		} catch (err: any) {
 			abortSend(request, err)
