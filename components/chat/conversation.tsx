@@ -230,7 +230,7 @@ export const Conversation = ({
 						<Button
 							icon={Reply}
 							size='$2'
-							onPress={() => setAttachs(prev => ({ ...prev, [`Intellenix's text - ${Date.now()}`]: selection.text }))}
+							onPress={() => setAttachs(prev => ({ ...prev, [`reply to Intellenix's - ${Date.now()}`]: selection.text }))}
 						/>
 					</View>,
 					document.body

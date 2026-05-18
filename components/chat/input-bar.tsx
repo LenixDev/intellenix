@@ -70,7 +70,6 @@ export const InputBar = ({
 							hoverStyle={{ scale: 0.925 }}
 							pressStyle={{ scale: 0.875 }}
 							overflow='hidden'
-							
 						>
 							<Card.Header p="$2" items='flex-end'>
 								<Button
@@ -82,8 +81,8 @@ export const InputBar = ({
 									onPress={() => setAttachs(({ [key]: _, ...rest }) => rest)}
 								/>
 							</Card.Header>
-							<Card.Footer p="$4">
-								<Paragraph color='$color04'>{key}</Paragraph>
+							<Card.Footer p="$3">
+								<Paragraph color='$color04' lineHeight='$1'>{key}</Paragraph>
 							</Card.Footer>
 							<Card.Background items="center" justify='center'>
 								<File size='$10' color='$color01' />
