@@ -5,16 +5,18 @@ import { Button, Input, Label, YStack } from 'tamagui'
 export const Topic = ({
 	send,
 	topic,
-	setTopic
+	setTopic,
+	isPortrait
 }: {
 	send: (request?: string) => void
 	topic: string
 	setTopic: S<string>
+	isPortrait: boolean
 }) => {
 	const { t } = useTranslation()
 
 	return (
-		<YStack gap='$2'>
+		<YStack gap='$2' width={isPortrait ? '90%' : '33%'}>
 			<Label htmlFor='topic' lineHeight='$1'>
 				{t('what_conversation')}
 			</Label>

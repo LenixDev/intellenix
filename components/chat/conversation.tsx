@@ -85,10 +85,12 @@ export const Conversation = ({
 				ref={scrollRef}
 				width='100%'
 				py='$10'
-				px={isPortrait ? '$2' : '$5'}
+				px={isPortrait ? '5%' : '26%'}
 				flex={1}
-				// @ts-ignore
-				scrollbarWidth='none'
+				style={{
+					scrollbarColor: '#000 transparent',
+					scrollbarWidth: 'thin',
+				} as any}
 			>
 				{conversations.map(($, i) => {
 					if ($.role === 'user')

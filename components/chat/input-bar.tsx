@@ -28,7 +28,8 @@ export const InputBar = ({
 	r_tPM,
 	abort,
 	attachs,
-	setAttachs
+	setAttachs,
+	isPortrait
 }: {
 	autoComplete: boolean | undefined
 	autoCorrect: boolean | undefined
@@ -45,9 +46,10 @@ export const InputBar = ({
 	abort: () => void
 	attachs: Record<string, string>
 	setAttachs: S<Record<string, string>>
+	isPortrait: boolean
 }) => {
 	return (
-		<View flexDirection='row' items='center' width='100%'>
+		<View flexDirection='row' items='center' width={isPortrait ? '95%' : '50%'}>
 			<View
 				flex={1}
 				bg='$color3'
@@ -63,7 +65,7 @@ export const InputBar = ({
 					//@ts-ignore
 					scrollbarWidth='none'
 				>
-					{Object.entries(attachs).map(([key, attach], i) => (
+					{Object.entries(attachs).map(([key], i) => (
 						<Card
 							key={i}
 							group

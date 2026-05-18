@@ -304,7 +304,7 @@ export default function Page() {
 				}
 			</View>
 			<View
-				width={isPortrait ? '95%' : '55%'}
+				width='100%'
 				items='center'
 				flex={1}
 				justify={started ? 'flex-end' : 'center'}
@@ -337,7 +337,8 @@ export default function Page() {
 								r_tPM: false,
 								abort: () => abortRef.current?.abort(),
 								attachs,
-								setAttachs
+								setAttachs,
+								isPortrait
 							}}
 						/>
 						<InputPreferences
@@ -351,7 +352,7 @@ export default function Page() {
 							}}
 						/>
 					</>
-				:	<Topic {...{ send, topic, setTopic }} />}
+				:	<Topic {...{ send, topic, setTopic, isPortrait }} />}
 			</View>
 			{!started && (
 				<Image
