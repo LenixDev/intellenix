@@ -258,15 +258,17 @@ export default function Page() {
 		})
 		const { signal } = abortRef.current = new AbortController()
 		const prompt =
-		`
-		# system
-			userJustStartedANewConversation: ${!started}
-			instructions: ${prompts}
-		# user:
-			topic: ${topic}
-			request: ${request}
-			attachments: ${JSON.stringify(attachs)}
-		`
+		`{
+			system: {
+				instructions: "${prompts}",
+			},
+			user: {
+				topic: ${topic},
+				justStartedANewConversation: ${!started},
+				request: ${request},
+				attachments: ${JSON.stringify(attachs)},
+			}
+		}`
 		if (request !== '') memoUserRequest(request)
 
 		setAiThinking(true)

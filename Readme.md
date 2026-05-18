@@ -20,4 +20,5 @@
 - [x] implement topics, tasks
 - [ ] add conversations storage
 - [x] dynamic prompt modifier
-- [ ] reply to a specific text
+- [x] reply to a specific text
+- [ ] reply also on message edit
