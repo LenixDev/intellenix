@@ -17,16 +17,10 @@ export default defineConfig([
 	{
 		ignores: ['dist'],
 		files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-		plugins: {
-			js,
-			'@stylistic': stylistic
-		},
+		plugins: { js, '@stylistic': stylistic },
 		extends: ['js/recommended', prettier],
 		languageOptions: {
-			globals: {
-				...globals.browser,
-				...globals.node
-			},
+			globals: { ...globals.browser, ...globals.node },
 			parserOptions: {
 				projectService: true,
 				tsconfigRootDir: import.meta.dirname

@@ -20,14 +20,8 @@ export const Hover = ({
 			py='$2'
 			px='$3'
 			bg='$color9'
-			transition={[
-				'quick',
-				{
-					opacity: {
-						overshootClamping: true
-					}
-				}
-			]}>
+			transition={['quick', { opacity: { overshootClamping: true } }]}
+		>
 			<Tooltip.Arrow bg='$color9' />
 			{content()}
 		</Tooltip.Content>

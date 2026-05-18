@@ -23,7 +23,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	Button,
-	Image, Text,
+	Image,
+	Text,
 	useThemeName,
 	useWindowDimensions,
 	View
@@ -94,20 +95,12 @@ export default function Page() {
 			if (!key) {
 				const { error, data } = await supabase.functions.invoke<SupaProtect>(
 					'key',
-					{
-						body: {
-							type: 'get'
-						} satisfies SupaKeyArgs
-					}
+					{ body: { type: 'get' } satisfies SupaKeyArgs }
 				)
 				if (error instanceof Error || !data)
-					return toast.error(t('err'), {
-						description: error?.message
-					})
+					return toast.error(t('err'), { description: error?.message })
 				if (typeof data !== 'string' && 'error' in data)
-					return toast.error(t('err'), {
-						description: data.error
-					})
+					return toast.error(t('err'), { description: data.error })
 				key = data
 			}
 			setKey(key)
@@ -134,29 +127,17 @@ export default function Page() {
 			if (autoCorrect === '0') setAutoCorrect(false)
 			else setAutoCorrect(true)
 
-			const { error, data } = await supabase.functions.invoke<Extract<SupaPrompt['return'], string>>('prompt', {
-				body: {
-					type: 'get'
-				}
-			})
-			if (error || !data) return toast.error(t('err'), {
-				description: error.message
-			})
+			const { error, data } = await supabase.functions.invoke<
+				Extract<SupaPrompt['return'], string>
+			>('prompt', { body: { type: 'get' } })
+			if (error || !data)
+				return toast.error(t('err'), { description: error.message })
 			setPrompts(data)
 		})()
 	}, [])
 
 	if (key === '' || keyDialog)
-		return (
-			<Api
-				{...{
-					apiKey: key,
-					setKey,
-					keyDialog,
-					setKeyDialog
-				}}
-			/>
-		)
+		return <Api {...{ apiKey: key, setKey, keyDialog, setKeyDialog }} />
 
 	const memoUserRequest = (request: string) => {
 		setConversations(prev => [
@@ -170,7 +151,11 @@ export default function Page() {
 		])
 	}
 
-	const memoAIReponse = (usage: CompletionUsage | undefined, response: string, service_tier: ChatCompletion['service_tier']) => {
+	const memoAIReponse = (
+		usage: CompletionUsage | undefined,
+		response: string,
+		service_tier: ChatCompletion['service_tier']
+	) => {
 		setConversations(prev => [
 			...prev.map(($, i, arr) => {
 				if ($.role !== 'user') return $
@@ -207,10 +192,7 @@ export default function Page() {
 		const params: GroqParams['params'] = {
 			messages: [
 				...conversations.map(({ role, content }) => ({ role, content })),
-				{
-					role: 'user',
-					content: prompt
-				}
+				{ role: 'user', content: prompt }
 			],
 			model
 			// temperature: null,
@@ -225,40 +207,36 @@ export default function Page() {
 		}
 		let result
 		if (groq && !quotaDisplayed)
-			result = await groq?.chat.completions.create(params, { signal }).withResponse()
+			result = await groq?.chat.completions
+				.create(params, { signal })
+				.withResponse()
 		else
 			result = await supabase.functions
-			.invoke<GroqFn>('groq', {
-				body: {
-					params,
-					id: id!,
-					key
-				} satisfies GroqParams
-			})
-			.then(({ error, data }) => {
-				if (signal.aborted) return null
-				if (error instanceof Error || !data) {
-					toast.error(t('err'), {
-						description: error.message
-					})
-					return null
-				}
-				if ('error' in data) {
-					toast.error(data.error)
-					return null
-				}
-				return data
-			})
+				.invoke<GroqFn>('groq', {
+					body: { params, id: id!, key } satisfies GroqParams
+				})
+				.then(({ error, data }) => {
+					if (signal.aborted) return null
+					if (error instanceof Error || !data) {
+						toast.error(t('err'), { description: error.message })
+						return null
+					}
+					if ('error' in data) {
+						toast.error(data.error)
+						return null
+					}
+					return data
+				})
 		return result
 	}
 
 	const send = async (request = message) => {
-		if (!prompts) return toast.error(t('err'), {
-			description: 'error loading the AI instructions'
-		})
-		const { signal } = abortRef.current = new AbortController()
-		const prompt =
-		`{
+		if (!prompts)
+			return toast.error(t('err'), {
+				description: 'error loading the AI instructions'
+			})
+		const { signal } = (abortRef.current = new AbortController())
+		const prompt = `{
 			system: {
 				instructions: "${prompts}",
 			},
@@ -306,29 +284,32 @@ export default function Page() {
 			items='center'
 			width='100%'
 			height='100%'
-			pb={isPortrait ? '$3' : '$5'}>
+			pb={isPortrait ? '$3' : '$5'}
+		>
 			<View
 				width='100%'
 				items={started ? 'center' : 'flex-start'}
 				p='$3'
-				bg='$color3'>
-				{started ? (
+				bg='$color3'
+			>
+				{started ?
 					<Text textTransform='capitalize'>{topic}</Text>
-				) : (
-					<Button
+				:	<Button
 						size='$3'
 						theme='accent'
-						onPress={() => toast.error(t('not_yet'))}>
+						onPress={() => toast.error(t('not_yet'))}
+					>
 						{t('continue_google')}
 					</Button>
-				)}
+				}
 			</View>
 			<View
 				width={isPortrait ? '95%' : '55%'}
 				items='center'
 				flex={1}
-				justify={started ? 'flex-end' : 'center'}>
-				{started ? (
+				justify={started ? 'flex-end' : 'center'}
+			>
+				{started ?
 					<>
 						<Conversation
 							{...{
@@ -359,25 +340,18 @@ export default function Page() {
 								setAttachs
 							}}
 						/>
-					<InputPreferences
-						{...{
-							isMac,
-							quotaDisplayed,
-							quota,
-							apiKey: key,
-							model,
-							setSheetOpen
-						}}
-					/>
-				</>) : (
-					<Topic
-						{...{
-							send,
-							topic,
-							setTopic
-						}}
-					/>
-				)}
+						<InputPreferences
+							{...{
+								isMac,
+								quotaDisplayed,
+								quota,
+								apiKey: key,
+								model,
+								setSheetOpen
+							}}
+						/>
+					</>
+				:	<Topic {...{ send, topic, setTopic }} />}
 			</View>
 			{!started && (
 				<Image

@@ -1,10 +1,10 @@
-import { Command, SlidersHorizontal } from "@tamagui/lucide-icons-2"
-import { View, Button, Separator, Progress, Select, XStack } from "tamagui"
-import { KeysQuota, Model, S } from "@/types"
-import { Hover } from "../hover"
-import { Text } from "tamagui"
-import { useTranslation } from "react-i18next"
-import { Kbd } from "../kdb"
+import { Command, SlidersHorizontal } from '@tamagui/lucide-icons-2'
+import { View, Button, Separator, Progress, Select, XStack } from 'tamagui'
+import { KeysQuota, Model, S } from '@/types'
+import { Hover } from '../hover'
+import { Text } from 'tamagui'
+import { useTranslation } from 'react-i18next'
+import { Kbd } from '../kdb'
 
 const getConsumption = (value: number | string, limit: number | string) => {
 	const val = Number(value)
@@ -81,15 +81,18 @@ export const InputPreferences = ({
 							<Text color='$color4'>
 								{rpd === '0' ?
 									t('messages_missing')
-								:	`${t('requests_consumed')} (${getConsumption(rpd, r_limits)}%)`}
+								:	`${t('requests_consumed')} (${getConsumption(rpd, r_limits)}%)`
+								}
 							</Text>
-						)}>
+						)}
+					>
 						<Progress
 							value={getConsumption(rpd, r_limits)}
 							bg='$color4'
 							minW='$2'
 							maxW='$2'
-							size='$1'>
+							size='$1'
+						>
 							<Progress.Indicator transition='slowest' />
 						</Progress>
 					</Hover>
@@ -101,13 +104,15 @@ export const InputPreferences = ({
 									t('messages_missing')
 								:	`${t('tokens_consumed')} (${getConsumption(tpm, t_limits)}%)`}
 							</Text>
-						)}>
+						)}
+					>
 						<Progress
 							value={getConsumption(tpm, t_limits)}
 							bg='$color4'
 							minW='$2'
 							maxW='$2'
-							size='$1'>
+							size='$1'
+						>
 							<Progress.Indicator transition='slowest' />
 						</Progress>
 					</Hover>
@@ -119,10 +124,7 @@ export const InputPreferences = ({
 				size='$3'
 				icon={SlidersHorizontal}
 				onPress={() => setSheetOpen(true)}
-				hoverStyle={{
-					borderColor: '$color6',
-					bg: '$background08'
-				}}
+				hoverStyle={{ borderColor: '$color6', bg: '$background08' }}
 			/>
 		</View>
 	)

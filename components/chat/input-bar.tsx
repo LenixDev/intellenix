@@ -1,9 +1,17 @@
-import { Plus, AudioLines, Send, Mic, Square, X, File } from "@tamagui/lucide-icons-2"
-import { toast } from "@tamagui/toast/v2"
-import { t } from "i18next"
-import { View, Button, Card, Paragraph, XStack } from "tamagui"
-import { Message } from "./message"
-import { S } from "@/types"
+import {
+	Plus,
+	AudioLines,
+	Send,
+	Mic,
+	Square,
+	X,
+	File
+} from '@tamagui/lucide-icons-2'
+import { toast } from '@tamagui/toast/v2'
+import { t } from 'i18next'
+import { View, Button, Card, Paragraph, XStack } from 'tamagui'
+import { Message } from './message'
+import { S } from '@/types'
 
 export const InputBar = ({
 	autoComplete,
@@ -38,7 +46,6 @@ export const InputBar = ({
 	attachs: Record<string, string>
 	setAttachs: S<Record<string, string>>
 }) => {
-
 	return (
 		<View flexDirection='row' items='center' width='100%'>
 			<View
@@ -62,7 +69,7 @@ export const InputBar = ({
 							group
 							rounded='$6'
 							borderWidth={1}
-							borderColor="$color02"
+							borderColor='$color02'
 							transition='quick'
 							height='$12'
 							width='25%'
@@ -71,20 +78,22 @@ export const InputBar = ({
 							pressStyle={{ scale: 0.875 }}
 							overflow='hidden'
 						>
-							<Card.Header p="$2" items='flex-end'>
+							<Card.Header p='$2' items='flex-end'>
 								<Button
 									opacity={0}
 									$group-hover={{ opacity: 1 }}
-									rounded="$2"
+									rounded='$2'
 									size='$2'
 									icon={X}
 									onPress={() => setAttachs(({ [key]: _, ...rest }) => rest)}
 								/>
 							</Card.Header>
-							<Card.Footer p="$3">
-								<Paragraph color='$color04' lineHeight='$1'>{key}</Paragraph>
+							<Card.Footer p='$3'>
+								<Paragraph color='$color04' lineHeight='$1'>
+									{key}
+								</Paragraph>
 							</Card.Footer>
-							<Card.Background items="center" justify='center'>
+							<Card.Background items='center' justify='center'>
 								<File size='$10' color='$color01' />
 							</Card.Background>
 						</Card>
@@ -93,13 +102,8 @@ export const InputBar = ({
 				<View
 					flexDirection={isMultiLine ? 'column' : 'row'}
 					{...(isMultiLine ?
-						{
-							gap: '$2'
-						}
-					:	{
-							justify: 'space-between',
-							items: 'center'
-						})}
+						{ gap: '$2' }
+					:	{ justify: 'space-between', items: 'center' })}
 				>
 					<Message
 						autoComplete={autoComplete ? 'on' : 'off'}
@@ -120,7 +124,8 @@ export const InputBar = ({
 						flexDirection='row'
 						justify='space-between'
 						items='center'
-						{...(isMultiLine ? {} : { style: { display: 'contents' } })}>
+						{...(isMultiLine ? {} : { style: { display: 'contents' } })}
+					>
 						<Button
 							chromeless
 							circular
@@ -129,34 +134,38 @@ export const InputBar = ({
 							icon={Plus}
 							onPress={() => toast.info(t('not_yet'))}
 							style={{ order: -1 }}
-							hoverStyle={{
-								borderColor: '$color6',
-								bg: '$background08'
-							}}
+							hoverStyle={{ borderColor: '$color6', bg: '$background08' }}
 							mr='$1'
 						/>
 						<View
 							flexDirection='row'
 							justify='flex-end'
 							gap='$1'
-							items='center'>
+							items='center'
+						>
 							<Button
 								chromeless
 								circular
 								size='$3'
 								icon={AudioLines}
 								onPress={() => toast.info(t('not_yet'))}
-								hoverStyle={{
-									borderColor: '$color6',
-									bg: '$background08'
-								}}
+								hoverStyle={{ borderColor: '$color6', bg: '$background08' }}
 							/>
 							<Button
 								circular
 								chromeless
-								icon={aiThinking ? Square : message !== '' ? Send : Mic}
+								icon={
+									aiThinking ? Square
+									: message !== '' ?
+										Send
+									:	Mic
+								}
 								disabled={r_tPM}
-								onPress={() => aiThinking ? abort() : message === '' ? toast.info(t('not_yet')) : send()}
+								onPress={() =>
+									aiThinking ? abort()
+									: message === '' ? toast.info(t('not_yet'))
+									: send()
+								}
 								size='$3'
 							/>
 						</View>

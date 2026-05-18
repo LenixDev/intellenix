@@ -102,22 +102,16 @@ export const Preferences = ({
 			const res =
 				(await groq?.models.list())
 				?? (await supabase.functions
-					.invoke<SupaList['fn']>('list', {
-						body: {
-							id: id!
-						} satisfies SupaList['args']
-					})
+					.invoke<
+						SupaList['fn']
+					>('list', { body: { id: id! } satisfies SupaList['args'] })
 					.then(({ error, data }) => {
 						if (error instanceof Error || !data) {
-							toast.error(t('err'), {
-								description: error.message
-							})
+							toast.error(t('err'), { description: error.message })
 							return
 						}
 						if ('error' in data) {
-							toast.error(t('err'), {
-								description: data.error
-							})
+							toast.error(t('err'), { description: data.error })
 							return
 						}
 						return data
@@ -130,19 +124,30 @@ export const Preferences = ({
 	const renderedItems = useMemo(
 		() =>
 			items.map((item, iter) => (
-				<Select.Item
-					index={iter}
-					key={item.id}
-					value={item.id}>
+				<Select.Item index={iter} key={item.id} value={item.id}>
 					<View flex={1} overflow='hidden'>
-							<Select.ItemText whiteSpace='normal' {...(recommendedModels.includes(item.id) ? { color: 'cyan' } : {})}>
-							{item.id} {recommendedModels.includes(item.id) && `(${t('recommended')})`}
+						<Select.ItemText
+							whiteSpace='normal'
+							{...(recommendedModels.includes(item.id) ?
+								{ color: 'cyan' }
+							:	{})}
+						>
+							{item.id}{' '}
+							{recommendedModels.includes(item.id) && `(${t('recommended')})`}
 						</Select.ItemText>
 						<View flexDirection='row'>
-							<Select.ItemText color='$color7' fontSize='$2' whiteSpace='normal'>
+							<Select.ItemText
+								color='$color7'
+								fontSize='$2'
+								whiteSpace='normal'
+							>
 								{t('by')} {item.owned_by}&nbsp;
 							</Select.ItemText>
-							<Select.ItemText color='$color7' fontSize='$2' whiteSpace='normal'>
+							<Select.ItemText
+								color='$color7'
+								fontSize='$2'
+								whiteSpace='normal'
+							>
 								{t('on')}{' '}
 								{new Date(item.created * 1000).toLocaleDateString(undefined, {
 									year: 'numeric',
@@ -163,16 +168,10 @@ export const Preferences = ({
 		setLoading(prev => ({ ...prev, key: true }))
 		if (Protected) {
 			const { error } = await supabase.functions.invoke('key', {
-				body: {
-					type: 'update',
-					key: stateKey,
-					id: id!
-				} satisfies SupaKeyArgs
+				body: { type: 'update', key: stateKey, id: id! } satisfies SupaKeyArgs
 			})
 			if (error instanceof Error) {
-				toast.error(t('err'), {
-					description: error.message
-				})
+				toast.error(t('err'), { description: error.message })
 				setLoading(prev => ({ ...prev, key: false }))
 				return
 			}
@@ -189,15 +188,10 @@ export const Preferences = ({
 	const handlePublic = async () => {
 		setLoading(prev => ({ ...prev, public: true }))
 		const { error, data } = await supabase.functions.invoke<SupaPublic>('key', {
-			body: {
-				type: 'public',
-				id
-			} satisfies SupaKeyArgs
+			body: { type: 'public', id } satisfies SupaKeyArgs
 		})
 		if (error instanceof Error || !data) {
-			toast.error(t('err'), {
-				description: error.message
-			})
+			toast.error(t('err'), { description: error.message })
 			setLoading(prev => ({ ...prev, public: false }))
 			return
 		}
@@ -218,20 +212,12 @@ export const Preferences = ({
 			{
 				body:
 					Protected ?
-						({
-							type: 'get',
-							id: id!
-						} satisfies SupaKeyArgs)
-					:	({
-							type: 'protect',
-							key
-						} satisfies SupaKeyArgs)
+						({ type: 'get', id: id! } satisfies SupaKeyArgs)
+					:	({ type: 'protect', key } satisfies SupaKeyArgs)
 			}
 		)
 		if (error instanceof Error || !data) {
-			toast.error(t('err'), {
-				description: error.message
-			})
+			toast.error(t('err'), { description: error.message })
 			setLoading(prev => ({ ...prev, protection: false }))
 			return
 		}
@@ -280,14 +266,16 @@ export const Preferences = ({
 			modal
 			open={sheetOpen}
 			onOpenChange={setSheetOpen}
-			snapPoints={isPortrait ? [95, 10] : [40, 10]}>
+			snapPoints={isPortrait ? [95, 10] : [40, 10]}
+		>
 			<Sheet.Overlay transition='quick' bg='$color02' />
 			<Sheet.Handle />
 			<Sheet.Frame
 				bg='$color1'
 				items='center'
 				justify='space-evenly'
-				flexDirection={isPortrait ? 'column' : 'row'}>
+				flexDirection={isPortrait ? 'column' : 'row'}
+			>
 				<View gap='$4'>
 					<View>
 						<Label htmlFor='key'>{t('api_key')}</Label>
@@ -316,7 +304,8 @@ export const Preferences = ({
 							disabled={loading.protection}
 							checked={!!Protected || loading.protection}
 							id='protection'
-							onCheckedChange={handleProtection}>
+							onCheckedChange={handleProtection}
+						>
 							<Checkbox.Indicator>
 								{loading.protection ?
 									<Spinner />
@@ -331,7 +320,8 @@ export const Preferences = ({
 										t('unprotection_details')
 									:	t('protection_details')}
 								</Text>
-							}>
+							}
+						>
 							<Button chromeless circular size='$2' icon={Info} />
 						</Over>
 					</XStack>
@@ -339,7 +329,8 @@ export const Preferences = ({
 						<Checkbox
 							checked={quotaDisplayed}
 							id='quota'
-							onCheckedChange={handleQuota}>
+							onCheckedChange={handleQuota}
+						>
 							<Checkbox.Indicator>
 								<Check />
 							</Checkbox.Indicator>
@@ -353,7 +344,8 @@ export const Preferences = ({
 						<Checkbox
 							checked={autoComplete ? true : false}
 							id='autoComplete'
-							onCheckedChange={handleAutoComplete}>
+							onCheckedChange={handleAutoComplete}
+						>
 							<Checkbox.Indicator>
 								<Check />
 							</Checkbox.Indicator>
@@ -364,7 +356,8 @@ export const Preferences = ({
 						<Checkbox
 							checked={autoCorrect ? true : false}
 							id='autoCorrect'
-							onCheckedChange={handleAutoCorrect}>
+							onCheckedChange={handleAutoCorrect}
+						>
 							<Checkbox.Indicator>
 								<Check />
 							</Checkbox.Indicator>
@@ -375,12 +368,15 @@ export const Preferences = ({
 				<View>
 					<Label>{t('models')}</Label>
 					<Selection
-						renderer={value => items.find(item => item.id === value)?.id ?? value}
+						renderer={value =>
+							items.find(item => item.id === value)?.id ?? value
+						}
 						listLabel={t('models')}
 						{...{
 							item,
 							setItem: (item: Model) => setItem(item, setItemState, t, setModel)
-						}}>
+						}}
+					>
 						{renderedItems}
 					</Selection>
 				</View>

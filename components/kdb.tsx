@@ -14,7 +14,8 @@ export const Kbd = ({
 		borderWidth={1}
 		height={typeof size === 'number' ? size + size / 2 : '$1'}
 		borderColor='$borderColor'
-		justify='center'>
+		justify='center'
+	>
 		<Text fontSize={size} color='$color06' lineHeight={0}>
 			{children}
 		</Text>

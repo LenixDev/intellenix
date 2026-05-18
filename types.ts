@@ -11,23 +11,10 @@ export type SupaProtect = string | { error: PostgrestError['message'] }
 export type KeysQuota = Record<string, Quota>
 export type Model = string
 export type SupaKeyArgs =
-	| {
-			type: 'get'
-			id?: string
-	  }
-	| {
-			type: 'protect'
-			key: string
-	  }
-	| {
-			type: 'update'
-			key: string
-			id: string
-	  }
-	| {
-			type: 'public'
-			id: string | undefined | null
-	  }
+	| { type: 'get'; id?: string }
+	| { type: 'protect'; key: string }
+	| { type: 'update'; key: string; id: string }
+	| { type: 'public'; id: string | undefined | null }
 
 export type Conversation =
 	| {
@@ -51,12 +38,7 @@ export type Conversation =
 
 export type Quota = Record<
 	Model,
-	{
-		rpd: string
-		tpm: string
-		r_limits: string
-		t_limits: string
-	}
+	{ rpd: string; tpm: string; r_limits: string; t_limits: string }
 >
 
 export type Key =
@@ -93,17 +75,10 @@ export interface GroqParams {
 
 export interface SupaList {
 	fn: ModelListResponse | { error: PostgrestError['message'] }
-	args: {
-		id: string
-	}
+	args: { id: string }
 }
 
 export interface SupaPrompt {
 	return: string | PostgrestError
-	args: {
-		type: 'get'
-	} | {
-		type: 'update'
-		prompt: string
-	}
+	args: { type: 'get' } | { type: 'update'; prompt: string }
 }

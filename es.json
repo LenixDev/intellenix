@@ -24,12 +24,7 @@
 	"grouped-accessor-pairs": "warn",
 	"guard-for-in": "warn",
 	"id-denylist": "warn",
-	"id-length": [
-		"warn",
-		{
-			"exceptions": ["_", "t", "$"]
-		}
-	],
+	"id-length": ["warn", { "exceptions": ["_", "t", "$"] }],
 	"id-match": "warn",
 	"init-declarations": "warn",
 	"logical-assignment-operators": "warn",

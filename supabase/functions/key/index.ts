@@ -30,9 +30,7 @@ Deno.serve(async req => {
 				})
 		}
 
-		return new Response(JSON.stringify(key satisfies GetKey), {
-			headers: res
-		})
+		return new Response(JSON.stringify(key satisfies GetKey), { headers: res })
 	}
 
 	if (Data.type === 'update') {

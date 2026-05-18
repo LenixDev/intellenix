@@ -1,6 +1,6 @@
-import { S } from "@/types"
-import { useTranslation } from "react-i18next"
-import { Button, Input, Label, YStack } from "tamagui"
+import { S } from '@/types'
+import { useTranslation } from 'react-i18next'
+import { Button, Input, Label, YStack } from 'tamagui'
 
 export const Topic = ({
 	send,
@@ -15,7 +15,9 @@ export const Topic = ({
 
 	return (
 		<YStack gap='$2'>
-			<Label htmlFor='topic' lineHeight='$1'>{t('what_conversation')}</Label>
+			<Label htmlFor='topic' lineHeight='$1'>
+				{t('what_conversation')}
+			</Label>
 			<Input
 				value={topic}
 				onChangeText={setTopic}
@@ -23,10 +25,9 @@ export const Topic = ({
 				placeholder={t('conversation_topic')}
 				fontSize={16}
 			/>
-			<Button
-				chromeless
-				onPress={() => send()}
-			>{t('create_conversation')}</Button>
+			<Button chromeless onPress={() => send()}>
+				{t('create_conversation')}
+			</Button>
 		</YStack>
 	)
 }

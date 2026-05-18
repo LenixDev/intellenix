@@ -26,13 +26,15 @@ export const Selection = <T extends string>({
 		value={item}
 		onValueChange={setItem}
 		disablePreventBodyScroll
-		renderValue={renderer}>
+		renderValue={renderer}
+	>
 		<Select.Trigger
 			iconAfter={ChevronDown}
 			borderRadius='$3'
 			width='auto'
 			size='$3'
-			{...props}>
+			{...props}
+		>
 			<Select.Value color='$color10' />
 		</Select.Trigger>
 		<Select.Content>
@@ -41,7 +43,8 @@ export const Selection = <T extends string>({
 				justify='center'
 				position='relative'
 				width='100%'
-				height='$3'>
+				height='$3'
+			>
 				<YStack z={10}>
 					<ChevronUp size={20} />
 				</YStack>
@@ -59,7 +62,8 @@ export const Selection = <T extends string>({
 				borderWidth={1}
 				borderColor='$borderColor'
 				height='90%'
-				maxW='20%'>
+				maxW='20%'
+			>
 				<Select.Group>
 					<Select.Label fontWeight='100'>{listLabel}</Select.Label>
 					{children}
@@ -71,7 +75,8 @@ export const Selection = <T extends string>({
 					items='center'
 					justify='center'
 					width='$4'
-					pointerEvents='none'>
+					pointerEvents='none'
+				>
 					<ChevronDown size={getFontSize('$true')} />
 				</YStack>
 			</Select.Viewport>
@@ -80,7 +85,8 @@ export const Selection = <T extends string>({
 				justify='center'
 				position='relative'
 				width='100%'
-				height='$3'>
+				height='$3'
+			>
 				<YStack z={10}>
 					<ChevronDown size={20} />
 				</YStack>

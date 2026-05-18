@@ -5,13 +5,7 @@ import { raise } from 'lenix'
 
 i18next
 	.use(initReactI18next)
-	.init({
-		resources: {
-			en: { translation }
-		},
-		lng: 'en',
-		fallbackLng: 'en'
-	})
+	.init({ resources: { en: { translation } }, lng: 'en', fallbackLng: 'en' })
 	.catch(raise)
 
 export default i18next

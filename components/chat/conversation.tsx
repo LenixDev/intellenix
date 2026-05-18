@@ -76,8 +76,8 @@ export const Conversation = ({
 	}, [conversations])
 
 	useEffect(() => {
-    if (messageEditing) ref.current?.focus()
-}, [messageEditing])
+		if (messageEditing) ref.current?.focus()
+	}, [messageEditing])
 
 	return (
 		<>
@@ -88,7 +88,8 @@ export const Conversation = ({
 				px={isPortrait ? '$2' : '$5'}
 				flex={1}
 				// @ts-ignore
-				scrollbarWidth='none'>
+				scrollbarWidth='none'
+			>
 				{conversations.map(($, i) => {
 					if ($.role === 'user')
 						return (
@@ -104,20 +105,21 @@ export const Conversation = ({
 								rounded={shown[$.date] || hover[$.date] ? '$2' : undefined}
 								onClick={() => setShown({ [$.date]: !shown[$.date] })}
 								onMouseEnter={() => setHover({ [$.date]: true })}
-								onMouseLeave={() => setHover({ [$.date]: false })}>
+								onMouseLeave={() => setHover({ [$.date]: false })}
+							>
 								{messageEditing?.[$.date] !== undefined && (
 									<TextArea
 										ref={ref}
 										value={messageEditing[$.date]}
-										onChangeText={value => setMessageEditing({ [$.date]: value })}
+										onChangeText={value =>
+											setMessageEditing({ [$.date]: value })
+										}
 										width='100%'
 										fontSize={16}
-										style={{
-											scrollbarWidth: 'none',
-											resize: 'none',
-										}}
+										style={{ scrollbarWidth: 'none', resize: 'none' }}
 										onInput={event => {
-											const el = event.currentTarget as unknown as HTMLTextAreaElement
+											const el =
+												event.currentTarget as unknown as HTMLTextAreaElement
 											el.style.height = 'auto'
 											el.style.height = `${el.scrollHeight}px`
 										}}
@@ -137,37 +139,46 @@ export const Conversation = ({
 										}}
 									/>
 									<Copy text={$.content} opacity={hover[$.date] ? 1 : 0} />
-									{messageEditing?.[$.date] !== undefined ? (
+									{messageEditing?.[$.date] !== undefined ?
 										<>
 											<Button
 												onPress={event => {
 													event.stopPropagation()
 													setMessageEditing(undefined)
 												}}
-											>{t('cancel')}</Button>
+											>
+												{t('cancel')}
+											</Button>
 											<Button
 												disabled={messageEditing[$.date] === $.content}
 												theme='accent'
 												onPress={event => {
 													event.stopPropagation()
 													setMessageEditing(undefined)
-													setConversations(prev => prev.slice(0, prev.findIndex(m => m.date === $.date)))
+													setConversations(prev =>
+														prev.slice(
+															0,
+															prev.findIndex(m => m.date === $.date)
+														)
+													)
 													send(messageEditing[$.date])
 												}}
-											>{t('revision')}</Button>
+											>
+												{t('revision')}
+											</Button>
 										</>
-									) : (
-										<Text
+									:	<Text
 											py='$2'
 											px='$3'
 											maxW='100%'
 											color='$colorFocus'
 											bg='$color1'
 											rounded='$5'
-											onPress={event => event.stopPropagation()}>
+											onPress={event => event.stopPropagation()}
+										>
 											{$.content}
 										</Text>
-									)}
+									}
 								</View>
 								<View gap={0} items='flex-end' opacity={shown[$.date] ? 1 : 0}>
 									<Text color='$color04' fontSize='$1'>
@@ -186,18 +197,21 @@ export const Conversation = ({
 							bg={shown[$.date] || hover[$.date] ? '$color001' : undefined}
 							onClick={() => setShown({ [$.date]: !shown[$.date] })}
 							onMouseEnter={() => setHover({ [$.date]: true })}
-							onMouseLeave={() => setHover({ [$.date]: false })}>
+							onMouseLeave={() => setHover({ [$.date]: false })}
+						>
 							<View
 								flexDirection='row'
 								items='flex-end'
 								gap='$3'
-								rounded={shown[$.date] || hover[$.date] ? '$2' : undefined}>
+								rounded={shown[$.date] || hover[$.date] ? '$2' : undefined}
+							>
 								<RichText
 									bg='$background'
 									maxW='90%'
 									self='flex-start'
 									data-assistant='true'
-									onPress={event => event.stopPropagation()}>
+									onPress={event => event.stopPropagation()}
+								>
 									{$.content}
 								</RichText>
 								<Copy text={$.content} opacity={hover[$.date] ? 1 : 0} />
@@ -226,11 +240,17 @@ export const Conversation = ({
 							top: selection.y,
 							transform: 'translateX(-50%)',
 							zIndex: 9999
-						}}>
+						}}
+					>
 						<Button
 							icon={Reply}
 							size='$2'
-							onPress={() => setAttachs(prev => ({ ...prev, [`reply to Intellenix's - ${Date.now()}`]: selection.text }))}
+							onPress={() =>
+								setAttachs(prev => ({
+									...prev,
+									[`reply to Intellenix's - ${Date.now()}`]: selection.text
+								}))
+							}
 						/>
 					</View>,
 					document.body

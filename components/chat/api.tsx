@@ -36,7 +36,8 @@ export const Api = ({
 			onOpenChange={open => {
 				if (!open) return
 				setKeyDialog(open)
-			}}>
+			}}
+		>
 			<View>
 				<Dialog.Title>{t('enter_key')}</Dialog.Title>
 				<Dialog.Description>
@@ -59,7 +60,8 @@ export const Api = ({
 					await prefs.setKey(apiKey, 'key')
 					setKeyDialog(false)
 					window.location.reload()
-				}}>
+				}}
+			>
 				{t('submit')}
 			</Button>
 			<XStack items='center' gap='$4'>
@@ -77,11 +79,7 @@ export const Api = ({
 
 					const { data, error } = await supabase.functions.invoke<GetKey>(
 						'key',
-						{
-							body: {
-								type: 'get'
-							} satisfies SupaKeyArgs
-						}
+						{ body: { type: 'get' } satisfies SupaKeyArgs }
 					)
 
 					if (
@@ -98,7 +96,8 @@ export const Api = ({
 					setKeyDialog(false)
 					setLoading(false)
 					window.location.reload()
-				}}>
+				}}
+			>
 				{loading ?
 					<Spinner />
 				:	t('pub_key')}

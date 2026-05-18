@@ -30,24 +30,9 @@
 	"@stylistic/jsx-first-prop-new-line": "warn",
 	"@stylistic/jsx-function-call-newline": "warn",
 	"@stylistic/jsx-indent-props": ["warn", 0],
-	"@stylistic/jsx-max-props-per-line": [
-		"warn",
-		{
-			"maximum": 3
-		}
-	],
-	"@stylistic/jsx-newline": [
-		"warn",
-		{
-			"prevent": true
-		}
-	],
-	"@stylistic/jsx-one-expression-per-line": [
-		"warn",
-		{
-			"allow": "non-jsx"
-		}
-	],
+	"@stylistic/jsx-max-props-per-line": ["warn", { "maximum": 3 }],
+	"@stylistic/jsx-newline": ["warn", { "prevent": true }],
+	"@stylistic/jsx-one-expression-per-line": ["warn", { "allow": "non-jsx" }],
 	"@stylistic/jsx-pascal-case": "warn",
 	"@stylistic/exp-jsx-props-style": "warn",
 	"@stylistic/jsx-quotes": ["warn", "prefer-single"],
@@ -66,13 +51,8 @@
 	"@stylistic/member-delimiter-style": [
 		"error",
 		{
-			"multiline": {
-				"delimiter": "none"
-			},
-			"singleline": {
-				"delimiter": "semi",
-				"requireLast": false
-			}
+			"multiline": { "delimiter": "none" },
+			"singleline": { "delimiter": "semi", "requireLast": false }
 		}
 	],
 	"@stylistic/multiline-comment-style": "warn",
@@ -80,30 +60,17 @@
 	"@stylistic/new-parens": "warn",
 	"@stylistic/newline-per-chained-call": [
 		"warn",
-		{
-			"ignoreChainWithDepth": 3
-		}
+		{ "ignoreChainWithDepth": 3 }
 	],
 	"@stylistic/no-confusing-arrow": "warn",
-	"@stylistic/no-extra-parens": [
-		"warn",
-		"all",
-		{
-			"ignoreJSX": "all"
-		}
-	],
+	"@stylistic/no-extra-parens": ["warn", "all", { "ignoreJSX": "all" }],
 	"@stylistic/no-extra-semi": "warn",
 	"@stylistic/no-floating-decimal": "warn",
 	"@stylistic/no-mixed-operators": "warn",
 	"@stylistic/no-mixed-spaces-and-tabs": "warn",
 	"@stylistic/no-multi-spaces": "warn",
 	"@stylistic/no-multiple-empty-lines": "warn",
-	"@stylistic/no-tabs": [
-		"warn",
-		{
-			"allowIndentationTabs": true
-		}
-	],
+	"@stylistic/no-tabs": ["warn", { "allowIndentationTabs": true }],
 	"@stylistic/no-trailing-spaces": "warn",
 	"@stylistic/no-whitespace-before-property": "warn",
 	"@stylistic/nonblock-statement-body-position": "warn",
@@ -111,22 +78,14 @@
 	"@stylistic/object-curly-spacing": ["warn", "always"],
 	"@stylistic/object-property-newline": [
 		"warn",
-		{
-			"allowAllPropertiesOnSameLine": true
-		}
+		{ "allowAllPropertiesOnSameLine": true }
 	],
 	"@stylistic/one-var-declaration-per-line": "warn",
 	"@stylistic/operator-linebreak": "warn",
 	"@stylistic/padded-blocks": ["warn", "never"],
 	"@stylistic/padding-line-between-statements": "warn",
 	"@stylistic/quote-props": ["warn", "as-needed"],
-	"@stylistic/quotes": [
-		"warn",
-		"single",
-		{
-			"avoidEscape": true
-		}
-	],
+	"@stylistic/quotes": ["warn", "single", { "avoidEscape": true }],
 	"@stylistic/rest-spread-spacing": "warn",
 	"@stylistic/semi": ["warn", "never"],
 	"@stylistic/semi-spacing": "warn",
