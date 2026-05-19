@@ -33,6 +33,7 @@ import { Topic } from '../elements/topic'
 import { ChatCompletion } from 'groq-sdk/resources/chat/completions.mjs'
 import { CompletionUsage } from 'groq-sdk/resources'
 import { FunctionsHttpError } from '@supabase/supabase-js'
+import { supaError } from '@/lib'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -231,7 +232,7 @@ export default function Page() {
 			if (signal.aborted) return null
 			if (error instanceof FunctionsHttpError || !data) {
 				toast.error(t('err'), {
-					description: (await error.context.json()).error.error.message
+					description: supaError(error)
 				})
 				return null
 			}

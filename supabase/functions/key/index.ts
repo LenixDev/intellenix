@@ -1,6 +1,7 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
 import type {
 	GetKey,
+	SupaKey,
 	SupaKeyArgs,
 	SupaProtect,
 	SupaPublic
@@ -14,23 +15,34 @@ Deno.serve(async req => {
 	const Data = (await req.json()) as SupaKeyArgs
 	const key = Deno.env.get('API_KEY')
 
-	if (Data.type === 'get') {
+	if (Data.type === 'usePublic') {
 		if (typeof key !== 'string')
 			return new Response(
-				JSON.stringify({ error: 'missing key' } satisfies GetKey),
-				{ headers: res }
+				JSON.stringify('missing key'),
+				{
+					headers: res,
+					status: 500
+				}
 			)
 
-		if (Data.id) {
-			const { error } = await supabase.from('quota').delete().eq('id', Data.id)
-			if (error)
-				return new Response(JSON.stringify({ error: error.message }), {
-					headers: res,
-					status: 400
-				})
-		}
+		const { error, data } = await supabase.from('quota')
+			.insert({ api_key: key })
+			.select('id')
+			.limit(1)
+			.single<{ id: string }>()
 
-		return new Response(JSON.stringify(key satisfies GetKey), { headers: res })
+		if (error) return new Response(
+			JSON.stringify(error),
+			{
+				headers: res,
+				status: 400
+			}
+		)
+
+		return new Response(
+			JSON.stringify(data.id satisfies SupaKey['return']),
+			{ headers: res }
+		)
 	}
 
 	if (Data.type === 'update') {

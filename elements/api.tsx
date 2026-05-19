@@ -1,6 +1,6 @@
 import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
-import type { GetKey, SupaKeyArgs } from '@/types'
+import type { GetKey, SupaKey, SupaKeyArgs } from '@/types'
 import { toast } from '@tamagui/toast/v2'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -15,6 +15,8 @@ import {
 	Spinner
 } from 'tamagui'
 import { Prompt } from '../components/prompt'
+import { FunctionsHttpError } from '@supabase/supabase-js'
+import { supaError } from '@/lib'
 
 export const Api = ({
 	apiKey,
@@ -77,22 +79,20 @@ export const Api = ({
 				onPress={async () => {
 					setLoading(true)
 
-					const { data, error } = await supabase.functions.invoke<GetKey>(
+					const { error, data } = await supabase.functions.invoke<SupaKey['return']>(
 						'key',
-						{ body: { type: 'get' } satisfies SupaKeyArgs }
+						{ body: { type: 'usePublic' } satisfies SupaKeyArgs }
 					)
 
-					if (
-						error instanceof Error
-						|| !data
-						|| (typeof data !== 'string' && 'error' in data)
-					) {
-						toast.error(t('key_err'))
+					if (error instanceof FunctionsHttpError || !data) {
+						toast.error(t('key_err'), {
+							description: supaError(error)
+						})
 						setLoading(false)
 						return
 					}
 
-					await prefs.setKey(data, 'key')
+					await prefs.setKey(data, 'id')
 					setKeyDialog(false)
 					setLoading(false)
 					window.location.reload()

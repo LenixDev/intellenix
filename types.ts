@@ -6,13 +6,16 @@ import type {
 import type { CompletionUsage, ModelListResponse } from "groq-sdk/resources";
 import { PostgrestError } from "@supabase/supabase-js";
 
-export type GetKey = string | { error: PostgrestError["message"] };
+export type GetKey = string
+export interface SupaKey {
+	return: string
+}
 export type SupaPublic = string;
 export type SupaProtect = string | { error: PostgrestError["message"] };
 export type KeysQuota = Record<string, Quota>;
 export type Model = string;
 export type SupaKeyArgs =
-	| { type: "get"; id?: string }
+	| { type: "usePublic" }
 	| { type: "protect"; key: string }
 	| { type: "update"; key: string; id: string }
 	| { type: "public"; id: string | undefined | null };
