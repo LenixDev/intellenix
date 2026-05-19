@@ -201,10 +201,10 @@ export default function Page() {
 			},
 			reasoning_effort: reasoningModels.includes(model) ? reasoning : null,
 			include_reasoning: reasoningModels.includes(model) ? true : null,
+			user: id || null,
 			// documents: null,
 			// compound_custom: null,
 			// tools: null,
-			// user: null,
 			// stream: null
 		}
 		let result
