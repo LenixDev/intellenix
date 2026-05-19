@@ -3,7 +3,7 @@ import { Conversation } from '@/elements/conversation'
 import { InputBar } from '@/elements/input-bar'
 import { InputPreferences } from '@/elements/input-prefs'
 import { Preferences } from '@/elements/preferences'
-import { defaultModel } from '@/constants'
+import { defaultModel, reasoningModels } from '@/constants'
 import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
 import {
@@ -211,8 +211,8 @@ export default function Page() {
 				include_domains: ['https://lenix.dev'],
 				include_images: true
 			},
-			// reasoning_effort: reasoning,
-			// include_reasoning: true,
+			reasoning_effort: reasoningModels.includes(model) ? reasoning : null,
+			include_reasoning: reasoningModels.includes(model) ? true : null,
 			// documents: null,
 			// compound_custom: null,
 			// tools: null,

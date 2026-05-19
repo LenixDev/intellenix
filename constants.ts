@@ -13,10 +13,15 @@ export const recommendedModels = [
 	'groq/compound-mini'
 ]
 
-export const reasonings: readonly Reasoning[] = [
+export const reasonings = [
 	'none',
 	'low',
 	'medium',
 	'high',
 	'default'
-]
+] as const satisfies Reasoning[]
+
+export const reasoningModels = [
+	'openai/gpt-oss-120b',
+	'openai/gpt-oss-20b',
+] satisfies typeof recommendedModels
