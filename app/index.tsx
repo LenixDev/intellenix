@@ -12,8 +12,6 @@ import {
 	type Conversation as IConversation,
 	type KeysQuota,
 	type Model,
-	type SupaKeyArgs,
-	type SupaProtect,
 	Reasoning
 } from '@/types'
 import { toast } from '@tamagui/toast/v2'
@@ -94,20 +92,10 @@ export default function Page() {
 	useEffect(() => {
 		if (key !== '' || id === undefined) return
 		;(async () => {
-			let key = await prefs.getKey('key')
+			const key = await prefs.getKey('key')
 			if (!key && !id) return setKeyDialog(true)
-			if (!key) {
-				const { error, data } = await supabase.functions.invoke<SupaProtect>(
-					'key',
-					{ body: { type: 'get' } satisfies SupaKeyArgs }
-				)
-				if (error instanceof Error || !data)
-					return toast.error(t('err'), { description: error?.message })
-				if (typeof data !== 'string' && 'error' in data)
-					return toast.error(t('err'), { description: data.error })
-				key = data
-			}
-			setKey(key)
+			
+			setKey(key ?? '')
 		})()
 	}, [key, model, id])
 

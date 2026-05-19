@@ -1,6 +1,6 @@
 import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
-import type { GetKey, SupaKey, SupaKeyArgs } from '@/types'
+import type { SupaKey } from '@/types'
 import { toast } from '@tamagui/toast/v2'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -81,7 +81,7 @@ export const Api = ({
 
 					const { error, data } = await supabase.functions.invoke<SupaKey['return']>(
 						'key',
-						{ body: { type: 'usePublic' } satisfies SupaKeyArgs }
+						{ body: { type: 'usePublic' } satisfies SupaKey['args'] }
 					)
 
 					if (error instanceof FunctionsHttpError || !data) {

@@ -9,16 +9,17 @@ import { PostgrestError } from "@supabase/supabase-js";
 export type GetKey = string
 export interface SupaKey {
 	return: string
+	args: 
+	| { type: "getById", id: string }
+	| { type: "usePublic" }
+	| { type: "protect"; key: string }
+	| { type: "update"; key: string; id: string }
+	| { type: "public"; id: string | undefined | null };
 }
 export type SupaPublic = string;
 export type SupaProtect = string | { error: PostgrestError["message"] };
 export type KeysQuota = Record<string, Quota>;
 export type Model = string;
-export type SupaKeyArgs =
-	| { type: "usePublic" }
-	| { type: "protect"; key: string }
-	| { type: "update"; key: string; id: string }
-	| { type: "public"; id: string | undefined | null };
 
 export type Conversation =
 	| {

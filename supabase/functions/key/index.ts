@@ -1,8 +1,6 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
 import type {
-	GetKey,
 	SupaKey,
-	SupaKeyArgs,
 	SupaProtect,
 	SupaPublic
 } from '../../../types.ts'
@@ -12,8 +10,29 @@ Deno.serve(async req => {
 	const [success, res] = init(req)
 	if (!success) return res
 
-	const Data = (await req.json()) as SupaKeyArgs
+	const Data = (await req.json()) as SupaKey['args']
 	const key = Deno.env.get('API_KEY')
+
+	if (Data.type === 'getById') {
+		const { error, data } = await supabase.from('quota')
+			.select('api_key')
+			.eq('id', Data.id)
+			.limit(1)
+			.single<{ api_key: string }>()
+
+		if (error) return new Response(
+			JSON.stringify(error),
+			{
+				headers: res,
+				status: 400
+			}
+		)
+
+		return new Response(
+			JSON.stringify(data.api_key satisfies SupaKey['return']),
+			{ headers: res }
+		)
+	}
 
 	if (Data.type === 'usePublic') {
 		if (typeof key !== 'string')

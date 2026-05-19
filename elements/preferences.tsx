@@ -17,7 +17,7 @@ import {
 } from 'tamagui'
 import { Selection } from '../components/selection'
 import { useTranslation } from 'react-i18next'
-import { Model, Reasoning, S, SupaKeyArgs, SupaList, SupaProtect, SupaPublic } from '@/types'
+import { Model, Reasoning, S, SupaKey, SupaList, SupaProtect, SupaPublic } from '@/types'
 import { prefs } from '@/storage'
 import { toast } from '@tamagui/toast/v2'
 import type { Model as GroqModel } from 'groq-sdk/resources'
@@ -174,7 +174,7 @@ export const Preferences = ({
 		setLoading(prev => ({ ...prev, key: true }))
 		if (Protected) {
 			const { error } = await supabase.functions.invoke('key', {
-				body: { type: 'update', key: stateKey, id: id! } satisfies SupaKeyArgs
+				body: { type: 'update', key: stateKey, id: id! } satisfies SupaKey['args']
 			})
 			if (error instanceof Error) {
 				toast.error(t('err'), { description: error.message })
@@ -194,7 +194,7 @@ export const Preferences = ({
 	const handlePublic = async () => {
 		setLoading(prev => ({ ...prev, public: true }))
 		const { error, data } = await supabase.functions.invoke<SupaPublic>('key', {
-			body: { type: 'public', id } satisfies SupaKeyArgs
+			body: { type: 'public', id } satisfies SupaKey['args']
 		})
 		if (error instanceof Error || !data) {
 			toast.error(t('err'), { description: error.message })
@@ -218,8 +218,8 @@ export const Preferences = ({
 			{
 				body:
 					Protected ?
-						({ type: 'get', id: id! } satisfies SupaKeyArgs)
-					:	({ type: 'protect', key } satisfies SupaKeyArgs)
+						({ type: 'getById', id: id! } satisfies SupaKey['args'])
+					:	({ type: 'protect', key } satisfies SupaKey['args'])
 			}
 		)
 		if (error instanceof Error || !data) {
