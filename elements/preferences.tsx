@@ -23,6 +23,8 @@ import { toast } from '@tamagui/toast/v2'
 import type { Model as GroqModel } from 'groq-sdk/resources'
 import { supabase } from '@/supabase'
 import { Over } from '@/components/over'
+import { supaError } from '@/lib'
+import { FunctionsHttpError } from '@supabase/supabase-js'
 
 export const Preferences = ({
 	groq,
@@ -222,8 +224,9 @@ export const Preferences = ({
 					:	({ type: 'protect', key } satisfies SupaKey['args'])
 			}
 		)
-		if (error || !data) {
-			toast.error(t('err'), { description: error === 'protection_err' ? t('protection_err') :error.message })
+		if (error instanceof FunctionsHttpError || !data) {
+			const err = await error?.context?.json()
+			toast.error(t('err'), { description: err === 'protection_err' ? t('protection_err') : err })
 			setLoading(prev => ({ ...prev, protection: false }))
 			return
 		}
