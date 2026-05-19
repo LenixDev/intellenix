@@ -197,7 +197,6 @@ export default function Page() {
 	}
 
 	const requestGroq = async (prompt: string, signal: AbortSignal) => {
-		console.debug(quota[key]?.[model]?.tpm, key, model)
 		const params: SupaGroq['args']['params'] = {
 			messages: [
 				...conversations.map(({ role, content }) => ({ role, content })),
@@ -216,7 +215,8 @@ export default function Page() {
 			// documents: null,
 			// compound_custom: null,
 			// tools: null,
-			// user: null
+			// user: null,
+			// stream: null
 		}
 		let result
 		if (groq && !quotaDisplayed)
@@ -263,7 +263,6 @@ export default function Page() {
 		try {
 			setMessage('')
 			const result = await requestGroq(prompt, signal)
-			console.debug(result, 'res')
 			if (!result || signal.aborted) return abortSend(request)
 
 			const { choices, service_tier, usage } = result.data
@@ -279,9 +278,8 @@ export default function Page() {
 					}
 				})
 
-			const { content, reasoning } = choices[0]?.message
+			const { content/* , reasoning */ } = choices[0]?.message
 			if (typeof content !== 'string') return toast.error(t('no_res'))
-			console.debug(reasoning)
 
 			memoAIReponse(usage, content, service_tier)
 			setAttachs({})
