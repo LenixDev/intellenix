@@ -127,14 +127,14 @@ export default function Page() {
 
 			const { error, data } = await supabase.functions.invoke<
 				Extract<SupaPrompt['return'], string>
-			>('prompt', { body: { type: 'get' } })
+			>('prompt', { body: { type: 'get' } satisfies SupaPrompt['args'] })
 			if (error || !data)
 				return toast.error(t('err'), { description: error.message })
 			setPrompts(data)
 		})()
 	}, [])
 
-	if (key === '' || keyDialog)
+	if ((key === '' && !id) || keyDialog)
 		return <Api {...{ apiKey: key, setKey, keyDialog, setKeyDialog }} />
 
 	const memoUserRequest = (request: string) => {
@@ -279,6 +279,7 @@ export default function Page() {
 		}
 	}
 
+
 	return (
 		<View
 			items='center'
@@ -338,7 +339,8 @@ export default function Page() {
 								abort: () => abortRef.current?.abort(),
 								attachs,
 								setAttachs,
-								isPortrait
+								isPortrait,
+								keyId: id
 							}}
 						/>
 						<InputPreferences

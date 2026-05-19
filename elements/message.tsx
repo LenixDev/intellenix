@@ -14,6 +14,7 @@ export const Message = ({
 	isMultiLine,
 	setIsMultiLine,
 	quotaDisplayed,
+	keyId: id,
 	...props
 }: {
 	message: string
@@ -25,6 +26,7 @@ export const Message = ({
 	isMultiLine: boolean
 	setIsMultiLine: (isMultiLine: boolean) => void
 	quotaDisplayed: boolean | undefined
+	keyId: string | undefined | null
 } & TextAreaProps) => {
 	const { t } = useTranslation()
 	const narrowWidth = useRef<number>(0)
@@ -53,6 +55,7 @@ export const Message = ({
 		})
 	}, [message])
 
+
 	return (
 		<View flexDirection='row' style={{ flex: 1 }}>
 			<TextArea
@@ -74,7 +77,7 @@ export const Message = ({
 				placeholder={t('chat_intell')}
 				value={message}
 				onChangeText={setMessage}
-				readOnly={!apiKey}
+				readOnly={apiKey === '' && !id}
 				onKeyDown={event => {
 					if (event.key !== 'Enter') return
 					if (isMac ? !event.metaKey : !event.ctrlKey) return

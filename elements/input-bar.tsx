@@ -29,7 +29,8 @@ export const InputBar = ({
 	abort,
 	attachs,
 	setAttachs,
-	isPortrait
+	isPortrait,
+	keyId: id
 }: {
 	autoComplete: boolean | undefined
 	autoCorrect: boolean | undefined
@@ -47,6 +48,7 @@ export const InputBar = ({
 	attachs: Record<string, string>
 	setAttachs: S<Record<string, string>>
 	isPortrait: boolean
+	keyId: string | undefined | null
 }) => {
 	return (
 		<View flexDirection='row' items='center' width={isPortrait ? '95%' : '50%'}>
@@ -119,7 +121,8 @@ export const InputBar = ({
 							isMac,
 							isMultiLine,
 							setIsMultiLine,
-							quotaDisplayed
+							quotaDisplayed,
+							keyId: id
 						}}
 					/>
 					<View
