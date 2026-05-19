@@ -56,6 +56,7 @@ export type Key =
 	| 'message'
 	| 'country'
 	| 'reasoning'
+	| 'randomness'
 
 export type Reasoning = ChatCompletionCreateParamsBase['reasoning_effort']
 

@@ -54,11 +54,14 @@
 	"create_conversation": "Create New Conversation",
 	"cancel": "Cancel",
 	"revision": "Revision",
-	"country_priortize": "Name of country to prioritize search results from (e.g., 'united states', 'germany', 'france').",
+	"country_priortize": "Name of country to prioritize search results from\n(e.g., 'united states', 'germany', 'france').",
 	"country_name": "Country Name",
 	"country": "Country",
 	"country_success": "Country updated",
 	"reasoning_success": "Reasoning updated",
 	"reasoning_effort": "Reasoning Effort",
-	"protection_err": "You can not unprotect a public API key"
+	"protection_err": "You can not unprotect a public API key",
+	"randomness": "Randomness",
+	"randomness_details": "Higher values like 0.8 will make the output more random,\nwhile lower values like 0.2 will make it more focused and deterministic.",
+	"randomness_success": "Randomness updated"
 }

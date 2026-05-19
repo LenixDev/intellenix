@@ -58,6 +58,7 @@ export default function Page() {
 	const [attachs, setAttachs] = useState<Record<string, string>>({})
 	const [country, setCountry] = useState('')
 	const [reasoning, setReasoning] = useState<Reasoning>('default')
+	const [randomness, setRandomness] = useState(0.5)
 
 	const abortRef = useRef<AbortController | null>(null)
 
@@ -125,6 +126,9 @@ export default function Page() {
 			const reasoning = await prefs.getKey('reasoning')
 			if (reasoning) setReasoning(reasoning as Reasoning)
 
+			const randomness = await prefs.getKey('randomness')
+			if (randomness) setRandomness(Number(randomness))
+
 			const { error, data } = await supabase.functions.invoke<
 				Extract<SupaPrompt['return'], string>
 			>('prompt', { body: { type: 'get' } satisfies SupaPrompt['args'] })
@@ -190,7 +194,7 @@ export default function Page() {
 				{ role: 'user', content: prompt }
 			],
 			model,
-			temperature: 0.5,
+			temperature: randomness,
 			max_completion_tokens: Number(quota[key]?.[model]?.tpm),
 			search_settings: {
 				country,
@@ -383,7 +387,9 @@ export default function Page() {
 					country,
 					setCountry,
 					reasoning,
-					setReasoning
+					setReasoning,
+					randomness,
+					setRandomness
 				}}
 			/>
 		</View>

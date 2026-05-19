@@ -9,6 +9,7 @@ import {
 	Label,
 	Select,
 	Sheet,
+	Slider,
 	Spinner,
 	Text,
 	View,
@@ -53,7 +54,9 @@ export const Preferences = ({
 	country,
 	setCountry,
 	reasoning,
-	setReasoning
+	setReasoning,
+	randomness,
+	setRandomness
 }: {
 	groq: Groq | null
 	id: string | undefined | null
@@ -74,6 +77,8 @@ export const Preferences = ({
 	setCountry: S<string>
 	reasoning: Reasoning
 	setReasoning: S<Reasoning>
+	randomness: number
+	setRandomness: S<number>
 }) => {
 	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<Model>(defaultModel)
@@ -291,8 +296,16 @@ export const Preferences = ({
 
 	const handleReasoning = async (reasoning: string) => {
 		setReasoning(reasoning as Reasoning)
-		await prefs.setKey(reasoning, 'reasoning')
-		toast.success(t('reasoning_success'))
+		
+	}
+
+	const handleRandomness = async (randomness: number[]) => {
+		setRandomness(randomness[0])
+		clearTimeout(debounceRef.current)
+		debounceRef.current = setTimeout(async () => {
+			await prefs.setKey(String(randomness[0]), 'randomness')
+			toast.success(t('randomness_success'))
+		}, 1000)
 	}
 
 	return (
@@ -302,7 +315,7 @@ export const Preferences = ({
 			modal
 			open={sheetOpen}
 			onOpenChange={setSheetOpen}
-			snapPoints={isPortrait ? [95, 10] : [50, 10]}
+			snapPoints={isPortrait ? [95, 10] : [60, 10]}
 		>
 			<Sheet.Overlay transition='quick' bg='$color02' />
 			<Sheet.Handle />
@@ -452,6 +465,30 @@ export const Preferences = ({
 							value={country}
 							onChangeText={handleCountry}
 						/>
+					</View>
+					<View gap='$3'>
+						<YStack>
+							<XStack items='center'>
+								<Label htmlFor='randomness'>{t('randomness')}</Label>
+								<Over content={<Text>{t('randomness_details')}</Text>}>
+									<Button chromeless circular size='$2' icon={Info} />
+								</Over>
+							</XStack>
+							<Slider
+								defaultValue={[0.5]}
+								min={0}
+								max={2}
+								step={0.1}
+								value={[randomness]}
+								onValueChange={handleRandomness}
+							>
+								<Slider.Track>
+									<Slider.TrackActive />
+								</Slider.Track>
+								<Slider.Thumb size='$2' rounded='$radius.9' />
+							</Slider>
+						</YStack>
+						<Text>{randomness}</Text>
 					</View>
 				</YStack>
 			</Sheet.Frame>
