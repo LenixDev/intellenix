@@ -13,7 +13,8 @@ import {
 	type KeysQuota,
 	type Model,
 	type SupaKeyArgs,
-	type SupaProtect
+	type SupaProtect,
+	Reasoning
 } from '@/types'
 import { toast } from '@tamagui/toast/v2'
 import Groq from 'groq-sdk'
@@ -57,6 +58,7 @@ export default function Page() {
 	const [prompts, setPrompts] = useState<string>()
 	const [attachs, setAttachs] = useState<Record<string, string>>({})
 	const [country, setCountry] = useState('')
+	const [reasoning, setReasoning] = useState<Reasoning>('default')
 
 	const abortRef = useRef<AbortController | null>(null)
 
@@ -130,6 +132,9 @@ export default function Page() {
 
 			const country = await prefs.getKey('country')
 			if (country) setCountry(country)
+
+			const reasoning = await prefs.getKey('reasoning')
+			if (reasoning) setReasoning(reasoning as Reasoning)
 
 			const { error, data } = await supabase.functions.invoke<
 				Extract<SupaPrompt['return'], string>
@@ -206,8 +211,7 @@ export default function Page() {
 				include_domains: ['https://lenix.dev'],
 				include_images: true
 			},
-			// TODO
-			// reasoning_effort: ,
+			// reasoning_effort: reasoning,
 			// include_reasoning: true,
 			// documents: null,
 			// compound_custom: null,
@@ -389,6 +393,8 @@ export default function Page() {
 					setAutoCorrect,
 					country,
 					setCountry,
+					reasoning,
+					setReasoning
 				}}
 			/>
 		</View>

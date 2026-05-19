@@ -1,4 +1,4 @@
-import { defaultModel, recommendedModels } from '@/constants'
+import { defaultModel, reasonings, recommendedModels } from '@/constants'
 import { Check, Info } from '@tamagui/lucide-icons-2'
 import type Groq from 'groq-sdk'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -17,25 +17,12 @@ import {
 } from 'tamagui'
 import { Selection } from '../components/selection'
 import { useTranslation } from 'react-i18next'
-import { Model, SupaKeyArgs, SupaList, SupaProtect, SupaPublic } from '@/types'
+import { Model, Reasoning, S, SupaKeyArgs, SupaList, SupaProtect, SupaPublic } from '@/types'
 import { prefs } from '@/storage'
 import { toast } from '@tamagui/toast/v2'
-import { i18n } from 'i18next'
 import type { Model as GroqModel } from 'groq-sdk/resources'
 import { supabase } from '@/supabase'
 import { Over } from '@/components/over'
-
-const setItem = async (
-	model: Model,
-	setItemState: (model: Model) => void,
-	t: i18n['t'],
-	setModel: (model: Model) => void
-) => {
-	await prefs.setKey(model, 'model')
-	setItemState(model)
-	toast.success(t('model_success'))
-	setModel(model)
-}
 
 export const Preferences = ({
 	groq,
@@ -54,25 +41,29 @@ export const Preferences = ({
 	autoCorrect,
 	setAutoCorrect,
 	country,
-	setCountry
+	setCountry,
+	reasoning,
+	setReasoning
 }: {
 	groq: Groq | null
 	id: string | undefined | null
-	setId: (id: string | undefined | null) => void
+	setId: S<string | undefined | null>
 	apiKey: string
-	setKey: (key: string) => void
-	setModel: (model: Model) => void
+	setKey: S<string>
+	setModel: S<Model>
 	quotaDisplayed: boolean | undefined
-	setQuotaDisplayed: (quotaDisplayed: boolean | undefined) => void
+	setQuotaDisplayed: S<boolean | undefined>
 	isPortrait: boolean
 	sheetOpen: boolean
-	setSheetOpen: (sheetOpen: boolean) => void
+	setSheetOpen: S<boolean>
 	autoComplete: boolean | undefined
-	setAutoComplete: (autoComplete: boolean | undefined) => void
+	setAutoComplete: S<boolean | undefined>
 	autoCorrect: boolean | undefined
-	setAutoCorrect: (autoCorrect: boolean | undefined) => void
+	setAutoCorrect: S<boolean | undefined>
 	country: string
-	setCountry: (country: string) => void
+	setCountry: S<string>
+	reasoning: Reasoning
+	setReasoning: S<Reasoning>
 }) => {
 	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<Model>(defaultModel)
@@ -169,6 +160,15 @@ export const Preferences = ({
 			)),
 		[items]
 	)
+
+	const handleModel = async (
+		model: Model,
+	) => {
+		await prefs.setKey(model, 'model')
+		setItemState(model)
+		toast.success(t('model_success'))
+		setModel(model)
+	}
 
 	const handleKey = async () => {
 		setLoading(prev => ({ ...prev, key: true }))
@@ -272,6 +272,12 @@ export const Preferences = ({
 			await prefs.setKey(country, 'country')
 			toast.success(t('country_success'))
 		}, 1000)
+	}
+
+	const handleReasoning = async (reasoning: string) => {
+		setReasoning(reasoning as Reasoning)
+		await prefs.setKey(reasoning, 'reasoning')
+		toast.success(t('reasoning_success'))
 	}
 
 	return (
@@ -391,10 +397,37 @@ export const Preferences = ({
 							listLabel={t('models')}
 							{...{
 								item,
-								setItem: (item: Model) => setItem(item, setItemState, t, setModel)
+								setItem: (item: Model) => handleModel(item)
 							}}
 						>
 							{renderedItems}
+						</Selection>
+					</View>
+					<View>
+						<Label htmlFor='reasoning'>{t('reasoning_effort')}</Label>
+						<Selection
+							id='reasoning'
+							renderer={value =>
+								reasonings.find(item => item === value) ?? value
+							}
+							listLabel={t('reasoning_effort')}
+							{...{
+								item: reasoning ?? 'default',
+								setItem: handleReasoning
+							}}
+						>
+							{reasonings.map((item, iter) => (
+								<Select.Item index={iter} key={item} value={item ?? 'default'}>
+									<View flex={1} overflow='hidden'>
+										<Select.ItemText whiteSpace='normal'>
+											{item}
+										</Select.ItemText>
+									</View>
+									<Select.ItemIndicator marginLeft='auto'>
+										<Check size={16} />
+									</Select.ItemIndicator>
+								</Select.Item>
+							))}
 						</Selection>
 					</View>
 					<View>

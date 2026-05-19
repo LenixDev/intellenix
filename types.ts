@@ -1,5 +1,6 @@
 import type {
 	ChatCompletion,
+	ChatCompletionCreateParamsBase,
 	ChatCompletionCreateParamsNonStreaming,
 } from "groq-sdk/resources/chat/completions.mjs";
 import type { CompletionUsage, ModelListResponse } from "groq-sdk/resources";
@@ -50,6 +51,9 @@ export type Key =
 	| "auto-correct"
 	| "message"
 	| 'country'
+	| 'reasoning'
+
+export type Reasoning = ChatCompletionCreateParamsBase['reasoning_effort']
 
 export interface SupaGroq {
 	return: {

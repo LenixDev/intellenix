@@ -1,3 +1,5 @@
+import { Reasoning } from "./types"
+
 export const defaultModel = 'llama-3.3-70b-versatile' as const
 
 export const recommendedModels = [
@@ -9,4 +11,12 @@ export const recommendedModels = [
 	'whisper-large-v3-turbo',
 	'groq/compound',
 	'groq/compound-mini'
+]
+
+export const reasonings: readonly Reasoning[] = [
+	'none',
+	'low',
+	'medium',
+	'high',
+	'default'
 ]
