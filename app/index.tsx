@@ -225,11 +225,13 @@ export default function Page() {
 		return result
 	}
 
-	const send = async (request = message) => {
-		if (!prompts)
-			return toast.error(t('err'), {
+	const send = async (request = message): Promise<void> => {
+		if (!prompts) {
+			toast.error(t('err'), {
 				description: 'error loading the AI instructions'
 			})
+			return
+		}
 		const { signal } = (abortRef.current = new AbortController())
 		const prompt = `{
 			"system": {
@@ -264,7 +266,10 @@ export default function Page() {
 				})
 
 			const { content /* , reasoning */ } = choices[0]?.message
-			if (typeof content !== 'string') return toast.error(t('no_res'))
+			if (typeof content !== 'string') {
+				toast.error(t('no_res'))
+				return
+			}
 
 			memoAIReponse(usage, content, service_tier)
 			setAttachs({})

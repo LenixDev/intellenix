@@ -1,6 +1,7 @@
 import { S } from '@/types'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, Input, Label, YStack } from 'tamagui'
+import { Button, Input, Label, Spinner, YStack } from 'tamagui'
 
 export const Topic = ({
 	send,
@@ -8,12 +9,13 @@ export const Topic = ({
 	setTopic,
 	isPortrait
 }: {
-	send: (request?: string) => void
+	send: (request?: string) => Promise<void>
 	topic: string
 	setTopic: S<string>
 	isPortrait: boolean
 }) => {
 	const { t } = useTranslation()
+	const [loading, setLoading] = useState(false)
 
 	return (
 		<YStack gap='$2' width={isPortrait ? '90%' : '33%'}>
@@ -26,9 +28,18 @@ export const Topic = ({
 				id='topic'
 				placeholder={t('conversation_topic')}
 				fontSize={16}
+				readOnly={loading}
 			/>
-			<Button disabled={!topic} chromeless onPress={() => send()}>
-				{t('create_conversation')}
+			<Button
+				disabled={!topic || loading}
+				chromeless
+				onPress={async () => {
+					setLoading(true)
+					await send()
+					setLoading(false)
+				}}
+			>
+				{loading ? <Spinner /> : t('create_conversation')}
 			</Button>
 		</YStack>
 	)
