@@ -348,6 +348,32 @@ export const Preferences = ({
 					</Button>
 				</View>
 				<YStack>
+					<XStack gap='$2' items='center'>
+						<Checkbox
+							disabled={loading.protection}
+							checked={!!Protected || loading.protection}
+							id='protection'
+							onCheckedChange={handleProtection}
+						>
+							<Checkbox.Indicator>
+								{loading.protection ?
+									<Spinner />
+								:	<Check />}
+							</Checkbox.Indicator>
+						</Checkbox>
+						<Label htmlFor='protection'>{t('protect_key')}</Label>
+						<Over
+							content={
+								<Text>
+									{Protected ?
+										t('unprotection_details')
+									:	t('protection_details')}
+								</Text>
+							}
+						>
+							<Button chromeless circular size='$2' icon={Info} />
+						</Over>
+					</XStack>
 					<XStack gap='$2' items='center' justify='flex-start'>
 						<Checkbox
 							checked={quotaDisplayed}
@@ -387,34 +413,20 @@ export const Preferences = ({
 						</Checkbox>
 						<Label htmlFor='autoCorrect'>{t('auto_correct')}</Label>
 					</XStack>
-				</YStack>
-				<YStack items='flex-start'>
-					<XStack gap='$2' items='center' justify='center'>
-						<Checkbox
-							disabled={loading.protection}
-							checked={!!Protected || loading.protection}
-							id='protection'
-							onCheckedChange={handleProtection}
-						>
-							<Checkbox.Indicator>
-								{loading.protection ?
-									<Spinner />
-								:	<Check />}
-							</Checkbox.Indicator>
-						</Checkbox>
-						<Label htmlFor='protection'>{t('protect_key')}</Label>
-						<Over
-							content={
-								<Text>
-									{Protected ?
-										t('unprotection_details')
-									:	t('protection_details')}
-								</Text>
-							}
-						>
+					<XStack items='center'>
+						<Label htmlFor='country'>{t('country')}</Label>
+						<Over content={<Text>{t('country_priortize')}</Text>}>
 							<Button chromeless circular size='$2' icon={Info} />
 						</Over>
 					</XStack>
+					<Input
+						id='country'
+						placeholder={t('country_name')}
+						value={country}
+						onChangeText={handleCountry}
+					/>
+				</YStack>
+				<YStack items='flex-start'>
 					<View>
 						<Label htmlFor='model'>{t('models')}</Label>
 						<Selection
@@ -452,24 +464,10 @@ export const Preferences = ({
 							))}
 						</Selection>
 					</View>
-					<View>
-						<XStack items='center'>
-							<Label htmlFor='country'>{t('country')}</Label>
-							<Over content={<Text>{t('country_priortize')}</Text>}>
-								<Button chromeless circular size='$2' icon={Info} />
-							</Over>
-						</XStack>
-						<Input
-							id='country'
-							placeholder={t('country_name')}
-							value={country}
-							onChangeText={handleCountry}
-						/>
-					</View>
 					<View gap='$3'>
 						<YStack>
 							<XStack items='center'>
-								<Label htmlFor='randomness'>{t('randomness')}</Label>
+								<Label>{t('randomness')}</Label>
 								<Over content={<Text>{t('randomness_details')}</Text>}>
 									<Button chromeless circular size='$2' icon={Info} />
 								</Over>
