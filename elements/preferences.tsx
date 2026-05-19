@@ -290,7 +290,7 @@ export const Preferences = ({
 			modal
 			open={sheetOpen}
 			onOpenChange={setSheetOpen}
-			snapPoints={isPortrait ? [95, 10] : [40, 10]}
+			snapPoints={isPortrait ? [95, 10] : [50, 10]}
 		>
 			<Sheet.Overlay transition='quick' bg='$color02' />
 			<Sheet.Handle />
@@ -323,32 +323,6 @@ export const Preferences = ({
 					</Button>
 				</View>
 				<YStack>
-					<XStack gap='$2' items='center' justify='center'>
-						<Checkbox
-							disabled={loading.protection}
-							checked={!!Protected || loading.protection}
-							id='protection'
-							onCheckedChange={handleProtection}
-						>
-							<Checkbox.Indicator>
-								{loading.protection ?
-									<Spinner />
-								:	<Check />}
-							</Checkbox.Indicator>
-						</Checkbox>
-						<Label htmlFor='protection'>{t('protect_key')}</Label>
-						<Over
-							content={
-								<Text>
-									{Protected ?
-										t('unprotection_details')
-									:	t('protection_details')}
-								</Text>
-							}
-						>
-							<Button chromeless circular size='$2' icon={Info} />
-						</Over>
-					</XStack>
 					<XStack gap='$2' items='center' justify='flex-start'>
 						<Checkbox
 							checked={quotaDisplayed}
@@ -389,7 +363,33 @@ export const Preferences = ({
 						<Label htmlFor='autoCorrect'>{t('auto_correct')}</Label>
 					</XStack>
 				</YStack>
-				<YStack>
+				<YStack items='flex-start'>
+					<XStack gap='$2' items='center' justify='center'>
+						<Checkbox
+							disabled={loading.protection}
+							checked={!!Protected || loading.protection}
+							id='protection'
+							onCheckedChange={handleProtection}
+						>
+							<Checkbox.Indicator>
+								{loading.protection ?
+									<Spinner />
+								:	<Check />}
+							</Checkbox.Indicator>
+						</Checkbox>
+						<Label htmlFor='protection'>{t('protect_key')}</Label>
+						<Over
+							content={
+								<Text>
+									{Protected ?
+										t('unprotection_details')
+									:	t('protection_details')}
+								</Text>
+							}
+						>
+							<Button chromeless circular size='$2' icon={Info} />
+						</Over>
+					</XStack>
 					<View>
 						<Label htmlFor='model'>{t('models')}</Label>
 						<Selection

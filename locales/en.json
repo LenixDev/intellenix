@@ -37,7 +37,7 @@
 	"requests_consumed": "Requests consumed",
 	"tokens_consumed": "Tokens consumed",
 	"protection_details": "Your API key will be stored securely on our servers instead of in your browser.\nResponses may be slightly slower as a result.",
-	"unprotection_details": "Your API key will be saved directly in your browser for faster responses.\nhowever, anyone with access to this browser could read it.",
+	"unprotection_details": "will save your API key directly in your browser for faster responses.\nhowever, anyone with access to this browser could read it.",
 	"protect_key": "API Key Protection",
 	"enable": "Enable",
 	"disable": "Disable",
