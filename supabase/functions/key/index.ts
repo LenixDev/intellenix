@@ -14,7 +14,7 @@ Deno.serve(async req => {
 	const key = Deno.env.get('API_KEY')
 
 	if (Data.type === 'getById') {
-		const { error, data } = await supabase.from('quota')
+		const { error, data } = await supabase.from('users')
 			.select('api_key')
 			.eq('id', Data.id)
 			.limit(1)
@@ -52,7 +52,7 @@ Deno.serve(async req => {
 				}
 			)
 
-		const { error, data } = await supabase.from('quota')
+		const { error, data } = await supabase.from('users')
 			.insert({ api_key: key })
 			.select('id')
 			.limit(1)
@@ -74,7 +74,7 @@ Deno.serve(async req => {
 
 	if (Data.type === 'update') {
 		const { error } = await supabase
-			.from('quota')
+			.from('users')
 			.update({ api_key: Data.key })
 			.eq('id', Data.id)
 
@@ -90,7 +90,7 @@ Deno.serve(async req => {
 	if (Data.type === 'public') {
 		if (Data.id) {
 			const { error } = await supabase
-				.from('quota')
+				.from('users')
 				.update({ api_key: key })
 				.eq('id', Data.id)
 
@@ -112,7 +112,7 @@ Deno.serve(async req => {
 	}
 
 	const { error, data } = await supabase
-		.from('quota')
+		.from('users')
 		.select('id')
 		.eq('api_key', Data.key)
 		.limit(1)
@@ -121,7 +121,7 @@ Deno.serve(async req => {
 	if (error) {
 		if (error.code === 'PGRST116') {
 			const { error, data } = await supabase
-				.from('quota')
+				.from('users')
 				.insert({ api_key: Data.key })
 				.select('id')
 				.single<{ id: string }>()

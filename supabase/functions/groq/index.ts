@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
   let apiKey = key;
   if (!key) {
     const { error, data } = await supabase
-      .from("quota")
+      .from("users")
       .select("api_key")
       .eq("id", id)
       .limit(1)

@@ -22,3 +22,4 @@
 - [x] dynamic prompt modifier
 - [x] reply to a specific text
 - [ ] reply also on message edit
+- [ ] apply the stream feature
