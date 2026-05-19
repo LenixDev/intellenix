@@ -10,7 +10,7 @@ Deno.serve(async req => {
 	const { id } = (await req.json()) as SupaList['args']
 
 	const { error, data } = await supabase
-		.from('quota')
+		.from('users')
 		.select('api_key')
 		.eq('id', id)
 		.limit(1)
