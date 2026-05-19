@@ -236,14 +236,14 @@ export default function Page() {
 			})
 		const { signal } = (abortRef.current = new AbortController())
 		const prompt = `{
-			system: {
-				instructions: "${prompts}",
+			"system": {
+				"instructions": "${prompts}",
 			},
-			user: {
-				topic: ${topic},
-				justStartedANewConversation: ${!started},
-				request: ${request},
-				attachments: ${JSON.stringify(attachs)},
+			"user": {
+				"topic": "${topic}",
+				"justStartedANewConversation": "${!started}",
+				"request": "${request}",
+				"attachments": "${JSON.stringify(attachs)}",
 			}
 		}`
 		if (request !== '') memoUserRequest(request)
@@ -278,7 +278,6 @@ export default function Page() {
 			setAiThinking(false)
 		}
 	}
-
 
 	return (
 		<View
