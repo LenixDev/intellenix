@@ -59,5 +59,6 @@
 	"country": "Country",
 	"country_success": "Country updated",
 	"reasoning_success": "Reasoning updated",
-	"reasoning_effort": "Reasoning Effort"
+	"reasoning_effort": "Reasoning Effort",
+	"protection_err": "You can only unprotect your own API key"
 }

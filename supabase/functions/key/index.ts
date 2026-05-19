@@ -28,6 +28,14 @@ Deno.serve(async req => {
 			}
 		)
 
+		if (data.api_key === key) return new Response(
+			JSON.stringify('protection_err'),
+			{
+				headers: res,
+				status: 400
+			}
+		)
+
 		return new Response(
 			JSON.stringify(data.api_key satisfies SupaKey['return']),
 			{ headers: res }

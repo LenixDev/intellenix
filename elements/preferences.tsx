@@ -222,8 +222,8 @@ export const Preferences = ({
 					:	({ type: 'protect', key } satisfies SupaKey['args'])
 			}
 		)
-		if (error instanceof Error || !data) {
-			toast.error(t('err'), { description: error.message })
+		if (error || !data) {
+			toast.error(t('err'), { description: error === 'protection_err' ? t('protection_err') :error.message })
 			setLoading(prev => ({ ...prev, protection: false }))
 			return
 		}
