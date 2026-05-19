@@ -1,7 +1,7 @@
 import { defaultModel, recommendedModels } from '@/constants'
 import { Check, Info } from '@tamagui/lucide-icons-2'
 import type Groq from 'groq-sdk'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
 	Button,
 	Checkbox,
@@ -52,7 +52,9 @@ export const Preferences = ({
 	autoComplete,
 	setAutoComplete,
 	autoCorrect,
-	setAutoCorrect
+	setAutoCorrect,
+	country,
+	setCountry
 }: {
 	groq: Groq | null
 	id: string | undefined | null
@@ -69,6 +71,8 @@ export const Preferences = ({
 	setAutoComplete: (autoComplete: boolean | undefined) => void
 	autoCorrect: boolean | undefined
 	setAutoCorrect: (autoCorrect: boolean | undefined) => void
+	country: string
+	setCountry: (country: string) => void
 }) => {
 	const [items, setItems] = useState<GroqModel[]>([])
 	const [item, setItemState] = useState<Model>(defaultModel)
@@ -79,6 +83,8 @@ export const Preferences = ({
 		key: false,
 		public: false
 	})
+
+	const debounceRef = useRef<number>(undefined)
 
 	const { t } = useTranslation()
 
@@ -259,6 +265,15 @@ export const Preferences = ({
 		setAutoCorrect(state ? true : undefined)
 	}
 
+	const handleCountry = async (country: string) => {
+		setCountry(country)
+		clearTimeout(debounceRef.current)
+		debounceRef.current = setTimeout(async () => {
+			await prefs.setKey(country, 'country')
+			toast.success(t('country_success'))
+		}, 1000)
+	}
+
 	return (
 		<Sheet
 			dismissOnSnapToBottom
@@ -365,21 +380,38 @@ export const Preferences = ({
 						<Label htmlFor='autoCorrect'>{t('auto_correct')}</Label>
 					</XStack>
 				</YStack>
-				<View>
-					<Label>{t('models')}</Label>
-					<Selection
-						renderer={value =>
-							items.find(item => item.id === value)?.id ?? value
-						}
-						listLabel={t('models')}
-						{...{
-							item,
-							setItem: (item: Model) => setItem(item, setItemState, t, setModel)
-						}}
-					>
-						{renderedItems}
-					</Selection>
-				</View>
+				<YStack>
+					<View>
+						<Label htmlFor='model'>{t('models')}</Label>
+						<Selection
+							id='model'
+							renderer={value =>
+								items.find(item => item.id === value)?.id ?? value
+							}
+							listLabel={t('models')}
+							{...{
+								item,
+								setItem: (item: Model) => setItem(item, setItemState, t, setModel)
+							}}
+						>
+							{renderedItems}
+						</Selection>
+					</View>
+					<View>
+						<XStack items='center'>
+							<Label htmlFor='country'>{t('country')}</Label>
+							<Over content={<Text>{t('country_priortize')}</Text>}>
+								<Button chromeless circular size='$2' icon={Info} />
+							</Over>
+						</XStack>
+						<Input
+							id='country'
+							placeholder={t('country_name')}
+							value={country}
+							onChangeText={handleCountry}
+						/>
+					</View>
+				</YStack>
 			</Sheet.Frame>
 		</Sheet>
 	)

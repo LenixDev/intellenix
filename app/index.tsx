@@ -56,6 +56,7 @@ export default function Page() {
 	const [topic, setTopic] = useState('')
 	const [prompts, setPrompts] = useState<string>()
 	const [attachs, setAttachs] = useState<Record<string, string>>({})
+	const [country, setCountry] = useState('')
 
 	const abortRef = useRef<AbortController | null>(null)
 
@@ -127,6 +128,9 @@ export default function Page() {
 			if (autoCorrect === '0') setAutoCorrect(false)
 			else setAutoCorrect(true)
 
+			const country = await prefs.getKey('country')
+			if (country) setCountry(country)
+
 			const { error, data } = await supabase.functions.invoke<
 				Extract<SupaPrompt['return'], string>
 			>('prompt', { body: { type: 'get' } })
@@ -188,6 +192,7 @@ export default function Page() {
 	}
 
 	const requestGroq = async (prompt: string, signal: AbortSignal) => {
+		console.debug(quota[key]?.[model]?.tpm, key, model)
 		const params: SupaGroq['args']['params'] = {
 			messages: [
 				...conversations.map(({ role, content }) => ({ role, content })),
@@ -197,8 +202,7 @@ export default function Page() {
 			temperature: 0.5,
 			max_completion_tokens: Number(quota[key]?.[model]?.tpm),
 			search_settings: {
-				// TODO
-				// country: ,
+				country,
 				include_domains: ['https://lenix.dev'],
 				include_images: true
 			},
@@ -255,6 +259,7 @@ export default function Page() {
 		try {
 			setMessage('')
 			const result = await requestGroq(prompt, signal)
+			console.debug(result, 'res')
 			if (!result || signal.aborted) return abortSend(request)
 
 			const { choices, service_tier, usage } = result.data
@@ -352,7 +357,7 @@ export default function Page() {
 								quota,
 								apiKey: key,
 								model,
-								setSheetOpen
+								setSheetOpen,
 							}}
 						/>
 					</>
@@ -381,7 +386,9 @@ export default function Page() {
 					autoComplete,
 					setAutoComplete,
 					autoCorrect,
-					setAutoCorrect
+					setAutoCorrect,
+					country,
+					setCountry,
 				}}
 			/>
 		</View>

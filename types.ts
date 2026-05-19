@@ -48,7 +48,8 @@ export type Key =
 	| "quota"
 	| "auto-complete"
 	| "auto-correct"
-	| "message";
+	| "message"
+	| 'country'
 
 export interface SupaGroq {
 	return: {

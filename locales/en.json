@@ -53,5 +53,9 @@
 	"conversation_topic": "New Conversation's Topic",
 	"create_conversation": "Create New Conversation",
 	"cancel": "Cancel",
-	"revision": "Revision"
+	"revision": "Revision",
+	"country_priortize": "Name of country to prioritize search results from (e.g., 'united states', 'germany', 'france').",
+	"country_name": "Country Name",
+	"country": "Country",
+	"country_success": "Country updated"
 }
