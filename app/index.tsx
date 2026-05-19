@@ -94,7 +94,7 @@ export default function Page() {
 		;(async () => {
 			const key = await prefs.getKey('key')
 			if (!key && !id) return setKeyDialog(true)
-			
+
 			setKey(key ?? '')
 		})()
 	}, [key, model, id])
@@ -178,9 +178,7 @@ export default function Page() {
 		setConversations(prev => prev.slice(0, prev.length - 1))
 		setMessage(request)
 		if (err?.message !== 'Request was aborted.') {
-			toast.error(t('conn_err'), {
-				description: err?.error?.error?.message,
-			})
+			toast.error(t('conn_err'), { description: err?.error?.error?.message })
 			raise(err)
 		}
 	}
@@ -201,7 +199,7 @@ export default function Page() {
 			},
 			reasoning_effort: reasoningModels.includes(model) ? reasoning : null,
 			include_reasoning: reasoningModels.includes(model) ? true : null,
-			user: id || null,
+			user: id || null
 			// documents: null,
 			// compound_custom: null,
 			// tools: null,
@@ -210,18 +208,16 @@ export default function Page() {
 		let result
 		if (groq && !quotaDisplayed)
 			result = await groq?.chat.completions
-				.create(params, { signal }).withResponse()
+				.create(params, { signal })
+				.withResponse()
 		else {
-			const { error, data } = await supabase.functions
-				.invoke<SupaGroq['return']>('groq', {
-					body: { params, id: id!, key } satisfies SupaGroq['args']
-				})
-	
+			const { error, data } = await supabase.functions.invoke<
+				SupaGroq['return']
+			>('groq', { body: { params, id: id!, key } satisfies SupaGroq['args'] })
+
 			if (signal.aborted) return null
 			if (error instanceof FunctionsHttpError || !data) {
-				toast.error(t('err'), {
-					description: supaError(error)
-				})
+				toast.error(t('err'), { description: supaError(error) })
 				return null
 			}
 			result = data
@@ -267,7 +263,7 @@ export default function Page() {
 					}
 				})
 
-			const { content/* , reasoning */ } = choices[0]?.message
+			const { content /* , reasoning */ } = choices[0]?.message
 			if (typeof content !== 'string') return toast.error(t('no_res'))
 
 			memoAIReponse(usage, content, service_tier)
@@ -349,7 +345,7 @@ export default function Page() {
 								quota,
 								apiKey: key,
 								model,
-								setSheetOpen,
+								setSheetOpen
 							}}
 						/>
 					</>

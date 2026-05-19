@@ -55,7 +55,6 @@ export const Message = ({
 		})
 	}, [message])
 
-
 	return (
 		<View flexDirection='row' style={{ flex: 1 }}>
 			<TextArea

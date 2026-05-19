@@ -79,15 +79,12 @@ export const Api = ({
 				onPress={async () => {
 					setLoading(true)
 
-					const { error, data } = await supabase.functions.invoke<SupaKey['return']>(
-						'key',
-						{ body: { type: 'usePublic' } satisfies SupaKey['args'] }
-					)
+					const { error, data } = await supabase.functions.invoke<
+						SupaKey['return']
+					>('key', { body: { type: 'usePublic' } satisfies SupaKey['args'] })
 
 					if (error instanceof FunctionsHttpError || !data) {
-						toast.error(t('key_err'), {
-							description: supaError(error)
-						})
+						toast.error(t('key_err'), { description: supaError(error) })
 						setLoading(false)
 						return
 					}

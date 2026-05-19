@@ -1,9 +1,5 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
-import type {
-	SupaKey,
-	SupaProtect,
-	SupaPublic
-} from '../../../types.ts'
+import type { SupaKey, SupaProtect, SupaPublic } from '../../../types.ts'
 import { init, supabase } from '../__shared/index.ts'
 
 Deno.serve(async req => {
@@ -14,27 +10,21 @@ Deno.serve(async req => {
 	const key = Deno.env.get('API_KEY')
 
 	if (Data.type === 'getById') {
-		const { error, data } = await supabase.from('users')
+		const { error, data } = await supabase
+			.from('users')
 			.select('api_key')
 			.eq('id', Data.id)
 			.limit(1)
 			.single<{ api_key: string }>()
 
-		if (error) return new Response(
-			JSON.stringify(error),
-			{
-				headers: res,
-				status: 400
-			}
-		)
+		if (error)
+			return new Response(JSON.stringify(error), { headers: res, status: 400 })
 
-		if (data.api_key === key) return new Response(
-			JSON.stringify('protection_err'),
-			{
+		if (data.api_key === key)
+			return new Response(JSON.stringify('protection_err'), {
 				headers: res,
 				status: 400
-			}
-		)
+			})
 
 		return new Response(
 			JSON.stringify(data.api_key satisfies SupaKey['return']),
@@ -44,32 +34,24 @@ Deno.serve(async req => {
 
 	if (Data.type === 'usePublic') {
 		if (typeof key !== 'string')
-			return new Response(
-				JSON.stringify('missing key'),
-				{
-					headers: res,
-					status: 500
-				}
-			)
+			return new Response(JSON.stringify('missing key'), {
+				headers: res,
+				status: 500
+			})
 
-		const { error, data } = await supabase.from('users')
+		const { error, data } = await supabase
+			.from('users')
 			.insert({ api_key: key })
 			.select('id')
 			.limit(1)
 			.single<{ id: string }>()
 
-		if (error) return new Response(
-			JSON.stringify(error),
-			{
-				headers: res,
-				status: 400
-			}
-		)
+		if (error)
+			return new Response(JSON.stringify(error), { headers: res, status: 400 })
 
-		return new Response(
-			JSON.stringify(data.id satisfies SupaKey['return']),
-			{ headers: res }
-		)
+		return new Response(JSON.stringify(data.id satisfies SupaKey['return']), {
+			headers: res
+		})
 	}
 
 	if (Data.type === 'update') {

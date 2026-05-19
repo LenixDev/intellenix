@@ -27,11 +27,7 @@ export const Topic = ({
 				placeholder={t('conversation_topic')}
 				fontSize={16}
 			/>
-			<Button
-				disabled={!topic}
-				chromeless
-				onPress={() => send()}
-			>
+			<Button disabled={!topic} chromeless onPress={() => send()}>
 				{t('create_conversation')}
 			</Button>
 		</YStack>

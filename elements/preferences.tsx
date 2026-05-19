@@ -17,7 +17,15 @@ import {
 } from 'tamagui'
 import { Selection } from '../components/selection'
 import { useTranslation } from 'react-i18next'
-import { Model, Reasoning, S, SupaKey, SupaList, SupaProtect, SupaPublic } from '@/types'
+import {
+	Model,
+	Reasoning,
+	S,
+	SupaKey,
+	SupaList,
+	SupaProtect,
+	SupaPublic
+} from '@/types'
 import { prefs } from '@/storage'
 import { toast } from '@tamagui/toast/v2'
 import type { Model as GroqModel } from 'groq-sdk/resources'
@@ -163,9 +171,7 @@ export const Preferences = ({
 		[items]
 	)
 
-	const handleModel = async (
-		model: Model,
-	) => {
+	const handleModel = async (model: Model) => {
 		await prefs.setKey(model, 'model')
 		setItemState(model)
 		toast.success(t('model_success'))
@@ -176,7 +182,11 @@ export const Preferences = ({
 		setLoading(prev => ({ ...prev, key: true }))
 		if (Protected) {
 			const { error } = await supabase.functions.invoke('key', {
-				body: { type: 'update', key: stateKey, id: id! } satisfies SupaKey['args']
+				body: {
+					type: 'update',
+					key: stateKey,
+					id: id!
+				} satisfies SupaKey['args']
 			})
 			if (error instanceof Error) {
 				toast.error(t('err'), { description: error.message })
@@ -226,7 +236,9 @@ export const Preferences = ({
 		)
 		if (error instanceof FunctionsHttpError || !data) {
 			const err = await error?.context?.json()
-			toast.error(t('err'), { description: err === 'protection_err' ? t('protection_err') : err })
+			toast.error(t('err'), {
+				description: err === 'protection_err' ? t('protection_err') : err
+			})
 			setLoading(prev => ({ ...prev, protection: false }))
 			return
 		}
@@ -398,10 +410,7 @@ export const Preferences = ({
 								items.find(item => item.id === value)?.id ?? value
 							}
 							listLabel={t('models')}
-							{...{
-								item,
-								setItem: (item: Model) => handleModel(item)
-							}}
+							{...{ item, setItem: (item: Model) => handleModel(item) }}
 						>
 							{renderedItems}
 						</Selection>
@@ -414,10 +423,7 @@ export const Preferences = ({
 								reasonings.find(item => item === value) ?? value
 							}
 							listLabel={t('reasoning_effort')}
-							{...{
-								item: reasoning ?? 'default',
-								setItem: handleReasoning
-							}}
+							{...{ item: reasoning ?? 'default', setItem: handleReasoning }}
 						>
 							{reasonings.map((item, iter) => (
 								<Select.Item index={iter} key={item} value={item ?? 'default'}>

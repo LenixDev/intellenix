@@ -1,4 +1,4 @@
-import { Reasoning } from "./types"
+import { Reasoning } from './types'
 
 export const defaultModel = 'llama-3.3-70b-versatile' as const
 
@@ -23,5 +23,5 @@ export const reasonings = [
 
 export const reasoningModels = [
 	'openai/gpt-oss-120b',
-	'openai/gpt-oss-20b',
+	'openai/gpt-oss-20b'
 ] satisfies typeof recommendedModels
