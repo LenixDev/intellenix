@@ -13,7 +13,7 @@ import {
 import { Copy } from './copy'
 import { Pencil, RefreshCw, Reply } from '@tamagui/lucide-icons-2'
 import { createPortal } from 'react-dom'
-import { RichText } from '../rich-text'
+import { RichText } from '../components/rich-text'
 
 export const Conversation = ({
 	conversations,

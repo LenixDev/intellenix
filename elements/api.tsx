@@ -14,7 +14,7 @@ import {
 	XStack,
 	Spinner
 } from 'tamagui'
-import { Prompt } from '../prompt'
+import { Prompt } from '../components/prompt'
 
 export const Api = ({
 	apiKey,

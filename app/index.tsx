@@ -1,8 +1,8 @@
-import { Api } from '@/components/chat/api'
-import { Conversation } from '@/components/chat/conversation'
-import { InputBar } from '@/components/chat/input-bar'
-import { InputPreferences } from '@/components/chat/input-prefs'
-import { Preferences } from '@/components/chat/preferences'
+import { Api } from '@/elements/api'
+import { Conversation } from '@/elements/conversation'
+import { InputBar } from '@/elements/input-bar'
+import { InputPreferences } from '@/elements/input-prefs'
+import { Preferences } from '@/elements/preferences'
 import { defaultModel } from '@/constants'
 import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
@@ -28,7 +28,7 @@ import {
 	useWindowDimensions,
 	View
 } from 'tamagui'
-import { Topic } from '../components/chat/topic'
+import { Topic } from '../elements/topic'
 import { ChatCompletion } from 'groq-sdk/resources/chat/completions.mjs'
 import { CompletionUsage } from 'groq-sdk/resources'
 import { FunctionsHttpError } from '@supabase/supabase-js'

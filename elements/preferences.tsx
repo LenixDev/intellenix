@@ -15,7 +15,7 @@ import {
 	XStack,
 	YStack
 } from 'tamagui'
-import { Selection } from '../selection'
+import { Selection } from '../components/selection'
 import { useTranslation } from 'react-i18next'
 import { Model, SupaKeyArgs, SupaList, SupaProtect, SupaPublic } from '@/types'
 import { prefs } from '@/storage'

@@ -1,10 +1,10 @@
 import { Command, SlidersHorizontal } from '@tamagui/lucide-icons-2'
 import { View, Button, Separator, Progress, Select, XStack } from 'tamagui'
 import { KeysQuota, Model, S } from '@/types'
-import { Hover } from '../hover'
+import { Hover } from '../components/hover'
 import { Text } from 'tamagui'
 import { useTranslation } from 'react-i18next'
-import { Kbd } from '../kdb'
+import { Kbd } from '../components/kdb'
 
 const getConsumption = (value: number | string, limit: number | string) => {
 	const val = Number(value)
