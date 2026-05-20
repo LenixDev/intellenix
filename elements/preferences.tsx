@@ -119,10 +119,6 @@ export const Preferences = ({
 							toast.error(t('err'), { description: error.message })
 							return
 						}
-						if ('error' in data) {
-							toast.error(t('err'), { description: data.error })
-							return
-						}
 						return data
 					}))
 			if (!res) return
@@ -176,7 +172,7 @@ export const Preferences = ({
 	const handleModel = async (model: Model) => {
 		await prefs.setKey(model, 'model')
 		setItemState(model)
-		toast.success(t('model_success'))
+		toast.success(t('updated'))
 		setModel(model)
 	}
 
@@ -196,10 +192,11 @@ export const Preferences = ({
 				return
 			}
 			setLoading(prev => ({ ...prev, key: false }))
+			toast.success(t('updated'))
 			return
 		}
 		await prefs.setKey(stateKey, 'key')
-		toast.success(t('api_success'))
+		toast.success(t('updated'))
 		setStateKey('')
 		setKey(stateKey)
 		setLoading(prev => ({ ...prev, key: false }))
@@ -220,6 +217,7 @@ export const Preferences = ({
 			await prefs.setKey(data, 'key')
 			setKey(data)
 		}
+		toast.error(t('updated'))
 		setLoading(prev => ({ ...prev, public: false }))
 	}
 
@@ -282,7 +280,7 @@ export const Preferences = ({
 		clearTimeout(debounceRef.current)
 		debounceRef.current = setTimeout(async () => {
 			await prefs.setKey(country, 'country')
-			toast.success(t('country_success'))
+			toast.success(t('updated'))
 		}, 1000)
 	}
 
@@ -296,7 +294,7 @@ export const Preferences = ({
 		clearTimeout(debounceRef.current)
 		debounceRef.current = setTimeout(async () => {
 			await prefs.setKey(String(randomness[0]), 'randomness')
-			toast.success(t('randomness_success'))
+			toast.success(t('updated'))
 		}, 1000)
 	}
 
@@ -331,7 +329,7 @@ export const Preferences = ({
 					<Button disabled={stateKey === '' || loading.key} onPress={handleKey}>
 						{loading.key ?
 							<Spinner />
-						:	t('save')}
+						:	t('update')}
 					</Button>
 					<Button disabled={loading.public} onPress={handlePublic}>
 						{loading.public ?
