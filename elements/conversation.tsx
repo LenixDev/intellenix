@@ -46,26 +46,34 @@ export const Conversation = ({
 	const ref = useRef<TamaguiElement>(null)
 
 	useEffect(() => {
+		const timer = { current: 0 }
+	
 		const handler = () => {
-			const sel = window.getSelection()
-			const text = sel?.toString().trim()
-			if (!text || !sel!.anchorNode?.parentElement?.closest('[data-assistant]'))
-				return setSelection(null)
-
-			const rect = sel!.getRangeAt(0).getBoundingClientRect()
-			setSelection({
-				text,
-				x: rect.left + rect.width / 2,
-				y: rect.top + window.scrollY - 30
-			})
+			clearTimeout(timer.current)
+			timer.current = setTimeout(() => {
+				const sel = window.getSelection()
+				const text = sel?.toString().trim()
+				if (!text || !sel!.anchorNode?.parentElement?.closest('[data-assistant]'))
+					return setSelection(null)
+	
+				const rect = sel!.getRangeAt(0).getBoundingClientRect()
+				setSelection({
+					text,
+					x: rect.left + rect.width / 2,
+					y: rect.top + window.scrollY - 30
+				})
+			}, 100)
 		}
 		const onScroll = () => setSelection(null)
-
+	
 		document.addEventListener('mouseup', handler)
+		document.addEventListener('selectionchange', handler)
 		document.addEventListener('scroll', onScroll, true)
-
+	
 		return () => {
+			clearTimeout(timer.current)
 			document.removeEventListener('mouseup', handler)
+			document.removeEventListener('selectionchange', handler)
 			document.removeEventListener('scroll', onScroll, true)
 		}
 	}, [])
