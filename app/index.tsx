@@ -32,7 +32,7 @@ import { FunctionsHttpError } from '@supabase/supabase-js'
 import { supaError } from '@/lib'
 import { SupaGroq, SupaPrompt } from '@/types/supa'
 import { LinearGradient } from 'tamagui/linear-gradient'
-import { ClockAlert, X } from '@tamagui/lucide-icons-2'
+import { CloudAlert, X } from '@tamagui/lucide-icons-2'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -310,7 +310,7 @@ export default function Page() {
 						height='100%'
 					/>
 					<View position='absolute' flexDirection='row' gap='$1'>
-						<ClockAlert />
+						<CloudAlert />
 						<Text fontWeight='600' fontSize='$2'>{t('archived')}</Text>
 					</View>
 					<Button
