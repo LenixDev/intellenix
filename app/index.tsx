@@ -294,7 +294,7 @@ export default function Page() {
 				width='100%'
 				items={started ? 'center' : 'flex-start'}
 				p='$3'
-				bg='$color3'
+				{...(started ? { bg:'$color3' } : {})}
 			>
 				{started ?
 					<Text textTransform='capitalize'>{topic}</Text>

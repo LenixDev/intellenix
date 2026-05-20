@@ -4,7 +4,7 @@ import { Text, View, type ViewProps } from 'tamagui'
 import type { Components } from 'react-markdown'
 
 const components: Components = {
-	p: ({ children }) => <Text fontWeight='200'>{children}</Text>,
+	p: ({ children }) => <Text fontWeight='300'>{children}</Text>,
 	strong: ({ children }) => <Text fontWeight='bold'>{children}</Text>,
 	em: ({ children }) => <Text fontStyle='italic'>{children}</Text>,
 	del: ({ children }) => (
