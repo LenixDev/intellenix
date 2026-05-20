@@ -31,6 +31,8 @@ import { CompletionUsage } from 'groq-sdk/resources'
 import { FunctionsHttpError } from '@supabase/supabase-js'
 import { supaError } from '@/lib'
 import { SupaGroq, SupaPrompt } from '@/types/supa'
+import { LinearGradient } from 'tamagui/linear-gradient'
+import { ClockAlert, X } from '@tamagui/lucide-icons-2'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {
@@ -58,6 +60,7 @@ export default function Page() {
 	const [country, setCountry] = useState('')
 	const [reasoning, setReasoning] = useState<Reasoning>('default')
 	const [randomness, setRandomness] = useState(0.5)
+	const [archiveDismissed, setArchiveDismissed] = useState(false)
 
 	const abortRef = useRef<AbortController | null>(null)
 
@@ -290,6 +293,36 @@ export default function Page() {
 			height='100%'
 			pb={isPortrait ? '$3' : '$5'}
 		>
+			{!archiveDismissed && (
+				<View
+					items='center'
+					justify='center'
+					width='100%'
+					height='$3'
+					position='relative'
+					border='1px solid $borderColor'
+				>
+					<LinearGradient
+						colors={['transparent', '$color3', 'transparent']}
+						start={[1, 1]}
+						end={[0, 0]}
+						width='100%'
+						height='100%'
+					/>
+					<View position='absolute' flexDirection='row' gap='$1'>
+						<ClockAlert />
+						<Text fontWeight='600' fontSize='$2'>{t('archived')}</Text>
+					</View>
+					<Button
+						chromeless
+						size='$1.5'
+						position='absolute'
+						r='$3'
+						icon={X}
+						onPress={() => setArchiveDismissed(true)}
+					/>
+				</View>
+			)}
 			<View
 				width='100%'
 				items={started ? 'center' : 'flex-start'}
