@@ -1,6 +1,6 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
 import { init, supabase } from '../__shared/index.ts'
-import type { SupaList } from '../../../types.ts'
+import type { SupaList } from '../../../types/supa.ts'
 import Groq from 'groq-sdk'
 
 Deno.serve(async req => {
@@ -17,14 +17,17 @@ Deno.serve(async req => {
 		.single<{ api_key: string }>()
 	if (error)
 		return new Response(
-			JSON.stringify({ error: error.message } satisfies SupaList['fn']),
-			{ headers: res }
+			JSON.stringify(error),
+			{
+				headers: res,
+				status: 400
+			}
 		)
 
 	const groq = new Groq({ apiKey: data.api_key })
 	const list = await groq.models.list()
 
-	return new Response(JSON.stringify(list satisfies SupaList['fn']), {
+	return new Response(JSON.stringify(list satisfies SupaList['return']), {
 		headers: res
 	})
 })

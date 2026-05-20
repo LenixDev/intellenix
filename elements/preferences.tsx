@@ -22,10 +22,6 @@ import {
 	Model,
 	Reasoning,
 	S,
-	SupaKey,
-	SupaList,
-	SupaProtect,
-	SupaPublic
 } from '@/types'
 import { prefs } from '@/storage'
 import { toast } from '@tamagui/toast/v2'
@@ -34,6 +30,7 @@ import { supabase } from '@/supabase'
 import { Over } from '@/components/over'
 import { supaError } from '@/lib'
 import { FunctionsHttpError } from '@supabase/supabase-js'
+import { SupaKey, SupaList } from '@/types/supa'
 
 export const Preferences = ({
 	groq,
@@ -115,7 +112,7 @@ export const Preferences = ({
 				(await groq?.models.list())
 				?? (await supabase.functions
 					.invoke<
-						SupaList['fn']
+						SupaList['return']
 					>('list', { body: { id: id! } satisfies SupaList['args'] })
 					.then(({ error, data }) => {
 						if (error instanceof Error || !data) {
@@ -210,7 +207,7 @@ export const Preferences = ({
 
 	const handlePublic = async () => {
 		setLoading(prev => ({ ...prev, public: true }))
-		const { error, data } = await supabase.functions.invoke<SupaPublic>('key', {
+		const { error, data } = await supabase.functions.invoke<SupaKey['return']>('key', {
 			body: { type: 'public', id } satisfies SupaKey['args']
 		})
 		if (error instanceof Error || !data) {
@@ -230,7 +227,7 @@ export const Preferences = ({
 		if (typeof state !== 'boolean') return
 		setLoading(prev => ({ ...prev, protection: true }))
 
-		const { error, data } = await supabase.functions.invoke<SupaProtect>(
+		const { error, data } = await supabase.functions.invoke<SupaKey['return']>(
 			'key',
 			{
 				body:
@@ -244,11 +241,6 @@ export const Preferences = ({
 			toast.error(t('err'), {
 				description: err === 'protection_err' ? t('protection_err') : err
 			})
-			setLoading(prev => ({ ...prev, protection: false }))
-			return
-		}
-		if (typeof data !== 'string' && 'error' in data) {
-			toast.error(data.error)
 			setLoading(prev => ({ ...prev, protection: false }))
 			return
 		}

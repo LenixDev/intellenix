@@ -1,6 +1,6 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
 import { init, supabase } from '../__shared/index.ts'
-import type { SupaGroq } from '../../../types.ts'
+import type { SupaGroq } from '../../../types/supa.ts'
 import Groq from 'groq-sdk'
 
 Deno.serve(async req => {
@@ -50,6 +50,9 @@ Deno.serve(async req => {
 			{ headers: res }
 		)
 	} catch (err) {
-		return new Response(JSON.stringify(err), { headers: res, status: 400 })
+		return new Response(
+			JSON.stringify(err),
+			{ headers: res, status: 400 }
+		)
 	}
 })

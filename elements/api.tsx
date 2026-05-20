@@ -1,6 +1,5 @@
 import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
-import type { SupaKey } from '@/types'
 import { toast } from '@tamagui/toast/v2'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +16,7 @@ import {
 import { Prompt } from '../components/prompt'
 import { FunctionsHttpError } from '@supabase/supabase-js'
 import { supaError } from '@/lib'
+import { SupaKey } from '@/types/supa'
 
 export const Api = ({
 	apiKey,

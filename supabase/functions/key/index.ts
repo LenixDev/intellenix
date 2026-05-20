@@ -1,5 +1,5 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
-import type { SupaKey, SupaProtect, SupaPublic } from '../../../types.ts'
+import type { SupaKey } from '../../../types/supa.ts'
 import { init, supabase } from '../__shared/index.ts'
 
 Deno.serve(async req => {
@@ -61,7 +61,7 @@ Deno.serve(async req => {
 			.eq('id', Data.id)
 
 		if (error)
-			return new Response(JSON.stringify({ error: error.message }), {
+			return new Response(JSON.stringify(error), {
 				headers: res,
 				status: 400
 			})
@@ -77,18 +77,18 @@ Deno.serve(async req => {
 				.eq('id', Data.id)
 
 			if (error)
-				return new Response(JSON.stringify({ error: error.message }), {
+				return new Response(JSON.stringify(error), {
 					headers: res,
 					status: 400
 				})
 		}
 
 		if (typeof key !== 'string')
-			return new Response(JSON.stringify({ error: 'missing key' }), {
+			return new Response(JSON.stringify('missing key'), {
 				headers: res,
 				status: 400
 			})
-		return new Response(JSON.stringify(key satisfies SupaPublic), {
+		return new Response(JSON.stringify(key satisfies SupaKey['return']), {
 			headers: res
 		})
 	}
@@ -110,21 +110,21 @@ Deno.serve(async req => {
 
 			if (error)
 				return new Response(
-					JSON.stringify({ error: error.message } satisfies SupaProtect),
-					{ headers: res }
+					JSON.stringify(error),
+					{ headers: res, status: 400 }
 				)
 
-			return new Response(JSON.stringify(data.id satisfies SupaProtect), {
+			return new Response(JSON.stringify(data.id satisfies SupaKey['return']), {
 				headers: res
 			})
 		}
 		return new Response(
-			JSON.stringify({ error: error.message } satisfies SupaProtect),
-			{ headers: res }
+			JSON.stringify(error),
+			{ headers: res, status: 400 }
 		)
 	}
 
-	return new Response(JSON.stringify(data.id satisfies SupaProtect), {
+	return new Response(JSON.stringify(data.id satisfies SupaKey['return']), {
 		headers: res
 	})
 })

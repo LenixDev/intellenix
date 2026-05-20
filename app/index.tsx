@@ -7,8 +7,6 @@ import { defaultModel, reasoningModels } from '@/constants'
 import { prefs } from '@/storage'
 import { supabase } from '@/supabase'
 import {
-	SupaPrompt,
-	type SupaGroq,
 	type Conversation as IConversation,
 	type KeysQuota,
 	type Model,
@@ -32,6 +30,7 @@ import { ChatCompletion } from 'groq-sdk/resources/chat/completions.mjs'
 import { CompletionUsage } from 'groq-sdk/resources'
 import { FunctionsHttpError } from '@supabase/supabase-js'
 import { supaError } from '@/lib'
+import { SupaGroq, SupaPrompt } from '@/types/supa'
 
 const isMac = navigator.userAgent.includes('Mac')
 const composeId = () => {

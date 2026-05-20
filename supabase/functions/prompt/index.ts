@@ -1,6 +1,6 @@
 import '@supabase/functions-js/edge-runtime.d.ts'
 import { init, supabase } from '../__shared/index.ts'
-import type { SupaPrompt } from '../../../types.ts'
+import type { SupaPrompt } from '../../../types/supa.ts'
 
 Deno.serve(async req => {
 	const [success, res] = init(req)
@@ -15,7 +15,7 @@ Deno.serve(async req => {
 			.single()
 		if (error)
 			return new Response(
-				JSON.stringify(error satisfies SupaPrompt['return']),
+				JSON.stringify(error),
 				{ headers: res, status: 400 }
 			)
 
@@ -32,7 +32,7 @@ Deno.serve(async req => {
 			.eq('id', 1)
 		if (error)
 			return new Response(
-				JSON.stringify(error satisfies SupaPrompt['return']),
+				JSON.stringify(error),
 				{ headers: res, status: 400 }
 			)
 	}
