@@ -19,7 +19,7 @@ export type Key =
 	| 'randomness'
 
 export type Model = string
-export type Reasoning = ChatCompletionCreateParamsBase['reasoning_effort']
+export type Reasoning = Exclude<ChatCompletionCreateParamsBase['reasoning_effort'], 'none' | 'default'>
 
 export type KeysQuota = Record<
 	string,

@@ -1,6 +1,6 @@
 import { Reasoning } from "./types";
 
-export const defaultModel = "llama-3.3-70b-versatile" as const;
+export const defaultModel = "openai/gpt-oss-120b";
 
 export const recommendedModels = [
 	"llama-3.1-8b-instant",
@@ -13,13 +13,11 @@ export const recommendedModels = [
 	"groq/compound-mini",
 ];
 
-export const reasonings = [
-	"none",
+export const reasonings: Reasoning[] = [
 	"low",
 	"medium",
 	"high",
-	"default",
-] as const satisfies Reasoning[];
+]
 
 export const reasoningModels = [
 	"openai/gpt-oss-120b",

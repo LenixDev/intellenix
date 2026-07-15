@@ -58,7 +58,7 @@ export default function Page() {
 	const [prompts, setPrompts] = useState<string>()
 	const [attachs, setAttachs] = useState<Record<string, string>>({})
 	const [country, setCountry] = useState('')
-	const [reasoning, setReasoning] = useState<Reasoning>('default')
+	const [reasoning, setReasoning] = useState<Reasoning>('medium')
 	const [randomness, setRandomness] = useState(0.5)
 	const [archiveDismissed, setArchiveDismissed] = useState(false)
 

@@ -1,5 +1,5 @@
 {
-	"extends": ["expo/tsconfig.base", "lenix/beta"],
+	"extends": ["expo/tsconfig.base.json", "lenix/beta"],
 	"compilerOptions": {
 		"strict": true,
 		"paths": { "@/*": ["./*"] },

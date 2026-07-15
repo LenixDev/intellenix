@@ -438,10 +438,10 @@ export const Preferences = ({
 								reasonings.find(item => item === value) ?? value
 							}
 							listLabel={t('reasoning_effort')}
-							{...{ item: reasoning ?? 'default', setItem: handleReasoning }}
+							{...{ item: reasoning ?? 'medium', setItem: handleReasoning }}
 						>
 							{reasonings.map((item, iter) => (
-								<Select.Item index={iter} key={item} value={item ?? 'default'}>
+								<Select.Item index={iter} key={item} value={item ?? 'medium'}>
 									<View flex={1} overflow='hidden'>
 										<Select.ItemText whiteSpace='normal'>
 											{item}
